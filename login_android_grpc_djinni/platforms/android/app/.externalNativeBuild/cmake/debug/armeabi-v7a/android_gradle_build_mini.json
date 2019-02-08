@@ -1,0 +1,16 @@
+{
+  "buildFiles": [
+    "/Users/melon/Documents/wechat-project/account-cross-platform/login_android_grpc_djinni/platforms/android/app/CMakeLists.txt"
+  ],
+  "cleanCommands": [
+    "/Users/melon/Library/Android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/melon/Documents/wechat-project/account-cross-platform/login_android_grpc_djinni/platforms/android/app/.externalNativeBuild/cmake/debug/armeabi-v7a --target clean"
+  ],
+  "libraries": {
+    "mylogin-Debug-armeabi-v7a": {
+      "artifactName": "mylogin",
+      "buildCommand": "/Users/melon/Library/Android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/melon/Documents/wechat-project/account-cross-platform/login_android_grpc_djinni/platforms/android/app/.externalNativeBuild/cmake/debug/armeabi-v7a --target mylogin",
+      "abi": "armeabi-v7a",
+      "output": "/Users/melon/Documents/wechat-project/account-cross-platform/login_android_grpc_djinni/platforms/android/app/build/intermediates/cmake/debug/obj/armeabi-v7a/libmylogin.so"
+    }
+  }
+}

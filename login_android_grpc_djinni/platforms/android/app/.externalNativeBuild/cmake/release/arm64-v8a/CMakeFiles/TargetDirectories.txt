@@ -1,0 +1,3 @@
+/Users/melon/Documents/wechat-project/account-cross-platform/login_android_grpc_djinni/platforms/android/app/.externalNativeBuild/cmake/release/arm64-v8a/CMakeFiles/edit_cache.dir
+/Users/melon/Documents/wechat-project/account-cross-platform/login_android_grpc_djinni/platforms/android/app/.externalNativeBuild/cmake/release/arm64-v8a/CMakeFiles/rebuild_cache.dir
+/Users/melon/Documents/wechat-project/account-cross-platform/login_android_grpc_djinni/platforms/android/app/.externalNativeBuild/cmake/release/arm64-v8a/CMakeFiles/mylogin.dir
