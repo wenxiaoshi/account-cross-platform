@@ -1,0 +1,18 @@
+version: '2'
+
+services:
+  grpcserver:
+      image: grpcserver:1.0
+      ports:
+        - "50051:50051"
+          #depends_on:
+          #  - mongo
+      command: ["./account_server"]
+
+  mongo:
+    image: mongo:latest
+    ports:
+        - "27017:27017"
+    volumes:
+          - "/home/mongo/db:/data/db"
+    command: ["mongod"]

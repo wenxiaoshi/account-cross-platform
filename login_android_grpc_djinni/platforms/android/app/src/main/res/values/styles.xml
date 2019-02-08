@@ -1,0 +1,29 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="MyAppTheme" parent="Theme.AppCompat">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+        <item name="android:configChanges">keyboardHidden|orientation|navigation</item>
+        <item name="android:windowSoftInputMode">adjustPan</item>
+        <item name="android:screenOrientation">portrait</item>
+        <item name="windowActionModeOverlay">true</item>
+
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:typeface">sans</item>
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="colorPrimary">@color/transparent</item>
+        <item name="colorPrimaryDark">@color/transparent</item>
+    </style>
+
+</resources>
