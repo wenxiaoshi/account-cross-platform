@@ -1,6 +1,8 @@
 #include <cstdint>
 #include <iostream>
 #include <ctime>
+#include <android/log.h>
+#include <vector>
 
 #include "login_core_impl.hpp"
 #include <proj_constants.h>
@@ -11,6 +13,9 @@
 
 #include <iostream>
 #include <exception>
+
+#define TAG    "com.wechat.mylogin"
+#define LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG,TAG,__VA_ARGS__)
 
 using namespace demo;
 using namespace project_constants;
@@ -23,6 +28,10 @@ namespace demo {
 
     const std::string TOAST_ACCOUNT_ERROR = "账号不能为空，请重新输入";
     const std::string TOAST_PASSWORD_ERROR = "密码不能为空，请重新输入";
+
+    const std::string KEY_CODE = "code";
+    const std::string KEY_MSG = "msg";
+    const std::string KEY_DATA = "data";
 
     bool LoginCoreImpl::isLogin = false;
 
@@ -89,14 +98,13 @@ namespace demo {
         native_network::NativeNetwork mNW;
         std::string response = mNW.reqLogin(account,password,deviceId);
 
-        printf("111111\n");
-        fflush(stdout);
+        LOGD("11111");
 
         //获取返回数据的对象
-        ReqResult result = getCodeByResult(response);
+        ReqResult result;
+        getCodeByResult(result,response);
 
-        printf("222222\n");
-        fflush(stdout);
+        LOGD("22222");
 
         //处理接口返回数据
         if (result.getCode() == ResultCode::SUCCESS){
@@ -105,12 +113,11 @@ namespace demo {
             utils::Storage::saveData(USER_ACCOUNT,account);
         }
 
-        printf("333333\n");
-        fflush(stdout);
+        LOGD("333333");
 
         //回调原生接口
         this->m_listener->on_login_finish(result.getCode());
-
+//        this->m_listener->on_login_finish(0);
 
     }
 
@@ -139,7 +146,8 @@ namespace demo {
         std::string response = mNW.reqSign(account,password,deviceId);
 
         //获取返回数据的对象
-        ReqResult result = getCodeByResult(response);
+        ReqResult result;
+        getCodeByResult(result,response);
 
         //处理接口返回
         if (result.getCode() == ResultCode::SUCCESS){
@@ -173,7 +181,8 @@ namespace demo {
             if (nowTime - lastTime > 5){
                 std::string response = mNW.checkConnect(deviceId);
                 //获取返回数据的对象
-                ReqResult result = getCodeByResult(response);
+                ReqResult result;
+                getCodeByResult(result,response);
                 if (result.getCode() == ResultCode::DEVICE_OFFLINE){
                     utils::Storage::saveData(DEVICE_KEY,"");
                     //如果处于登录状态，则踢下登录
@@ -237,7 +246,8 @@ namespace demo {
         native_network::NativeNetwork mNW;
         std::string response = mNW.checkConnect(deviceId);
         //获取返回数据的对象
-        ReqResult result = getCodeByResult(response);
+        ReqResult result;
+        getCodeByResult(result,response);
         if (result.getCode() == ResultCode::SUCCESS){
             utils::Storage::saveData(IS_CONNECT,"1");
             LoginCoreImpl::isLogin = true;
@@ -253,39 +263,37 @@ namespace demo {
         }
     }
 
-    bool checkAccountValid(std::string account){
+    bool LoginCoreImpl::checkAccountValid(std::string account){
         if (account == ""){
             return false;
         }
         return true;
     }
 
-    bool checkPasswordValid(std::string password){
+    bool LoginCoreImpl::checkPasswordValid(std::string password){
         if (password == ""){
             return false;
         }
         return true;
     }
 
-    ReqResult getCodeByResult(std::string result){
-        ReqResult reqResult;
-        utils::String::replaceAll(result,"{","");
-        utils::String::replaceAll(result,"}","");
-        utils::String::replaceAll(result,"\"","");
+    void LoginCoreImpl::getCodeByResult(ReqResult & result,std::string response){
+        utils::String::replaceAll(response,"{","");
+        utils::String::replaceAll(response,"}","");
+        utils::String::replaceAll(response,"\"","");
         std::vector<std::string> v;
-        utils::String::splitString(result, v,",");
+        utils::String::splitString(response, v,",");
         for(std::string map : v){
             std::vector<std::string> kv;
             utils::String::splitString(map, kv,":");
-            if(kv[0] == "code"){
-                reqResult.setCode(kv[1]);
-            }else if(kv[0] == "msg"){
-                reqResult.setMsg(kv[1]);
-            }else if(kv[0] == "data"){
-                reqResult.setData(kv[1]);
+            if(kv[0] == KEY_CODE){
+                result.setCode(kv[1]);
+            }else if(kv[0] == KEY_MSG){
+                result.setMsg(kv[1]);
+            }else if(kv[0] == KEY_DATA){
+                result.setData(kv[1]);
             }
         }
-        return reqResult;
     }
 
 }

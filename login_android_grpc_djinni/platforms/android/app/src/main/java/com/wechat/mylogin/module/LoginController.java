@@ -19,7 +19,7 @@ public class LoginController implements ILoginController {
     private LoginCore mLoginCore;
     private LoginListener mLoginListener;
 
-    private ExecutorService executorCache = Executors.newCachedThreadPool();
+    private ExecutorService executorCache = Executors.newFixedThreadPool(3);
     private ExecutorService executorFix = Executors.newFixedThreadPool(1);
 
     private Handler mMainHandler = new Handler(Looper.getMainLooper());
@@ -47,6 +47,7 @@ public class LoginController implements ILoginController {
      */
     @Override
     public void actionLoginIn(final String userAccount, final String userPassword){
+//        mLoginCore.userLogin(userAccount,userPassword);
         executorCache.execute(new Runnable() {
             @Override
             public void run() {

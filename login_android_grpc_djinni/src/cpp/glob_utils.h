@@ -3,6 +3,7 @@
 //
 #include <string>
 #include "NativeUtils.h"
+#include <vector>
 
 namespace utils{
 
