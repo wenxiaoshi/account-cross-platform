@@ -89,8 +89,14 @@ namespace demo {
         native_network::NativeNetwork mNW;
         std::string response = mNW.reqLogin(account,password,deviceId);
 
+        printf("111111\n");
+        fflush(stdout);
+
         //获取返回数据的对象
         ReqResult result = getCodeByResult(response);
+
+        printf("222222\n");
+        fflush(stdout);
 
         //处理接口返回数据
         if (result.getCode() == ResultCode::SUCCESS){
@@ -98,6 +104,9 @@ namespace demo {
             LoginCoreImpl::isLogin = true;
             utils::Storage::saveData(USER_ACCOUNT,account);
         }
+
+        printf("333333\n");
+        fflush(stdout);
 
         //回调原生接口
         this->m_listener->on_login_finish(result.getCode());

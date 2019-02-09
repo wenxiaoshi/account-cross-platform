@@ -97,6 +97,7 @@ public:
   * 更新账号对应的设备Id
   **/
   bool updateDeviceId(string phone,string deviceId){
+    removeAccountDeviceId(phone);
     mMapPhoneAndDid.HMInsert(phone, deviceId);
     mSetDeviceId.insert(deviceId);
     return true;
