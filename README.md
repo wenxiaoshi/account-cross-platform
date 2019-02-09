@@ -23,10 +23,10 @@
 
 为期19天，01-22 ~ 02-09
 
-### 01.22
+### 1.22
 
 理解需求，拆分任务。初步判断每一块技术需要的时间，制定工作计划。
-1. c++(每一天学习)
+1. c++ (每一天学习)
 2. Djinni（4天）
 3. Grpc & Protobuf（4天）
 4. bazel（4天）
@@ -39,21 +39,23 @@
 过程：
 根据官网说明生成相关cpp，配置正确，生成文件已导入，但是运行不起来，错误信息很模糊，报无引用。
 
-原因：
+总结：
 .djinni 文件中定义了 +c 类，需要自己编写实现类，实现相关抽象方法（如：create方法），把实现类也引入项目。
 
 ### 1.27-1.30
 
-学习grpc以及protobuffer，并跑通一个demo
+学习GRPC以及Protobuffer，并跑通一个demo
+
 学习bazel，并跑通一个demo
+
 结合三者跑通一个后台demo
 
 过程：
-GRPC官方githubDemo运行问题
- - macOS 插件不支持或不友好
- - 阿里云：Centos 安装插件命令yum
- - 阿里云：Ubuntu apt-get 终于安装好相关插件，但是不管是官方demo，还是GitHub上的个人开源demo都跑不起来；尝试自己从最简单的bazel c++ 到 bazel c++ grpc ，意外发现构建到boringssl这个插件时就卡住，查询发现boringssl需要科学上网，由此猜测是不是之前所有的demo都跑不起来的原因是没有科学上网导致的
- - 国外服务器：Ubuntu 再次尝试，终于顺利bazel构建官方grpc demo
+github上GRPC的官方demo运行问题
+ - MacOS: 插件不支持或不友好
+ - 阿里云: Centos 安装插件命令yum，有些插件安装起来十分艰难
+ - 阿里云: Ubuntu 安装插件命令apt-get，终于安装好相关插件，但是不管是官方demo，还是GitHub上的个人开源demo都跑不起来；尝试自己从最简单的bazel c++ 到 bazel c++ grpc ，发现构建到boringssl这个模块时就卡住，查询发现boringssl需要科学上网，由此猜测是不是之前所有的demo都跑不起来的原因是没有科学上网导致的
+ - 国外服务器：Ubuntu 再次尝试，终于顺利用bazel构建官方GRPC demo
 
 总结：
 1. 使用Ubuntu系统
@@ -62,16 +64,24 @@ GRPC官方githubDemo运行问题
 
 ### 1.31
 
-学习docker以及docker-compose相关命令，安装到服务器，编写Dockerfile和docker-compose.yml配置文件，将后台demo跑通
+学习docker以及docker-compose相关命令，安装相关插件。
 
-### 2.1
-编写客户端Java层UI、C++层业务代码、JNI接口代码。
+编写Dockerfile和docker-compose.yml配置文件，构建容器，将后台demo跑通。
+
+### 2.1-2.4
+
+编写Android客户端Java层UI、C++层业务代码、JNI接口代码。
 
 ### 2.5
-学习GRPC-SSL相关知识以及相关类方法，通过OpenSSL生成密钥文件，实现客户端与服务器端的加密通信
+
+学习GRPC-SSL相关知识以及相关类方法。
+
+通过OpenSSL生成密钥文件，实现客户端与服务器端的加密通信.
 
 ### 2.6
-尝试用mongo作为数据库存储方案，未果，决定暂时存储在内存中。
+
+尝试用mongo作为数据库存储方案，未果，考虑到时间因素，决定暂时存储在内存中。
+
 开始实现服务器端代码
 
 ### 2.7
@@ -80,7 +90,7 @@ GRPC官方githubDemo运行问题
 
 ### 2.8
 
-编写系统文档
+编写程序设计文档
 
 ### 2.9
 
