@@ -90,7 +90,7 @@ public:
   * 判断密码是否正确
   **/
   bool isPasswordCorrect(string phone,string password){
-    return strncmp(mMapPhoneAndPsw[phone].c_str(),password.data(),mMapPhoneAndPsw[phone].c_str().length()) == 0;
+    return strncmp(mMapPhoneAndPsw[phone].c_str(),password.data(),mMapPhoneAndPsw[phone].length()) == 0;
   }
 
   /**
