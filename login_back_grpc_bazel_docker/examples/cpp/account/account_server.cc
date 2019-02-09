@@ -90,7 +90,7 @@ public:
   * 判断密码是否正确
   **/
   bool isPasswordCorrect(string phone,string password){
-    return strncmp(mMapPhoneAndPsw[phone].c_str(),password.data(),password.length()) == 0;
+    return strncmp(mMapPhoneAndPsw[phone].c_str(),password.data(),mMapPhoneAndPsw[phone].c_str().length()) == 0;
   }
 
   /**
@@ -109,9 +109,9 @@ public:
   bool removeAccountDeviceId(string phone){
     string deviceId = mMapPhoneAndDid[phone].c_str();
     mMapPhoneAndDid.HMDelete(phone);
-    std::cout << "removeAccountDeviceId" << mSetDeviceId.size() << deviceId << std::endl;
+    std::cout << "removeAccountDeviceId " << mSetDeviceId.size() << deviceId << std::endl;
     mSetDeviceId.erase(deviceId);
-    std::cout << "removeAccountDeviceId" << mSetDeviceId.size() << deviceId << std::endl;
+    std::cout << "removeAccountDeviceId " << mSetDeviceId.size() << deviceId << std::endl;
     return true;
   }
 

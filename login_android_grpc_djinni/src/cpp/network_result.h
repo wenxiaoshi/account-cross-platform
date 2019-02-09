@@ -14,7 +14,7 @@ namespace demo{
             std::string getData();
             void setData(std::string data);
         private:
-            int code;
+            int code = 0;
             std::string msg = "";
             std::string data = "";
         };
