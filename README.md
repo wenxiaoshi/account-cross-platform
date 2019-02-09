@@ -32,7 +32,7 @@
 
 1. C++ (每一天学习)
 2. Djinni（4天）
-3. Grpc & ProtoBuffer（4天）
+3. GRPC & ProtoBuffer（4天）
 4. Bazel（4天）
 5. Docker & Docker Compose（3天）
 
