@@ -31,7 +31,6 @@ file(GLOB login_sources
         ../../../src/cpp/*.hpp
         ../../../src/cpp/*.h
         ../../../src/cpp/*.cpp
-
         )
 
 add_library( # Sets the name of the library.
