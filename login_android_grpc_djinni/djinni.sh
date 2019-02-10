@@ -24,7 +24,7 @@ rm -rf $jni_out
 rm -rf $objc_out
 rm -rf $java_out
 # execute the djinni command
-djinni/src/run \
+deps/src/run \
    --java-out $java_out \
    --java-package $java_package \
    --ident-java-field mFooBar \

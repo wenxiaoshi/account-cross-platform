@@ -98,13 +98,10 @@ namespace demo {
         native_network::NativeNetwork mNW;
         std::string response = mNW.reqLogin(account,password,deviceId);
 
-        LOGD("11111");
-
         //获取返回数据的对象
         ReqResult result;
-        getCodeByResult(result,response);
 
-        LOGD("22222");
+        getCodeByResult(result,response);
 
         //处理接口返回数据
         if (result.getCode() == ResultCode::SUCCESS){
@@ -113,11 +110,8 @@ namespace demo {
             utils::Storage::saveData(USER_ACCOUNT,account);
         }
 
-        LOGD("333333");
-
         //回调原生接口
         this->m_listener->on_login_finish(result.getCode());
-//        this->m_listener->on_login_finish(0);
 
     }
 
@@ -278,21 +272,32 @@ namespace demo {
     }
 
     void LoginCoreImpl::getCodeByResult(ReqResult & result,std::string response){
+
         utils::String::replaceAll(response,"{","");
         utils::String::replaceAll(response,"}","");
         utils::String::replaceAll(response,"\"","");
         std::vector<std::string> v;
+
         utils::String::splitString(response, v,",");
+
         for(std::string map : v){
             std::vector<std::string> kv;
             utils::String::splitString(map, kv,":");
+
             if(kv[0] == KEY_CODE){
-                result.setCode(kv[1]);
+                if(kv.size()>1){
+                    result.setCode(kv[1]);
+                }
             }else if(kv[0] == KEY_MSG){
-                result.setMsg(kv[1]);
+                if(kv.size()>1){
+                    result.setMsg(kv[1]);
+                }
             }else if(kv[0] == KEY_DATA){
-                result.setData(kv[1]);
+                if(kv.size()>1){
+                    result.setData(kv[1]);
+                }
             }
+
         }
     }
 

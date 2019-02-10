@@ -28,7 +28,7 @@
 #include <set>
 
 #ifdef BAZEL_BUILD
-#include "examples/protos/account.grpc.pb.h"
+#include "source/protos/account.grpc.pb.h"
 #else
 #include "account.grpc.pb.h"
 #endif

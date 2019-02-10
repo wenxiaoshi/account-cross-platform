@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <network_result.h>
 #include <sstream>
+#include <android/log.h>
 
 namespace demo{
 
@@ -12,12 +13,6 @@ namespace demo{
         return this->code;
     }
     void ReqResult::setCode(std::string code){
-//        std::string s = "17";
-//        std::stringstream ss;
-//        ss<<s;
-//         int i;
-//       ss>>i;
-//        this->code = i;
         std::string::size_type sz;   // alias of size_t
         int i_dec = std::stoi (code,&sz);
         this->code = i_dec;

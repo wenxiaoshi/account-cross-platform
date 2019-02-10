@@ -21,17 +21,9 @@ file(GLOB login_sources
         ../../../generated-src/jni/*.cpp
         src/main/cpp/*.h
         src/main/cpp/*.cpp
-#        ../../../src/cpp/network_core_impl.hpp
-#        ../../../src/cpp/network_core_impl.cpp
-#        ../../../src/cpp/login_core_impl.hpp
-#        ../../../src/cpp/login_core_impl.cpp
-#        ../../../src/cpp/proj_constants.cpp
-#        ../../../src/cpp/network_result.h
-#        ../../../src/cpp/network_result.cpp
         ../../../src/cpp/*.hpp
         ../../../src/cpp/*.h
         ../../../src/cpp/*.cpp
-
         )
 
 add_library( # Sets the name of the library.
