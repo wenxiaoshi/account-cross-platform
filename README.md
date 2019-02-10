@@ -44,7 +44,7 @@
 
 ## 版本说明
 
-|| 模块  | 版本号  | 备注 
+|| 模块  | 版本号  | 备注 |
 |:--|----|------|------|
 | Android端 |  |  ||
 || Android Studio | 3.2.1 | Android IDE |
@@ -59,6 +59,13 @@
 || Docker | 18.09.1 | Community |
 || Docker Compose | 1.23.2 |  |
 
+## 常用后端命令
+| 命令 | 备注 |
+|:--|----|
+| bazel build //source:account_server | 构建目标文件 |
+| cp ./bazel-bin/source/account_server docker-src/ | 将构建成功的执行文件复制到本地docker目录 |
+| docker build -t grpcserver:1.0 . | 在根目录，根据Dockerfile编写的规则，生成服务镜像 |
+| docker-compose up grpcserver | 在根目录，根据docker-compose.yml编写的规则，启动并管理容器 |
 
 ## 开发过程
 
