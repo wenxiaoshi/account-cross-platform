@@ -1,5 +1,7 @@
 # 单终端登录系统
 
+客户端下载链接：[MyLogin](http://melon-personal.oss-cn-shenzhen.aliyuncs.com/app-release.apk)
+
 ## 功能简介
 
 1. 具备注册登录功能
