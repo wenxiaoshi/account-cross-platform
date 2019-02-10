@@ -42,6 +42,24 @@
 | 2004 | 新增账号失败 |  |
 | 2005 | 该设备不在线 |  |
 
+## 版本说明
+
+|| 模块  | 版本号  | 备注 
+|:--|----|------|------|
+| Android端 |  |  ||
+|| Android Studio | 3.2.1 | Android IDE |
+|| Gradle | 4.6 |  |
+|| Android Plugin Version | 3.2.1 |  |
+|| GRPC-Android | 1.18.0 |  |
+|| protobuf-gradle-plugin | 0.8.6 |  |
+| 后端 |  |  ||
+|| Ubuntu | 18.04-x86_64 |  |
+|| Bazel | 0.20.0 |  |
+|| GRPC | 1.18.0 |  |
+|| Docker | 18.09.1 | Community |
+|| Docker Compose | 1.23.2 |  |
+
+
 ## 开发过程
 
 为期20天，01-22 ~ 02-10
