@@ -13,11 +13,15 @@
 - 采用Bazel构建后台项目，以及依赖管理
 - 采用Docker部署项目，并使用Docker Compose编排容器
 
-## 项目图示
+## 项目架构图
 
 ![](images/login-android.png)
 
 ![](images/login-back.png)
+
+## 项目流程图
+
+![](images/login-design.png)
 
 ## 开发过程
 
