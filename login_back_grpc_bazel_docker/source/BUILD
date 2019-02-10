@@ -19,11 +19,6 @@ package(default_visibility = ["//visibility:public"])
 load("//bazel:grpc_build_system.bzl", "grpc_proto_library")
 
 grpc_proto_library(
-    name = "helloworld",
-    srcs = ["protos/helloworld.proto"],
-)
-
-grpc_proto_library(
     name = "account",
     srcs = ["protos/account.proto"],
 )
@@ -41,18 +36,4 @@ cc_library(
     name = "hashmap",
     srcs = ["cpp/account/hash_map.cpp"],
     hdrs = ["cpp/account/hash_map.h"],
-)
-
-cc_binary(
-    name = "greeter_client",
-    srcs = ["cpp/helloworld/greeter_client.cc"],
-    defines = ["BAZEL_BUILD"],
-    deps = [":helloworld", "//:grpc++"],
-)
-
-cc_binary(
-    name = "greeter_server",
-    srcs = ["cpp/account/greeter_server.cc"],
-    defines = ["BAZEL_BUILD"],
-    deps = [":helloworld", "//:grpc++"],
 )
