@@ -1,3 +1,0 @@
--- Configuring done
--- Generating done
--- Build files have been written to: /Users/melon/Documents/wechat-project/account-cross-platform/login_android_grpc_djinni/platforms/android/app/.externalNativeBuild/cmake/release/armeabi-v7a
