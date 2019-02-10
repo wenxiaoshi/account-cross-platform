@@ -23,6 +23,14 @@
 
 ![](images/login-design.png)
 
+## GRPC接口说明
+| 接口名  | 含义  | 备注 
+|:------|------|------|
+| requestUserLogin | 请求登录接口 |  |
+| requestUserSign | 请求注册接口 |  |
+| requestLogout | 退出登录接口 |  |
+| checkConnect | 检查在线状态接口 |  |
+
 ## 错误码说明
 
 | 错误码  | 含义  | 备注 
