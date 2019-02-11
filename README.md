@@ -1,5 +1,7 @@
 # 单终端登录系统
 
+客户端下载链接：[MyLogin](http://melon-personal.oss-cn-shenzhen.aliyuncs.com/app-release.apk)
+
 ## 功能简介
 
 1. 具备注册登录功能
@@ -23,16 +25,52 @@
 
 ![](images/login-design.png)
 
+## GRPC接口说明
+| 接口名  | 含义  | 备注 
+|:------|------|------|
+| requestUserLogin | 请求登录接口 |  |
+| requestUserSign | 请求注册接口 |  |
+| requestLogout | 退出登录接口 |  |
+| checkConnect | 检查在线状态接口 |  |
+
 ## 错误码说明
 
 | 错误码  | 含义  | 备注 
 |:------|------|------|
+| 0 | 成功 |  |
+| -1 | 失败 | 默认 |
+| 1010 | pem文件不存在 |  |
 | 2000 | 该账号不存在 |  |
 | 2001 | 用户密码错误 |  |
 | 2002 | 该账号已注册 |  |
 | 2003 | 更新账号的DeviceId失败 |  |
 | 2004 | 新增账号失败 |  |
 | 2005 | 该设备不在线 |  |
+
+## 版本说明
+
+|| 模块  | 版本号  | 备注 |
+|:--|----|------|------|
+| Android端 |  |  ||
+|| Android Studio | 3.2.1 | Android IDE |
+|| Gradle | 4.6 |  |
+|| Android Plugin Version | 3.2.1 |  |
+|| GRPC-Android | 1.18.0 |  |
+|| protobuf-gradle-plugin | 0.8.6 |  |
+| 后端 |  |  ||
+|| Ubuntu | 18.04-x86_64 |  |
+|| Bazel | 0.20.0 |  |
+|| GRPC | 1.18.0 |  |
+|| Docker | 18.09.1 | Community |
+|| Docker Compose | 1.23.2 |  |
+
+## 常用后端命令
+| 命令 | 备注 |
+|:--|----|
+| bazel build //source:account_server | 构建目标文件 |
+| cp ./bazel-bin/source/account_server docker-src/ | 将构建成功的执行文件复制到本地docker目录 |
+| docker build -t grpcserver:1.0 . | 在根目录，根据Dockerfile编写的规则，生成服务镜像 |
+| docker-compose up grpcserver | 在根目录，根据docker-compose.yml编写的规则，启动并管理容器 |
 
 ## 开发过程
 
