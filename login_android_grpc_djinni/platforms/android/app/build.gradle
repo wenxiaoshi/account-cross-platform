@@ -19,12 +19,25 @@ android {
 //            }
         }
     }
+
+    signingConfigs {
+        myConfig {
+            storeFile file("wxlogin.jks")
+            storePassword "login2019"
+            keyAlias "wxlogin"
+            keyPassword "login2019"
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
+            signingConfig signingConfigs.myConfig
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+
 
     sourceSets {
         main {
