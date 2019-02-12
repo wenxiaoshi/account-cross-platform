@@ -10,6 +10,7 @@ import com.wechat.mylogin.constant.ResultCode;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 
 public class LoginController implements ILoginController {
@@ -19,8 +20,8 @@ public class LoginController implements ILoginController {
     private LoginCore mLoginCore;
     private LoginListener mLoginListener;
 
-    private ExecutorService executorCache = Executors.newFixedThreadPool(3);
-    private ExecutorService executorFix = Executors.newFixedThreadPool(1);
+    private ExecutorService executorCache = Executors.newCachedThreadPool();
+    private ExecutorService executorSingle = Executors.newSingleThreadExecutor();
 
     private Handler mMainHandler = new Handler(Looper.getMainLooper());
 
@@ -88,7 +89,7 @@ public class LoginController implements ILoginController {
      * 发起退出登录操作
      */
     private void checkConnect(){
-        executorFix.execute(new Runnable() {
+        executorSingle.execute(new Runnable() {
             @Override
             public void run() {
                 mLoginCore.checkConnection();
