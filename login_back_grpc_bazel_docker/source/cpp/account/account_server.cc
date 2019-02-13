@@ -33,6 +33,9 @@
 #include "account.grpc.pb.h"
 #endif
 
+#include "source/mysql/jdbc/mysql_driver.h"
+#include "source/mysql/jdbc/mysql_connection.h"
+
 using namespace std;
 
 using grpc::Server;
