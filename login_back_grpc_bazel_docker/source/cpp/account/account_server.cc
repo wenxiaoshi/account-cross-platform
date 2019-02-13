@@ -21,6 +21,9 @@
 #include <string>
 #include <fstream>
 #include <streambuf>
+#include <sstream>
+#include <stdexcept>
+#include <stdlib.h>
 
 #include <grpcpp/grpcpp.h>
 
@@ -33,8 +36,11 @@
 #include "account.grpc.pb.h"
 #endif
 
+#include <boost/scoped_ptr.hpp>
 #include "source/mysql/jdbc/mysql_driver.h"
 #include "source/mysql/jdbc/mysql_connection.h"
+#include "source/mysql/jdbc/cppconn/resultset.h"
+#include "source/mysql/jdbc/cppconn/statement.h"
 
 using namespace std;
 
@@ -317,8 +323,60 @@ class AccountServiceImpl final : public Account::Service {
 };
 
 
+int RunServer2() {
+  const char   *url = ("tcp://127.0.0.1");
+  const string user("root");
+  const string pass("");
+  const string database("test");
+
+   cout << endl;
+  cout << "Connector/C++ standalone program example..." << endl;
+  cout << endl;
+  try {
+    sql::Driver * driver = sql::mysql::get_driver_instance();
+    /* Using the Driver to create a connection */
+    cout << "Creating session on " << url << " ..."
+         << endl << endl;
+    boost::scoped_ptr< sql::Connection >
+      con(driver->connect(url, user, pass));
+    con->setSchema(database);
+    boost::scoped_ptr< sql::Statement > stmt(con->createStatement());
+    boost::scoped_ptr< sql::ResultSet >
+      res(stmt->executeQuery("SELECT 'Welcome to Connector/C++' AS _message"));
+    cout << "\t... running 'SELECT 'Welcome to Connector/C++' AS _message'"
+         << endl;
+    while (res->next())
+    {
+      cout << "\t... MySQL replies: " << res->getString("_message") << endl;
+      cout << "\t... say it again, MySQL" << endl;
+      cout << "\t....MySQL replies: " << res->getString(1) << endl;
+    }
+  }
+  catch (sql::SQLException &e)
+  {
+    /*
+      The JDBC API throws three different exceptions:
+    - sql::MethodNotImplementedException (derived from sql::SQLException)
+    - sql::InvalidArgumentException (derived from sql::SQLException)
+    - sql::SQLException (derived from std::runtime_error)
+    */
+    cout << "# ERR: SQLException in " << __FILE__;
+    cout << "(" << "EXAMPLE_FUNCTION" << ") on line " << __LINE__ << endl;
+    /* Use what() (derived from std::runtime_error) to fetch the error message */
+    cout << "# ERR: " << e.what();
+    cout << " (MySQL error code: " << e.getErrorCode();
+    cout << ", SQLState: " << e.getSQLState() << " )" << endl;
+    return EXIT_FAILURE;
+  }
+  cout << endl;
+  cout << "... find more at http://www.mysql.com" << endl;
+  cout << endl;
+  return EXIT_SUCCESS;
+
+}
 
 void RunServer() {
+
   std::string server_address("0.0.0.0:50051");
   AccountServiceImpl service;
 
@@ -353,7 +411,7 @@ void RunServer() {
 }
 
 int main(int argc, char** argv) {
-  RunServer();
+  return RunServer2();
 
-  return 0;
+  // return 0;
 }
