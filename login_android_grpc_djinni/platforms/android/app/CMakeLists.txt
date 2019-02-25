@@ -10,8 +10,13 @@ include_directories(
         ../../../deps/support-lib/jni/
         ../../../generated-src/cpp/
         ../../../generated-src/jni/
-        ../../../src/cpp/
         src/main/cpp/
+
+        ../../../src/cpp/
+        ../../../src/cpp/utils
+        ../../../src/cpp/model
+        ../../../src/cpp/struct
+        ../../../src/cpp/storage
 )
 
 file(GLOB login_sources
@@ -21,9 +26,19 @@ file(GLOB login_sources
         ../../../generated-src/jni/*.cpp
         src/main/cpp/*.h
         src/main/cpp/*.cpp
+
         ../../../src/cpp/*.hpp
         ../../../src/cpp/*.h
         ../../../src/cpp/*.cpp
+        ../../../src/cpp/utils/*.h
+        ../../../src/cpp/utils/*.cpp
+        ../../../src/cpp/model/*.h
+        ../../../src/cpp/model/*.cpp
+        ../../../src/cpp/struct/*.h
+        ../../../src/cpp/struct/*.cpp
+        ../../../src/cpp/storage/*.h
+        ../../../src/cpp/storage/*.cpp
+
         )
 
 add_library( # Sets the name of the library.

@@ -93,7 +93,6 @@ public class LoginActivity extends AppCompatActivity implements LoginUIControlle
         showResultView(getString(R.string.title_login_already),account);
     }
 
-    @Override
     public void toastMsg(String content) {
         Toast.makeText(this,content,Toast.LENGTH_LONG).show();
     }
@@ -104,7 +103,6 @@ public class LoginActivity extends AppCompatActivity implements LoginUIControlle
     @Override
     public void disconnect() {
         showOperationView();
-        CommonUtils.showToast(this,R.string.login_disconnect,Toast.LENGTH_LONG);
     }
 
     private void showOperationView(){

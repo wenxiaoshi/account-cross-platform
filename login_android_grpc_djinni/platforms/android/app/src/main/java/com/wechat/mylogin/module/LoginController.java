@@ -3,7 +3,9 @@ package com.wechat.mylogin.module;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 
+import com.wechat.clibs.ActionResult;
 import com.wechat.clibs.LoginCore;
 import com.wechat.mylogin.constant.ResultCode;
 
@@ -48,7 +50,6 @@ public class LoginController implements ILoginController {
      */
     @Override
     public void actionLoginIn(final String userAccount, final String userPassword){
-//        mLoginCore.userLogin(userAccount,userPassword);
         executorCache.execute(new Runnable() {
             @Override
             public void run() {
@@ -99,66 +100,81 @@ public class LoginController implements ILoginController {
 
     /**
      * 处理登录完成后的UI方法调用
-     * @param code
+     * @param result
      */
-    private void handleLoginResult(int code){
+    private void handleLoginResult(ActionResult result){
         if (isPageRecycle()){
             return;
         }
-        if (code == ResultCode.SUCCESS.getValue()){
+        if (result.getCode() == ResultCode.SUCCESS.getValue()){
             mUiController.get().performLoginSuccess();
             checkConnect();
         }else {
             mUiController.get().performLoginFail();
         }
+        if (!TextUtils.isEmpty(result.getMsg())){
+            handleToast(result.getMsg());
+        }
     }
 
     /**
      * 处理注册完成后的UI方法调用
-     * @param code
+     * @param result
      */
-    private void handleSignResult(int code){
+    private void handleSignResult(ActionResult result){
         if (isPageRecycle()){
             return;
         }
-        if (code == ResultCode.SUCCESS.getValue()){
+        if (result.getCode() == ResultCode.SUCCESS.getValue()){
             mUiController.get().performSignSuccess();
             checkConnect();
         }else {
             mUiController.get().performSignFail();
+        }
+        if (!TextUtils.isEmpty(result.getMsg())){
+            handleToast(result.getMsg());
         }
     }
 
     /**
      * 处理断开登录状态后的UI方法调用
      */
-    private void handleDeviceDisconnect(){
+    private void handleDeviceDisconnect(ActionResult result){
         if (isPageRecycle()){
             return;
         }
         mUiController.get().disconnect();
+        if (!TextUtils.isEmpty(result.getMsg())){
+            handleToast(result.getMsg());
+        }
     }
 
     /**
      * 处理退出登录状态后的UI方法调用
      */
-    private void handleLogout(){
+    private void handleLogout(ActionResult result){
         if (isPageRecycle()){
             return;
         }
         mUiController.get().performLogout();
+        if (!TextUtils.isEmpty(result.getMsg())){
+            handleToast(result.getMsg());
+        }
     }
 
     /**
      * 检查用户登录状态
      */
-    private void handleCheckUserStatus(int code,String account){
+    private void handleCheckUserStatus(ActionResult result){
         if (isPageRecycle()){
             return;
         }
-        if (code == ResultCode.SUCCESS.getValue()){
-            mUiController.get().performUserOnline(account);
+        if (result.getCode() == ResultCode.SUCCESS.getValue()){
+            mUiController.get().performUserOnline(result.getData());
             checkConnect();
+        }
+        if (!TextUtils.isEmpty(result.getMsg())){
+            handleToast(result.getMsg());
         }
     }
 
@@ -187,64 +203,55 @@ public class LoginController implements ILoginController {
     private class LoginListener extends com.wechat.clibs.LoginListener {
 
         @Override
-        public void onLoginFinish(final int code) {
+        public void onLoginFinish(final ActionResult result) {
             mMainHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    handleLoginResult(code);
+                    handleLoginResult(result);
                 }
             });
         }
 
         @Override
-        public void onSignFinish(final int code) {
+        public void onSignFinish(final ActionResult result) {
             mMainHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    handleSignResult(code);
+                    handleSignResult(result);
                 }
             });
         }
 
         @Override
-        public void onLogoutFinish(int code) {
+        public void onLogoutFinish(final ActionResult result) {
             mMainHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    handleLogout();
+                    handleLogout(result);
                 }
             });
         }
 
         @Override
-        public void onCheckStatusFinish(final int code, final String account) {
+        public void onCheckStatusFinish(final ActionResult result) {
             mMainHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    handleCheckUserStatus(code,account);
+                    handleCheckUserStatus(result);
                 }
             });
         }
 
         @Override
-        public void onDisconnect() {
+        public void onDisconnect(final ActionResult result) {
             mMainHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    handleDeviceDisconnect();
+                    handleDeviceDisconnect(result);
                 }
             });
         }
-
-        @Override
-        public void toast(final String content) {
-            mMainHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    handleToast(content);
-                }
-            });
-        }
+        
     }
 
 }
