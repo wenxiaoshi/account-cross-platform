@@ -2,54 +2,16 @@
 // Created by melon on 2019/2/6.
 //
 
-#include <stdio.h>
-#include <string.h>
-#include <iostream>
-using namespace std;
+#include "hash_map.h"
 
-class HashNode{
-public:
-    string  mKey;
-    string  mValue;
-    HashNode *next;
-
-    HashNode(string key, string value){
-        mKey   = key;
-        mValue = value;
-        next = NULL;
-    }
-    ~HashNode(){
-    }
-    HashNode& operator=(const HashNode& node){
-        if(this == &node) return *this;
-        mKey = node.mKey;
-        mValue = node.mValue;
-        next = node.next;
-        return *this;
-    }
-};
-
-class HashMap{
-public:
-    HashMap(int size);
-    ~HashMap();
-    bool HMInsert(const string& key, const string& value);
-    bool HMDelete(const string& key);
-    string& HMFind(const string& key);
-    string& operator[](const string& key);
-private:
-    int hashfunc(const string& key);
-    HashNode ** mTable;
-    int mSize;
-    string strnull;
-};
+using namespace my_struct;
 
 HashMap::HashMap(int size):mSize(size){
     mTable = new HashNode*[size];
     for(int i=0; i<mSize; ++i){
         mTable[i] = NULL;
     }
-    strnull = "NULL";
+    strnull = "";
 }
 
 HashMap::~HashMap(){
@@ -64,16 +26,24 @@ HashMap::~HashMap(){
     delete mTable;
 }
 
-bool HashMap::HMInsert(const string& key, const string& value)
+bool HashMap::insert(const string& key, const string& value)
 {
     int index = hashfunc(key)%mSize;
     HashNode *node = new HashNode(key, value);
+    HashNode *head = mTable[index];
+    while (head){
+        if (strcmp(node->mKey.data(),head->mKey.data()) == 0){
+            head->mValue = node->mValue;
+            return true;
+        }
+        head = head->next;
+    }
     node->next = mTable[index];
     mTable[index] = node;
     return true;
 }
 
-bool HashMap::HMDelete(const string &key)
+bool HashMap::remove(const string &key)
 {
     int index = hashfunc(key)%mSize;
     HashNode *node = mTable[index];
@@ -94,7 +64,7 @@ bool HashMap::HMDelete(const string &key)
     return false;
 }
 
-string& HashMap::HMFind(const string& key)
+string& HashMap::find(const string& key)
 {
     int index = hashfunc(key)%mSize;
     if(NULL == mTable[index]){
@@ -111,15 +81,32 @@ string& HashMap::HMFind(const string& key)
     return strnull;
 }
 
-string& HashMap::operator[](const string& key)
-{
-    return HMFind(key);
-}
-
 int HashMap::hashfunc(const string& key){
     int hash = 0;
     for(int i=0; i<key.length(); ++i){
         hash = hash << 7^key[i];
     }
     return (hash & 0x7FFFFFFF);
+}
+
+void HashMap::clean(){
+    for(int i=0; i<mSize; ++i){
+        delete[] mTable[i];
+        mTable[i] = NULL;
+    }
+    delete[] mTable;
+    mTable = NULL;
+
+}
+
+std::string HashMap::list(){
+    string source;
+    for(int i=0; i<mSize; ++i){
+        HashNode* node = mTable[i];
+        while (node){
+            source += node->mKey + " : " + node->mValue + "\n";
+            node = node->next;
+        }
+    }
+    return source;
 }

@@ -1,7 +1,6 @@
 #pragma once
  
 #include "login_core.hpp"
-#include "network_result.h"
 
 namespace demo {
     
@@ -19,11 +18,6 @@ namespace demo {
         virtual void check_connection() override ;
         virtual void user_logout() override ;
         virtual void check_login_status() override ;
-
-        void getCodeByResult(ReqResult & result,std::string response);
-
-        bool checkAccountValid(std::string account);
-        bool checkPasswordValid(std::string password);
 
     private:
         std::shared_ptr<LoginListener> m_listener;

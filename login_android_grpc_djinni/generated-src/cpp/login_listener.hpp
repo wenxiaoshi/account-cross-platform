@@ -3,26 +3,23 @@
 
 #pragma once
 
-#include <cstdint>
-#include <string>
-
 namespace demo {
+
+struct ActionResult;
 
 class LoginListener {
 public:
     virtual ~LoginListener() {}
 
-    virtual void on_login_finish(int32_t code) = 0;
+    virtual void on_login_finish(const ActionResult & result) = 0;
 
-    virtual void on_sign_finish(int32_t code) = 0;
+    virtual void on_sign_finish(const ActionResult & result) = 0;
 
-    virtual void on_logout_finish(int32_t code) = 0;
+    virtual void on_logout_finish(const ActionResult & result) = 0;
 
-    virtual void on_check_status_finish(int32_t code, const std::string & account) = 0;
+    virtual void on_check_status_finish(const ActionResult & result) = 0;
 
-    virtual void on_disconnect() = 0;
-
-    virtual void toast(const std::string & content) = 0;
+    virtual void on_disconnect(const ActionResult & result) = 0;
 };
 
 }  // namespace demo

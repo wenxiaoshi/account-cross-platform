@@ -33,24 +33,22 @@ private:
         JavaProxy(JniType j);
         ~JavaProxy();
 
-        void on_login_finish(int32_t code) override;
-        void on_sign_finish(int32_t code) override;
-        void on_logout_finish(int32_t code) override;
-        void on_check_status_finish(int32_t code, const std::string & account) override;
-        void on_disconnect() override;
-        void toast(const std::string & content) override;
+        void on_login_finish(const ::demo::ActionResult & result) override;
+        void on_sign_finish(const ::demo::ActionResult & result) override;
+        void on_logout_finish(const ::demo::ActionResult & result) override;
+        void on_check_status_finish(const ::demo::ActionResult & result) override;
+        void on_disconnect(const ::demo::ActionResult & result) override;
 
     private:
         friend ::djinni::JniInterface<::demo::LoginListener, ::djinni_generated::NativeLoginListener>;
     };
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("com/wechat/clibs/LoginListener") };
-    const jmethodID method_onLoginFinish { ::djinni::jniGetMethodID(clazz.get(), "onLoginFinish", "(I)V") };
-    const jmethodID method_onSignFinish { ::djinni::jniGetMethodID(clazz.get(), "onSignFinish", "(I)V") };
-    const jmethodID method_onLogoutFinish { ::djinni::jniGetMethodID(clazz.get(), "onLogoutFinish", "(I)V") };
-    const jmethodID method_onCheckStatusFinish { ::djinni::jniGetMethodID(clazz.get(), "onCheckStatusFinish", "(ILjava/lang/String;)V") };
-    const jmethodID method_onDisconnect { ::djinni::jniGetMethodID(clazz.get(), "onDisconnect", "()V") };
-    const jmethodID method_toast { ::djinni::jniGetMethodID(clazz.get(), "toast", "(Ljava/lang/String;)V") };
+    const jmethodID method_onLoginFinish { ::djinni::jniGetMethodID(clazz.get(), "onLoginFinish", "(Lcom/wechat/clibs/ActionResult;)V") };
+    const jmethodID method_onSignFinish { ::djinni::jniGetMethodID(clazz.get(), "onSignFinish", "(Lcom/wechat/clibs/ActionResult;)V") };
+    const jmethodID method_onLogoutFinish { ::djinni::jniGetMethodID(clazz.get(), "onLogoutFinish", "(Lcom/wechat/clibs/ActionResult;)V") };
+    const jmethodID method_onCheckStatusFinish { ::djinni::jniGetMethodID(clazz.get(), "onCheckStatusFinish", "(Lcom/wechat/clibs/ActionResult;)V") };
+    const jmethodID method_onDisconnect { ::djinni::jniGetMethodID(clazz.get(), "onDisconnect", "(Lcom/wechat/clibs/ActionResult;)V") };
 };
 
 }  // namespace djinni_generated

@@ -4,15 +4,13 @@
 package com.wechat.clibs;
 
 public abstract class LoginListener {
-    public abstract void onLoginFinish(int code);
+    public abstract void onLoginFinish(ActionResult result);
 
-    public abstract void onSignFinish(int code);
+    public abstract void onSignFinish(ActionResult result);
 
-    public abstract void onLogoutFinish(int code);
+    public abstract void onLogoutFinish(ActionResult result);
 
-    public abstract void onCheckStatusFinish(int code, String account);
+    public abstract void onCheckStatusFinish(ActionResult result);
 
-    public abstract void onDisconnect();
-
-    public abstract void toast(String content);
+    public abstract void onDisconnect(ActionResult result);
 }
