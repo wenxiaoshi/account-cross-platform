@@ -39,20 +39,5 @@ namespace utils{
             return getStdStringByJString(env,js);
         }
 
-        static std::string getData(std::string key){
-            JNIEnv* env = dlsmgetenv();
-            jclass jc = env->FindClass("com/wechat/mylogin/utils/SharePreferredUtils");
-            jmethodID jm = env->GetStaticMethodID(jc,"getString","(Ljava/lang/String;)Ljava/lang/String;");
-            jstring js = static_cast<jstring>(env->CallStaticObjectMethod(jc, jm,getJStringByStdString(env,key)));
-            return getStdStringByJString(env,js);
-        }
-
-        static int saveData(std::string key,std::string value){
-            JNIEnv* env = dlsmgetenv();
-            jclass jc = env->FindClass("com/wechat/mylogin/utils/SharePreferredUtils");
-            jmethodID jm = env->GetStaticMethodID(jc,"putString","(Ljava/lang/String;Ljava/lang/String;)Z");
-            jboolean js = env->CallStaticBooleanMethod(jc, jm,getJStringByStdString(env,key),getJStringByStdString(env,value));
-            return js?1:0;
-        }
     };
 }

@@ -63,19 +63,17 @@ public class LoginActivity extends AppCompatActivity implements LoginUIControlle
     }
 
     /**
-     * 登录失败，弹窗提示
+     * 登录失败
      */
     @Override
     public void performLoginFail() {
-        CommonUtils.showToast(this,R.string.login_action_result_fail,Toast.LENGTH_LONG);
     }
 
     /**
-     * 注册失败，弹窗提示
+     * 注册失败
      */
     @Override
     public void performSignFail() {
-        CommonUtils.showToast(this,R.string.sign_action_result_fail,Toast.LENGTH_LONG);
     }
 
     /**
@@ -88,23 +86,29 @@ public class LoginActivity extends AppCompatActivity implements LoginUIControlle
 
     }
 
+    /**
+     * 处理用户已在线状态
+     * @param account
+     */
     @Override
     public void performUserOnline(String account) {
         showResultView(getString(R.string.title_login_already),account);
     }
 
-    @Override
+    /**
+     * 弹窗提醒
+     * @param content
+     */
     public void toastMsg(String content) {
         Toast.makeText(this,content,Toast.LENGTH_LONG).show();
     }
 
     /**
-     * 被踢下线，弹窗提示
+     * 被踢下线
      */
     @Override
     public void disconnect() {
         showOperationView();
-        CommonUtils.showToast(this,R.string.login_disconnect,Toast.LENGTH_LONG);
     }
 
     private void showOperationView(){
