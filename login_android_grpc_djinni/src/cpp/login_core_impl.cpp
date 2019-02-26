@@ -4,34 +4,32 @@
 #include <android/log.h>
 #include <vector>
 
-#include "login_core_impl.hpp"
-#include <proj_constants.h>
-
 #include "NativeLoginListener.hpp"
 #include "NativeNetwork.h"
-#include "glob_utils.h"
+
+#include "action_result.hpp"
+#include "login_core_impl.hpp"
+#include "model/proj_constants.h"
+#include "utils/glob_utils.h"
+#include <storage/share_preferences.h>
+#include "utils/check_param_utils.h"
 
 #include <iostream>
 #include <exception>
+
 
 #define TAG    "com.wechat.mylogin"
 #define LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG,TAG,__VA_ARGS__)
 
 using namespace demo;
 using namespace project_constants;
+using namespace utils;
 
 namespace demo {
 
-    const std::string DEVICE_KEY = "device_id";
+    const std::string TOKEN = "token";
     const std::string IS_CONNECT = "is_connect";
     const std::string USER_ACCOUNT = "user_account";
-
-    const std::string TOAST_ACCOUNT_ERROR = "账号不能为空，请重新输入";
-    const std::string TOAST_PASSWORD_ERROR = "密码不能为空，请重新输入";
-
-    const std::string KEY_CODE = "code";
-    const std::string KEY_MSG = "msg";
-    const std::string KEY_DATA = "data";
 
     bool LoginCoreImpl::isLogin = false;
 
@@ -45,53 +43,26 @@ namespace demo {
 
     void LoginCoreImpl::user_login(const std::string & account, const std::string & password) {
 
-
-//        utils::Device::sss.insert("1");
-//        utils::Device::sss.insert("1");
-//        utils::Device::sss.insert("1");
-//        utils::Device::sss.insert("2");
-//        utils::Device::sss.insert("3");
-//        string ss = *utils::Device::sss.find("1");
-//        ss = *utils::Device::sss.find("2");
-//
-//        string ss = "sas";
-//        if (strncmp("",ss.data(),ss.length()) == 0){
-//            ss = "as";
-//        } else{
-//            ss = "fa";
-//        }
-
-
-//        utils::Device::ss.HMInsert("Hello", "World");
-//        utils::Device::ss.HMInsert("why", "dream");
-//        utils::Device::ss.HMInsert("c++", "good");
-//        utils::Device::ss.HMInsert("welcome", "haha");
-//        utils::Device::ss.HMInsert("welcome", "asas");
-//
-//        string ss = "after insert:";
-//        ss = hashmap.HMFind("welcome").c_str();
-//        ss = hashmap.HMFind("welcome1").c_str();
-//        ss = hashmap.HMFind("c++").c_str();
-//        ss = hashmap["why"].c_str();
-//        ss = hashmap["hello"].c_str();
-        
-        //检查账号密码是否正确
-        if(!checkAccountValid(account)){
-            this->m_listener->toast(TOAST_ACCOUNT_ERROR);
+        //检查账号是否正确
+        std::string accountErrorMsg;
+        if(!CheckParam::checkAccountValid(account,accountErrorMsg)){
+            this->m_listener->on_login_finish(ActionResult(ResultCode::LOGIN_FAIL_ACCOUNT_INVALID,accountErrorMsg,""));
             return;
         }
 
-        if(!checkPasswordValid(password)){
-            this->m_listener->toast(TOAST_PASSWORD_ERROR);
+        //检查密码是否正确
+        std::string pwdErrorMsg;
+        if(!CheckParam::checkPasswordValid(password,pwdErrorMsg)){
+            this->m_listener->on_login_finish(ActionResult(ResultCode::LOGIN_FAIL_PASSWORD_INVALID,pwdErrorMsg,""));
             return;
         }
 
-        std::string deviceId = utils::Storage::getData(DEVICE_KEY);
+        std::string deviceId = storage::SharePreferences::get(TOKEN);
 
-        if (deviceId == ""){
+        if (deviceId.empty()){
             //如果数据层中获取不到设备ID，则生成设备ID，并且保存到本地
             deviceId = utils::Device::getDeviceId();
-            utils::Storage::saveData(DEVICE_KEY,deviceId);
+            storage::SharePreferences::save(TOKEN,deviceId);
         }
 
         //调用登录接口
@@ -101,38 +72,44 @@ namespace demo {
         //获取返回数据的对象
         ReqResult result;
 
-        getCodeByResult(result,response);
+        utils::Network::getCodeByResult(result,response);
 
         //处理接口返回数据
         if (result.getCode() == ResultCode::SUCCESS){
-            utils::Storage::saveData(IS_CONNECT,"1");
+            storage::SharePreferences::save(IS_CONNECT,"1");
             LoginCoreImpl::isLogin = true;
-            utils::Storage::saveData(USER_ACCOUNT,account);
+            storage::SharePreferences::save(USER_ACCOUNT,account);
         }
 
-        //回调原生接口
-        this->m_listener->on_login_finish(result.getCode());
+        //执行持久化操作
+        storage::SharePreferences::execute();
 
+        //回调原生接口
+        this->m_listener->on_login_finish(ActionResult(result.getCode(),result.getMsg(),""));
     }
 
     void LoginCoreImpl::user_sign(const std::string & account, const std::string & password) {
-        //检查账号密码是否正确
-        if(!checkAccountValid(account)){
-            this->m_listener->toast(TOAST_ACCOUNT_ERROR);
+
+        //检查账号是否正确
+        std::string accountErrorMsg;
+        if(!CheckParam::checkAccountValid(account,accountErrorMsg)){
+            this->m_listener->on_login_finish(ActionResult(ResultCode::LOGIN_FAIL_ACCOUNT_INVALID,accountErrorMsg,""));
             return;
         }
 
-        if(!checkPasswordValid(password)){
-            this->m_listener->toast(TOAST_PASSWORD_ERROR);
+        //检查密码是否正确
+        std::string pwdErrorMsg;
+        if(!CheckParam::checkPasswordValid(password,pwdErrorMsg)){
+            this->m_listener->on_login_finish(ActionResult(ResultCode::LOGIN_FAIL_PASSWORD_INVALID,pwdErrorMsg,""));
             return;
         }
 
-        std::string deviceId = utils::Storage::getData(DEVICE_KEY);
+        std::string deviceId = storage::SharePreferences::get(TOKEN);
 
         if (deviceId == ""){
             //如果数据层中获取不到设备ID，则生成设备ID，并且保存到本地
             deviceId = utils::Device::getDeviceId();
-            utils::Storage::saveData(DEVICE_KEY,deviceId);
+            storage::SharePreferences::save(TOKEN,deviceId);
         }
 
         //调用注册接口
@@ -141,18 +118,20 @@ namespace demo {
 
         //获取返回数据的对象
         ReqResult result;
-        getCodeByResult(result,response);
+        utils::Network::getCodeByResult(result,response);
 
         //处理接口返回
         if (result.getCode() == ResultCode::SUCCESS){
-            utils::Storage::saveData(IS_CONNECT,"1");
+            storage::SharePreferences::save(IS_CONNECT,"1");
             LoginCoreImpl::isLogin = true;
-            utils::Storage::saveData(USER_ACCOUNT,account);
+            storage::SharePreferences::save(USER_ACCOUNT,account);
         }
 
-        //回调原生接口
-        this->m_listener->on_sign_finish(result.getCode());
+        //执行持久化操作
+        storage::SharePreferences::execute();
 
+        //回调原生接口
+        this->m_listener->on_login_finish(ActionResult(result.getCode(),"",""));
 
     }
 
@@ -161,9 +140,9 @@ namespace demo {
      */
     void LoginCoreImpl::check_connection(){
         //todo 循环检测链接状态
-        std::string deviceId = utils::Storage::getData(DEVICE_KEY);
+        std::string deviceId = storage::SharePreferences::get(TOKEN);
         if(deviceId == ""){
-            this->m_listener->on_disconnect();
+            this->m_listener->on_disconnect(ActionResult(ResultCode::DEVICE_OFFLINE,MsgTip::TOAST_ACCOUNT_OUT_OFF_LINE,""));
             return;
         }
 
@@ -176,15 +155,17 @@ namespace demo {
                 std::string response = mNW.checkConnect(deviceId);
                 //获取返回数据的对象
                 ReqResult result;
-                getCodeByResult(result,response);
+                utils::Network::getCodeByResult(result,response);
                 if (result.getCode() == ResultCode::DEVICE_OFFLINE){
-                    utils::Storage::saveData(DEVICE_KEY,"");
+                    storage::SharePreferences::save(TOKEN,"");
                     //如果处于登录状态，则踢下登录
                     if(LoginCoreImpl::isLogin){
-                        utils::Storage::saveData(IS_CONNECT,"0");
+                        storage::SharePreferences::save(IS_CONNECT,"0");
                         LoginCoreImpl::isLogin = false;
-                        this->m_listener->on_disconnect();
+                        this->m_listener->on_disconnect(ActionResult(ResultCode::DEVICE_OFFLINE,MsgTip::TOAST_ACCOUNT_OUT_OFF_LINE,""));
                     }
+                    //执行持久化操作
+                    storage::SharePreferences::execute();
                     break;
                 }
                 lastTime = nowTime;
@@ -198,21 +179,21 @@ namespace demo {
      */
     void LoginCoreImpl::user_logout(){
         //获取账号，发起退出登录请求
-        std::string account = utils::Storage::getData(USER_ACCOUNT);
+        std::string account = storage::SharePreferences::get(USER_ACCOUNT);
         if (account == ""){
-            utils::Storage::saveData(IS_CONNECT,"0");
+            storage::SharePreferences::saveNow(IS_CONNECT,"0");
             LoginCoreImpl::isLogin = false;
-            this->m_listener->on_logout_finish(0);
+            this->m_listener->on_logout_finish(ActionResult(ResultCode::SUCCESS,"",""));
             return;
         }
 
         //清楚本地数据
-        utils::Storage::saveData(IS_CONNECT,"0");
+        storage::SharePreferences::save(IS_CONNECT,"0");
         LoginCoreImpl::isLogin = false;
-        utils::Storage::saveData(USER_ACCOUNT,"");
-
+        storage::SharePreferences::save(USER_ACCOUNT,"");
+        storage::SharePreferences::execute();
         //回调通知UI层
-        this->m_listener->on_logout_finish(0);
+        this->m_listener->on_logout_finish(ActionResult(ResultCode::SUCCESS,"",""));
 
         //执行退出登录
         native_network::NativeNetwork mNW;
@@ -224,16 +205,17 @@ namespace demo {
      * 判断当前是否在线
      */
     void LoginCoreImpl::check_login_status(){
-        std::string deviceId = utils::Storage::getData(DEVICE_KEY);
-        std::string account = utils::Storage::getData(USER_ACCOUNT);
+        std::string deviceId = storage::SharePreferences::get(TOKEN);
+        std::string account = storage::SharePreferences::get(USER_ACCOUNT);
 
         //清空登录状态
         if(deviceId == "" || account == ""){
-            utils::Storage::saveData(DEVICE_KEY,"");
-            utils::Storage::saveData(USER_ACCOUNT,"");
-            utils::Storage::saveData(IS_CONNECT,"0");
+            storage::SharePreferences::save(TOKEN,"");
+            storage::SharePreferences::save(USER_ACCOUNT,"");
+            storage::SharePreferences::save(IS_CONNECT,"0");
+            storage::SharePreferences::execute();
             LoginCoreImpl::isLogin = false;
-            this->m_listener->on_check_status_finish(-1,"");
+            this->m_listener->on_check_status_finish(ActionResult(ResultCode::USER_IS_NOT_ONLINE,"",""));
             return;
         }
 
@@ -241,64 +223,23 @@ namespace demo {
         std::string response = mNW.checkConnect(deviceId);
         //获取返回数据的对象
         ReqResult result;
-        getCodeByResult(result,response);
+        utils::Network::getCodeByResult(result,response);
         if (result.getCode() == ResultCode::SUCCESS){
-            utils::Storage::saveData(IS_CONNECT,"1");
+            storage::SharePreferences::saveNow(IS_CONNECT,"1");
             LoginCoreImpl::isLogin = true;
-            this->m_listener->on_check_status_finish(0,account);
+            this->m_listener->on_check_status_finish(ActionResult(ResultCode::SUCCESS,"",account));
             return;
         } else {
-            utils::Storage::saveData(DEVICE_KEY,"");
-            utils::Storage::saveData(USER_ACCOUNT,"");
-            utils::Storage::saveData(IS_CONNECT,"0");
+            storage::SharePreferences::save(TOKEN,"");
+            storage::SharePreferences::save(USER_ACCOUNT,"");
+            storage::SharePreferences::save(IS_CONNECT,"0");
+            storage::SharePreferences::execute();
             LoginCoreImpl::isLogin = false;
-            this->m_listener->on_check_status_finish(-1,account);
+            this->m_listener->on_check_status_finish(ActionResult(ResultCode::USER_IS_NOT_ONLINE,"",""));
             return;
         }
     }
 
-    bool LoginCoreImpl::checkAccountValid(std::string account){
-        if (account == ""){
-            return false;
-        }
-        return true;
-    }
 
-    bool LoginCoreImpl::checkPasswordValid(std::string password){
-        if (password == ""){
-            return false;
-        }
-        return true;
-    }
-
-    void LoginCoreImpl::getCodeByResult(ReqResult & result,std::string response){
-
-        utils::String::replaceAll(response,"{","");
-        utils::String::replaceAll(response,"}","");
-        utils::String::replaceAll(response,"\"","");
-        std::vector<std::string> v;
-
-        utils::String::splitString(response, v,",");
-
-        for(std::string map : v){
-            std::vector<std::string> kv;
-            utils::String::splitString(map, kv,":");
-
-            if(kv[0] == KEY_CODE){
-                if(kv.size()>1){
-                    result.setCode(kv[1]);
-                }
-            }else if(kv[0] == KEY_MSG){
-                if(kv.size()>1){
-                    result.setMsg(kv[1]);
-                }
-            }else if(kv[0] == KEY_DATA){
-                if(kv.size()>1){
-                    result.setData(kv[1]);
-                }
-            }
-
-        }
-    }
 
 }

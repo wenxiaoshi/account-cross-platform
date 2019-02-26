@@ -3,7 +3,7 @@
 //
 
 #include <stdio.h>
-#include <network_result.h>
+#include <model/network_result.h>
 #include <sstream>
 #include <android/log.h>
 

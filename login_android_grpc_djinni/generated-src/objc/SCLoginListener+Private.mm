@@ -3,8 +3,8 @@
 
 #import "SCLoginListener+Private.h"
 #import "SCLoginListener.h"
-#import "DJIMarshal+Private.h"
 #import "DJIObjcWrapperCache+Private.h"
+#import "SCActionResult+Private.h"
 #include <stdexcept>
 
 static_assert(__has_feature(objc_arc), "Djinni requires ARC to be enabled for this file");
@@ -18,41 +18,34 @@ class LoginListener::ObjcProxy final
     friend class ::djinni_generated::LoginListener;
 public:
     using ObjcProxyBase::ObjcProxyBase;
-    void on_login_finish(int32_t c_code) override
+    void on_login_finish(const ::demo::ActionResult & c_result) override
     {
         @autoreleasepool {
-            [djinni_private_get_proxied_objc_object() onLoginFinish:(::djinni::I32::fromCpp(c_code))];
+            [djinni_private_get_proxied_objc_object() onLoginFinish:(::djinni_generated::ActionResult::fromCpp(c_result))];
         }
     }
-    void on_sign_finish(int32_t c_code) override
+    void on_sign_finish(const ::demo::ActionResult & c_result) override
     {
         @autoreleasepool {
-            [djinni_private_get_proxied_objc_object() onSignFinish:(::djinni::I32::fromCpp(c_code))];
+            [djinni_private_get_proxied_objc_object() onSignFinish:(::djinni_generated::ActionResult::fromCpp(c_result))];
         }
     }
-    void on_logout_finish(int32_t c_code) override
+    void on_logout_finish(const ::demo::ActionResult & c_result) override
     {
         @autoreleasepool {
-            [djinni_private_get_proxied_objc_object() onLogoutFinish:(::djinni::I32::fromCpp(c_code))];
+            [djinni_private_get_proxied_objc_object() onLogoutFinish:(::djinni_generated::ActionResult::fromCpp(c_result))];
         }
     }
-    void on_check_status_finish(int32_t c_code, const std::string & c_account) override
+    void on_check_status_finish(const ::demo::ActionResult & c_result) override
     {
         @autoreleasepool {
-            [djinni_private_get_proxied_objc_object() onCheckStatusFinish:(::djinni::I32::fromCpp(c_code))
-                                                                  account:(::djinni::String::fromCpp(c_account))];
+            [djinni_private_get_proxied_objc_object() onCheckStatusFinish:(::djinni_generated::ActionResult::fromCpp(c_result))];
         }
     }
-    void on_disconnect() override
+    void on_disconnect(const ::demo::ActionResult & c_result) override
     {
         @autoreleasepool {
-            [djinni_private_get_proxied_objc_object() onDisconnect];
-        }
-    }
-    void toast(const std::string & c_content) override
-    {
-        @autoreleasepool {
-            [djinni_private_get_proxied_objc_object() toast:(::djinni::String::fromCpp(c_content))];
+            [djinni_private_get_proxied_objc_object() onDisconnect:(::djinni_generated::ActionResult::fromCpp(c_result))];
         }
     }
 };

@@ -1,8 +1,8 @@
 #login relation
-user_account = record {
-	id: string;
-	account: string;
-	password: string;
+action_result = record {
+	code: i32;
+	msg: string;
+	data: string;
 }
 login_core = interface +c {
 	static create(listener : login_listener): login_core;
@@ -14,10 +14,9 @@ login_core = interface +c {
 }
 
 login_listener = interface +o +j {
-    on_login_finish(code : i32);
-    on_sign_finish(code : i32);
-    on_logout_finish(code : i32);
-    on_check_status_finish(code : i32, account: string);
-    on_disconnect();
-    toast(content: string);
+    on_login_finish(result: action_result);
+    on_sign_finish(result: action_result);
+    on_logout_finish(result: action_result);
+    on_check_status_finish(result: action_result);
+    on_disconnect(result: action_result);
 }
