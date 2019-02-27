@@ -28,27 +28,28 @@ service Account {
 }
 
 message LoginRequest {
-  string account = 1;
+  string phone = 1;
   string password = 2;
+  string deviceId = 3;
 }
 
 message SignRequest {
-  string account = 1;
+  string phone = 1;
   string password = 2;
+  string deviceId = 3;
 }
 
 message ConnectRequest {
-  string token = 1;
+  string deviceId = 1;
 }
 
 message LogoutRequest {
-  string token = 1;
+  string phone = 1;
 }
 
 message CodeReply {
   int32 code = 1;
   string msg = 2;
-  string data = 3;
 }
 
 

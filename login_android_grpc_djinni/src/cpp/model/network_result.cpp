@@ -17,6 +17,9 @@ namespace demo{
         int i_dec = std::stoi (code,&sz);
         this->code = i_dec;
     }
+    void ReqResult::setCode(int code){
+        this->code = code;
+    }
     std::string ReqResult::getMsg(){
         return this->msg;
     }

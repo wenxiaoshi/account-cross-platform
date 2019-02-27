@@ -13,10 +13,10 @@
 #include "utils/glob_utils.h"
 #include <storage/share_preferences.h>
 #include "utils/check_param_utils.h"
+#include "network.h"
 
 #include <iostream>
 #include <exception>
-
 
 #define TAG    "com.wechat.mylogin"
 #define LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG,TAG,__VA_ARGS__)
@@ -57,34 +57,23 @@ namespace demo {
             return;
         }
 
-        std::string deviceId = storage::SharePreferences::get(TOKEN);
-
-        if (deviceId.empty()){
-            //如果数据层中获取不到设备ID，则生成设备ID，并且保存到本地
-            deviceId = utils::Device::getDeviceId();
-            storage::SharePreferences::save(TOKEN,deviceId);
-        }
-
         //调用登录接口
-        native_network::NativeNetwork mNW;
-        std::string response = mNW.reqLogin(account,password,deviceId);
-
         //获取返回数据的对象
-        ReqResult result;
-
-        utils::Network::getCodeByResult(result,response);
+        network::NetworkCore mNW;
+        ReqResult result = mNW.reqLogin(account,password);
 
         //处理接口返回数据
         if (result.getCode() == ResultCode::SUCCESS){
-            storage::SharePreferences::save(IS_CONNECT,"1");
             LoginCoreImpl::isLogin = true;
+            storage::SharePreferences::save(IS_CONNECT,"1");
             storage::SharePreferences::save(USER_ACCOUNT,account);
+            storage::SharePreferences::save(TOKEN,result.getData());
+
+            //执行持久化操作
+            storage::SharePreferences::execute();
         }
 
-        //执行持久化操作
-        storage::SharePreferences::execute();
-
-        //回调原生接口
+        //回调上层Java接口
         this->m_listener->on_login_finish(ActionResult(result.getCode(),result.getMsg(),""));
     }
 

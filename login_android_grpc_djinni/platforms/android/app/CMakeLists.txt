@@ -88,6 +88,8 @@ include_directories(
         ../../../src/cpp/model
         ../../../src/cpp/struct
         ../../../src/cpp/storage
+
+#        ../../../grpc/include/grpc++
 )
 
 file(GLOB login_sources
@@ -109,6 +111,8 @@ file(GLOB login_sources
         ../../../src/cpp/struct/*.cpp
         ../../../src/cpp/storage/*.h
         ../../../src/cpp/storage/*.cpp
+
+#        ../../../grpc/include/grpc++/*.h
         )
 
 add_library( # Sets the name of the library.

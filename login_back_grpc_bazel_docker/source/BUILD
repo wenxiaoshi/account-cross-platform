@@ -24,22 +24,21 @@ grpc_proto_library(
 
 )
 
-cc_import(
-    name = "mysql",
-    #hdrs = glob(["//include/mysql/**/*.h","//include/mysql/jdbc/**/*.h","//include/mysql/mysqlx/**/*.h","//include/mysql/mysqlx/devapi/**/*.h"]),
-    #static_library = "//include/mysql/lib64/libmysqlcppconn-static.a",
-      hdrs = glob(["mysql/**/*.h","mysql/jdbc/**/*.h","mysql/mysqlx/**/*.h","mysql/mysqlx/devapi/**/*.h"]),
-  static_library = "libmysqlcppconn-static.a",
-      
-  )
+#cc_import(
+#    name = "mysql",
+#    #hdrs = glob(["//include/mysql/**/*.h","//include/mysql/jdbc/**/*.h","//include/mysql/mysqlx/**/*.h","//include/mysql/mysqlx/devapi/**/*.h"]),
+#    #static_library = "//include/mysql/lib64/libmysqlcppconn-static.a",
+#      hdrs = glob(["mysql/**/*.h","mysql/jdbc/**/*.h","mysql/mysqlx/**/*.h","mysql/mysqlx/devapi/**/*.h"]),
+#  static_library = "libmysqlcppconn-static.a",
+#      
+#  )
 
 cc_binary(
     name = "account_server",
     srcs = ["cpp/account/account_server.cc"],
     defines = ["BAZEL_BUILD"],
-    deps = [":account", "//:grpc++",":hashmap",":mysql"],
+    deps = [":account", "//:grpc++",":hashmap"],
     data = ["//mypem:ca.crt","//mypem:server.crt","//mypem:server.key"],
-    copts = ["-Iinclude/mysql"],
 )
 
 cc_library(
