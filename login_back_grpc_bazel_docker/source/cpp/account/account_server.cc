@@ -142,13 +142,13 @@ private:
   static HashMap mMapPhoneAndDid;
 
   bool isStringEqual(string origin,string target){
-    char*[] oChar = origin.data();
-    char*[] tChar = target.data();
-    if (oChar.length != tChar.length)
+    char* oChar = origin.data();
+    char* tChar = target.data();
+    if (origin.size() != target.size())
     {
       return false;
     }
-    for (int i = 0; i < oChar.length; ++i)
+    for (int i = 0; i < origin.size(); ++i)
     {
       if (oChar[i] != tChar[i])
       {
