@@ -118,7 +118,7 @@ string& HashMap::operator[](const string& key)
 
 int HashMap::hashfunc(const string& key){
     int hash = 0;
-    for(int i=0; i<key.length(); ++i){
+    for(std::size_t i=0; i<key.length(); ++i){
         hash = hash << 7^key[i];
     }
     return (hash & 0x7FFFFFFF);

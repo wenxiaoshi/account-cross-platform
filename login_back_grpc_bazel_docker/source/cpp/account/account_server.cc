@@ -142,13 +142,13 @@ private:
   static HashMap mMapPhoneAndDid;
 
   bool isStringEqual(string origin,string target){
-    char* oChar = origin.data();
-    char* tChar = target.data();
+    const char* oChar = origin.data();
+    const char* tChar = target.data();
     if (origin.size() != target.size())
     {
       return false;
     }
-    for (int i = 0; i < origin.size(); ++i)
+    for (std::size_t i = 0; i < origin.size(); ++i)
     {
       if (oChar[i] != tChar[i])
       {
@@ -245,7 +245,7 @@ public:
     LoginDatabase db;
 
     //get account by token
-    string account = "get account from token"
+    string account = "get account from token";
 
     //查询账号是否存在
     if(!db.isHadSign(account)){
@@ -270,7 +270,7 @@ public:
     LoginDatabase db;
 
     //get account by token
-    string account = "get account from token"
+    string account = "get account from token";
 
     //检核设备是否在线
     if (!db.judeDeviceIdOnline(account, token)){
@@ -439,7 +439,6 @@ void RunServer() {
 }
 
 int main(int argc, char** argv) {
-  return RunServer();
-
-  // return 0;
+   RunServer();
+   return 0;
 }
