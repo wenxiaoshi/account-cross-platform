@@ -43,6 +43,7 @@
 // #include "source/mysql/jdbc/cppconn/statement.h"
 
 using namespace std;
+using namespace my_struct;
 
 using grpc::Server;
 using grpc::ServerBuilder;
