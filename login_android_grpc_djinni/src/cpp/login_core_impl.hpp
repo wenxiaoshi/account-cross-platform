@@ -22,6 +22,9 @@ namespace demo {
     private:
         std::shared_ptr<LoginListener> m_listener;
 
+        void cleanUserInfo();
+
+        void updateUserInfo(std::string account,std::string token,std::string isConnect);
     };
 
 

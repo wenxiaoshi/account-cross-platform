@@ -6,8 +6,10 @@
 #include <jni.h>
 
 #include <grpc++/grpc++.h>
+//#include "../../../platforms/android/app/.externalNativeBuild/cmake/debug/armeabi-v7a/gens/account.grpc.pb.h"
 #include "account.grpc.pb.h"
-#include "model/network_result.h"
+#include "../model/network_result.h"
+#include "../utils/network_utils.h"
 
 #include "network.h"
 
@@ -58,7 +60,7 @@ namespace network{
             }
         }
 
-        std::string requestUserSign(const std::string& account, const std::string& password) {
+        CodeReply requestUserSign(const std::string& account, const std::string& password) {
             // Data we are sending to the server.
             SignRequest request;
             request.set_account(account);
@@ -74,13 +76,16 @@ namespace network{
             Status status = stub_->requestUserSign(&context, request, &reply);
 
             if (status.ok()) {
-                return reply.data();
+                return reply;
             } else {
-                return status.error_message();
+                //todo 网络错误吗转换
+                reply.set_code(-1);
+                reply.set_msg(status.error_message());
+                return reply;
             }
         }
 
-        std::string requestLogout(const std::string& token) {
+        CodeReply requestLogout(const std::string& token) {
             // Data we are sending to the server.
             LogoutRequest request;
             request.set_token(token);
@@ -95,13 +100,16 @@ namespace network{
             Status status = stub_->requestLogout(&context, request, &reply);
 
             if (status.ok()) {
-                return reply.data();
+                return reply;
             } else {
-                return status.error_message();
+                //todo 网络错误吗转换
+                reply.set_code(-1);
+                reply.set_msg(status.error_message());
+                return reply;
             }
         }
 
-        std::string checkConnect(const std::string& token) {
+        CodeReply checkConnect(const std::string& token) {
             // Data we are sending to the server.
             ConnectRequest request;
             request.set_token(token);
@@ -116,9 +124,12 @@ namespace network{
             Status status = stub_->checkConnect(&context, request, &reply);
 
             if (status.ok()) {
-                return reply.data();
+                return reply;
             } else {
-                return status.error_message();
+                //todo 网络错误吗转换
+                reply.set_code(-1);
+                reply.set_msg(status.error_message());
+                return reply;
             }
         }
 
@@ -128,20 +139,9 @@ namespace network{
 
     ReqResult NetworkCore::reqLogin(const std::string account,const std::string password){
 
-        std::string host("98.142.128.182");
-        int port = 50051;
-
-        const int host_port_buf_size = 1024;
-        char host_port[host_port_buf_size];
-        snprintf(host_port, host_port_buf_size, "%s:%d", host.c_str(), port);
-
-        AccountClient client(
-                grpc::CreateChannel(host_port, grpc::InsecureChannelCredentials()));
+        AccountClient client(utils::NetworkUtils::getNetworkChannel());
 
         CodeReply reply = client.requestUserLogin(account,password);
-
-//        return env->NewStringUTF(reply.c_str());
-
 
         ReqResult result;
         result.setCode(reply.code());
@@ -153,80 +153,46 @@ namespace network{
 
     ReqResult NetworkCore::reqSign(const std::string account,const std::string password){
 
-        std::string host("98.142.128.182");
-        int port = 50051;
+        AccountClient client(utils::NetworkUtils::getNetworkChannel());
 
-        const int host_port_buf_size = 1024;
-        char host_port[host_port_buf_size];
-        snprintf(host_port, host_port_buf_size, "%s:%d", host.c_str(), port);
-
-        AccountClient client(
-                grpc::CreateChannel(host_port, grpc::InsecureChannelCredentials()));
-
-        std::string reply = client.requestUserSign(account,password);
+        CodeReply reply = client.requestUserSign(account,password);
 
 
-        return ReqResult();
-    }
+        ReqResult result;
+        result.setCode(reply.code());
+        result.setMsg(reply.msg());
+        result.setData(reply.data());
 
-
-    ReqResult NetworkCore::checkConnect(const std::string token){
-
-        std::string host("98.142.128.182");
-        int port = 50051;
-
-        const int host_port_buf_size = 1024;
-        char host_port[host_port_buf_size];
-        snprintf(host_port, host_port_buf_size, "%s:%d", host.c_str(), port);
-
-        AccountClient client(
-                grpc::CreateChannel(host_port, grpc::InsecureChannelCredentials()));
-
-        std::string reply = client.checkConnect(token);
-
-        return ReqResult();
+        return result;
     }
 
     ReqResult NetworkCore::reqLogout(const std::string token){
 
-        std::string host("98.142.128.182");
-        int port = 50051;
+        AccountClient client(utils::NetworkUtils::getNetworkChannel());
 
-        const int host_port_buf_size = 1024;
-        char host_port[host_port_buf_size];
-        snprintf(host_port, host_port_buf_size, "%s:%d", host.c_str(), port);
+        CodeReply reply = client.requestLogout(token);
 
-        AccountClient client(
-                grpc::CreateChannel(host_port, grpc::InsecureChannelCredentials()));
+        ReqResult result;
+        result.setCode(reply.code());
+        result.setMsg(reply.msg());
+        result.setData(reply.data());
 
-        std::string reply = client.requestLogout(token);
-
-        return ReqResult();
+        return result;
     }
 
-//    extern "C"{
-//        JNIEXPORT void JNICALL Java_com_wechat_mylogin_module_LoginActivity_test(JNIEnv *env,jobject thiz){
-//            jclass tclss = env->FindClass("com/wechat/mylogin/network/NetworkController");
-//            jmethodID getNWC = env->GetStaticMethodID(tclss,"getInstance","()Lcom/wechat/mylogin/network/NetworkController;");
-//
-//            //get java NetworkController
-//            jobject NWC = env->CallStaticObjectMethod(tclss,getNWC);
-//
-//            jmethodID getNWM = env->GetMethodID(tclss,"handleLogin","(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;");
-//
-//
-////        jmethodID getNWM = env->GetMethodID(tclss,"getNetworkMethod","()Lcom/wechat/mylogin/network/NetworkMethod;");
-//
-//            //get java NetworkMethod
-//            env->CallVoidMethod(NWC,getNWM);
-//
-////        jclass C_NWM = env->FindClass("com/wechat/mylogin/network/NetworkMethod");
-////        jmethodID M_LOGIN = env->GetMethodID(C_NWM,"handleLogin","(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;");
-//
-////        jobject LOGIN_RESULT = env->CallObjectMethod(NWM,M_LOGIN);
-//        }
-//    }
+    ReqResult NetworkCore::checkConnect(const std::string token){
 
+        AccountClient client(utils::NetworkUtils::getNetworkChannel());
+
+        CodeReply reply = client.checkConnect(token);
+
+        ReqResult result;
+        result.setCode(reply.code());
+        result.setMsg(reply.msg());
+        result.setData(reply.data());
+
+        return result;
+    }
 
 
 }

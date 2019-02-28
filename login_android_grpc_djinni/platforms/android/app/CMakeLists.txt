@@ -88,7 +88,7 @@ include_directories(
         ../../../src/cpp/model
         ../../../src/cpp/struct
         ../../../src/cpp/storage
-
+        ../../../src/cpp/network
 #        ../../../grpc/include/grpc++
 )
 
@@ -111,7 +111,8 @@ file(GLOB login_sources
         ../../../src/cpp/struct/*.cpp
         ../../../src/cpp/storage/*.h
         ../../../src/cpp/storage/*.cpp
-
+        ../../../src/cpp/network/*.h
+        ../../../src/cpp/network/*.cpp
 #        ../../../grpc/include/grpc++/*.h
         )
 
