@@ -19,6 +19,9 @@ namespace utils{
     public:
         static string GenToken(const unsigned long uid, const string account);
         static string DecryptToken(string token);
+
+        static void splitString(const std::string& s, std::vector<std::string>& v, const std::string& c);
+        
     private:
         static string GenRandomStr();
         const static long TOKEN_TIMEOUT;
