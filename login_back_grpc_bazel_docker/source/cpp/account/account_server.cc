@@ -92,14 +92,14 @@ public:
   * 判断是否已经注册
   **/
   bool isHadSign(string phone){
-    return strncmp(mMapPhoneAndPsw[phone].c_str(),"NULL",4) != 0;
+    return !mMapPhoneAndPsw.find(phone).empty();
   };
   
   /**
   * 判断密码是否正确
   **/
   bool isPasswordCorrect(string phone,string password){
-    return strncmp(mMapPhoneAndPsw[phone].c_str(),password.data(),mMapPhoneAndPsw[phone].length()) == 0;
+    return strncmp(mMapPhoneAndPsw.find(phone).c_str(),password.data(),mMapPhoneAndPsw.find(phone).size()) == 0;
   }
 
   /**
@@ -107,7 +107,7 @@ public:
   **/
   bool updateDeviceId(string phone,string token){
     removeAccountDeviceId(phone);
-    mMapPhoneAndDid.HMInsert(phone, token);
+    mMapPhoneAndDid.insert(phone, token);
     return true;
   }
 
@@ -115,8 +115,8 @@ public:
   * 清除账号对应的设备Id
   **/
   bool removeAccountDeviceId(string phone){
-    string token = mMapPhoneAndDid[phone].c_str();
-    mMapPhoneAndDid.HMDelete(phone);
+    string token = mMapPhoneAndDid.find(phone);
+    mMapPhoneAndDid.remove(phone);
     std::cout << "removeAccountToken " << token << std::endl;
     return true;
   }
@@ -125,7 +125,7 @@ public:
   * 判断某设备是否联通
   **/
   bool judeDeviceIdOnline(string phone, string token){
-    string tokenSys = mMapPhoneAndDid[phone].c_str();
+    string tokenSys = mMapPhoneAndDid.find(phone);
     std::cout << "judeDeviceIdOnline" << tokenSys << "/" << token << std::endl;
     return isStringEqual(tokenSys,token);
   }
@@ -134,7 +134,7 @@ public:
   * 新增账号
   **/
   bool insertAccountToDB(string phone,string password){
-    mMapPhoneAndPsw.HMInsert(phone, password);
+    mMapPhoneAndPsw.insert(phone, password);
     return true;
   }
 private:
