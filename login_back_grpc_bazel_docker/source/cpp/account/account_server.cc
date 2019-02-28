@@ -36,13 +36,14 @@
 #include "account.grpc.pb.h"
 #endif
 
-#include <boost/scoped_ptr.hpp>
-#include "source/mysql/jdbc/mysql_driver.h"
-#include "source/mysql/jdbc/mysql_connection.h"
-#include "source/mysql/jdbc/cppconn/resultset.h"
-#include "source/mysql/jdbc/cppconn/statement.h"
+// #include <boost/scoped_ptr.hpp>
+// #include "source/mysql/jdbc/mysql_driver.h"
+// #include "source/mysql/jdbc/mysql_connection.h"
+// #include "source/mysql/jdbc/cppconn/resultset.h"
+// #include "source/mysql/jdbc/cppconn/statement.h"
 
 using namespace std;
+using namespace my_struct;
 
 using grpc::Server;
 using grpc::ServerBuilder;
@@ -92,23 +93,22 @@ public:
   * 判断是否已经注册
   **/
   bool isHadSign(string phone){
-    return strncmp(mMapPhoneAndPsw[phone].c_str(),"NULL",4) != 0;
+    return !mMapPhoneAndPsw.find(phone).empty();
   };
   
   /**
   * 判断密码是否正确
   **/
   bool isPasswordCorrect(string phone,string password){
-    return strncmp(mMapPhoneAndPsw[phone].c_str(),password.data(),mMapPhoneAndPsw[phone].length()) == 0;
+    return strncmp(mMapPhoneAndPsw.find(phone).c_str(),password.data(),mMapPhoneAndPsw.find(phone).size()) == 0;
   }
 
   /**
   * 更新账号对应的设备Id
   **/
-  bool updateDeviceId(string phone,string deviceId){
+  bool updateDeviceId(string phone,string token){
     removeAccountDeviceId(phone);
-    mMapPhoneAndDid.HMInsert(phone, deviceId);
-    mSetDeviceId.insert(deviceId);
+    mMapPhoneAndDid.insert(phone, token);
     return true;
   }
 
@@ -116,65 +116,82 @@ public:
   * 清除账号对应的设备Id
   **/
   bool removeAccountDeviceId(string phone){
-    string deviceId = mMapPhoneAndDid[phone].c_str();
-    mMapPhoneAndDid.HMDelete(phone);
-    std::cout << "removeAccountDeviceId " << mSetDeviceId.size() << deviceId << std::endl;
-    mSetDeviceId.erase(deviceId);
-    std::cout << "removeAccountDeviceId " << mSetDeviceId.size() << deviceId << std::endl;
+    string token = mMapPhoneAndDid.find(phone);
+    mMapPhoneAndDid.remove(phone);
+    std::cout << "removeAccountToken " << token << std::endl;
     return true;
   }
 
   /**
   * 判断某设备是否联通
   **/
-  bool judeDeviceIdOnline(string deviceId){
-    std::cout << "judeDeviceIdOnline" << mSetDeviceId.size() << deviceId << std::endl;
-    return mSetDeviceId.find(deviceId) != mSetDeviceId.end();
+  bool judeDeviceIdOnline(string phone, string token){
+    string tokenSys = mMapPhoneAndDid.find(phone);
+    std::cout << "judeDeviceIdOnline" << tokenSys << "/" << token << std::endl;
+    return isStringEqual(tokenSys,token);
   }
 
   /**
   * 新增账号
   **/
   bool insertAccountToDB(string phone,string password){
-    mMapPhoneAndPsw.HMInsert(phone, password);
+    mMapPhoneAndPsw.insert(phone, password);
     return true;
   }
 private:
   static HashMap mMapPhoneAndPsw;
   static HashMap mMapPhoneAndDid;
-  static set<string> mSetDeviceId;
+
+  bool isStringEqual(string origin,string target){
+    const char* oChar = origin.data();
+    const char* tChar = target.data();
+    if (origin.size() != target.size())
+    {
+      return false;
+    }
+    for (std::size_t i = 0; i < origin.size(); ++i)
+    {
+      if (oChar[i] != tChar[i])
+      {
+        return false;
+      }
+    }
+    return true;
+  }
 };
 
 HashMap LoginDatabase::mMapPhoneAndPsw(100);
 HashMap LoginDatabase::mMapPhoneAndDid(100);
-set<string> LoginDatabase::mSetDeviceId;
 
 class LoginCore{
 public:
-  HandleResult handleUserLogin(std::string phone,std::string password,std::string deviceId){
+  HandleResult handleUserLogin(std::string account,std::string password){
     HandleResult result;
     
     LoginDatabase db;
 
     //查询账号是否存在
-    if(!db.isHadSign(phone)){
+    if(!db.isHadSign(account)){
       result.setCode(2000);
       result.setMsg("该账号不存在");
       return result;
     }
 
      //查询密码是否正确
-     if(!db.isPasswordCorrect(phone,password)){
+     if(!db.isPasswordCorrect(account,password)){
       result.setCode(2001);
       result.setMsg("密码错误");
       return result;
     }
 
+    //create token
+    string token = "1";
+
     //更新账号对应的设备ID
-    if (!db.updateDeviceId(phone,deviceId))
+    if (!db.updateDeviceId(account,token))
     {
       result.setCode(2003);
-      result.setMsg("更新账号的sessionId失败");
+      result.setMsg("更新账号的token失败");
       return result;
     }
 
@@ -183,13 +200,13 @@ public:
     
     return result;
   };
-   HandleResult handleUserSign(std::string phone,std::string password,std::string deviceId){
+   HandleResult handleUserSign(std::string account,std::string password){
     HandleResult result;
     
     LoginDatabase db;
     
     //查询账号是否存在
-    if(db.isHadSign(phone)){
+    if(db.isHadSign(account)){
       result.setCode(2002);
       result.setMsg("该账号已注册");
       return result;
@@ -197,16 +214,19 @@ public:
 
      
     //新增账号
-    if (!db.insertAccountToDB(phone,password)){
+    if (!db.insertAccountToDB(account,password)){
       result.setCode(2004);
       result.setMsg("新增账号失败");
       return result;
     }
 
+    //create token
+    string token = "2";
+
     //更新账号对应的设备ID
-    if (!db.updateDeviceId(phone,deviceId)){
+    if (!db.updateDeviceId(account,token)){
       result.setCode(2003);
-      result.setMsg("更新账号的sessionId失败");
+      result.setMsg("更新账号的token失败");
       return result;
     }
 
@@ -217,37 +237,44 @@ public:
   };
 
 
-   HandleResult handleUserLogout(std::string phone){
+   HandleResult handleUserLogout(string token){
     HandleResult result;
-    
+  
+    //check token is valid or not
+    //is invalid ,then return
+
     LoginDatabase db;
-    
-    result.setCode(0);
+
+    //get account by token
+    string account = "get account from token";
 
     //查询账号是否存在
-    if(!db.isHadSign(phone)){
+    if(!db.isHadSign(account)){
       result.setMsg("账号不存在");
       return result;
     }
 
     //清除账号对应的设备ID
-    if (!db.removeAccountDeviceId(phone)){
-      result.setMsg("更新账号的sessionId失败");
+    if (!db.removeAccountDeviceId(account)){
+      result.setMsg("更新账号的token失败");
       return result;
     }
-
     
     return result;
   };
- HandleResult handleUserCheckConnect(std::string deviceId){
+ HandleResult handleUserCheckConnect(std::string token){
     HandleResult result;
   
-    
+    //check token is valid or not
+    //is invalid ,then return
+
     LoginDatabase db;
 
-    //检核设备是否在线
-    if (!db.judeDeviceIdOnline(deviceId)){
+    //get account by token
+    string account = "get account from token";
 
+    //检核设备是否在线
+    if (!db.judeDeviceIdOnline(account, token)){
       result.setCode(2005);
       result.setMsg("该设备不在线");
       return result;
@@ -265,7 +292,6 @@ public:
 
 
 
-// Logic and data behind the server's behavior.
 class AccountServiceImpl final : public Account::Service {
 
   Status requestUserLogin(ServerContext* context, const LoginRequest* request,
@@ -273,107 +299,110 @@ class AccountServiceImpl final : public Account::Service {
     std::cout << "登录请求-入口" << std::endl;
     
     LoginCore loginCore;
-    HandleResult result = loginCore.handleUserLogin(request->phone(),request->password(),request->deviceid());
+    HandleResult result = loginCore.handleUserLogin(request->account(),request->password());
     
     reply->set_code(result.getCode());
     reply->set_msg(result.getMsg());
-  
+    reply->set_data(result.getData());
     std::cout << "登录请求-结束" << std::endl;
     return Status::OK;
   }
+
   Status requestUserSign(ServerContext* context, const SignRequest* request,
                   CodeReply* reply) override {
     std::cout << "注册请求-入口" << std::endl;
         
     LoginCore loginCore;
-    HandleResult result = loginCore.handleUserSign(request->phone(),request->password(),request->deviceid());
+    HandleResult result = loginCore.handleUserSign(request->account(),request->password());
     
     reply->set_code(result.getCode());
     reply->set_msg(result.getMsg());
-    
+    reply->set_data(result.getData());
     std::cout << "注册请求-结束" << std::endl;
     return Status::OK;
   }
+
   Status requestLogout(ServerContext* context, const LogoutRequest* request,
                   CodeReply* reply) override {
     std::cout << "下线请求-入口" << std::endl;
         
     LoginCore loginCore;
-    HandleResult result = loginCore.handleUserLogout(request->phone());
+    HandleResult result = loginCore.handleUserLogout(request->token());
     
     reply->set_code(result.getCode());
     reply->set_msg(result.getMsg());
-    
+    reply->set_data(result.getData());
     std::cout << "下线请求-结束" << std::endl;
     return Status::OK;
   }
+
   Status checkConnect(ServerContext* context, const ConnectRequest* request,
                   CodeReply* reply) override {
     std::cout << "连线检测请求-入口" << std::endl;
 
     LoginCore loginCore;
-    HandleResult result = loginCore.handleUserCheckConnect(request->deviceid());
+    HandleResult result = loginCore.handleUserCheckConnect(request->token());
     
     reply->set_code(result.getCode());
     reply->set_msg(result.getMsg());
-
+    reply->set_data(result.getData());
     std::cout << "连线检测请求-结束" << std::endl;
     return Status::OK;
   }
 };
 
 
-int RunServer2() {
-  const char   *url = ("tcp://127.0.0.1");
-  const string user("root");
-  const string pass("");
-  const string database("test");
+// int RunServer2() {
+//   const char   *url = ("tcp://127.0.0.1");
+//   const string user("root");
+//   const string pass("");
+//   const string database("test");
 
-   cout << endl;
-  cout << "Connector/C++ standalone program example..." << endl;
-  cout << endl;
-  try {
-    sql::Driver * driver = sql::mysql::get_driver_instance();
-    /* Using the Driver to create a connection */
-    cout << "Creating session on " << url << " ..."
-         << endl << endl;
-    boost::scoped_ptr< sql::Connection >
-      con(driver->connect(url, user, pass));
-    con->setSchema(database);
-    boost::scoped_ptr< sql::Statement > stmt(con->createStatement());
-    boost::scoped_ptr< sql::ResultSet >
-      res(stmt->executeQuery("SELECT 'Welcome to Connector/C++' AS _message"));
-    cout << "\t... running 'SELECT 'Welcome to Connector/C++' AS _message'"
-         << endl;
-    while (res->next())
-    {
-      cout << "\t... MySQL replies: " << res->getString("_message") << endl;
-      cout << "\t... say it again, MySQL" << endl;
-      cout << "\t....MySQL replies: " << res->getString(1) << endl;
-    }
-  }
-  catch (sql::SQLException &e)
-  {
+//    cout << endl;
+//   cout << "Connector/C++ standalone program example..." << endl;
+//   cout << endl;
+//   try {
+//     sql::Driver * driver = sql::mysql::get_driver_instance();
+//     /* Using the Driver to create a connection */
+//     cout << "Creating session on " << url << " ..."
+//          << endl << endl;
+//     boost::scoped_ptr< sql::Connection >
+//       con(driver->connect(url, user, pass));
+//     con->setSchema(database);
+//     boost::scoped_ptr< sql::Statement > stmt(con->createStatement());
+//     boost::scoped_ptr< sql::ResultSet >
+//       res(stmt->executeQuery("SELECT 'Welcome to Connector/C++' AS _message"));
+//     cout << "\t... running 'SELECT 'Welcome to Connector/C++' AS _message'"
+//          << endl;
+//     while (res->next())
+//     {
+//       cout << "\t... MySQL replies: " << res->getString("_message") << endl;
+//       cout << "\t... say it again, MySQL" << endl;
+//       cout << "\t....MySQL replies: " << res->getString(1) << endl;
+//     }
+//   }
+//   catch (sql::SQLException &e)
+//   {
     /*
       The JDBC API throws three different exceptions:
     - sql::MethodNotImplementedException (derived from sql::SQLException)
     - sql::InvalidArgumentException (derived from sql::SQLException)
     - sql::SQLException (derived from std::runtime_error)
     */
-    cout << "# ERR: SQLException in " << __FILE__;
-    cout << "(" << "EXAMPLE_FUNCTION" << ") on line " << __LINE__ << endl;
-    /* Use what() (derived from std::runtime_error) to fetch the error message */
-    cout << "# ERR: " << e.what();
-    cout << " (MySQL error code: " << e.getErrorCode();
-    cout << ", SQLState: " << e.getSQLState() << " )" << endl;
-    return EXIT_FAILURE;
-  }
-  cout << endl;
-  cout << "... find more at http://www.mysql.com" << endl;
-  cout << endl;
-  return EXIT_SUCCESS;
+//     cout << "# ERR: SQLException in " << __FILE__;
+//     cout << "(" << "EXAMPLE_FUNCTION" << ") on line " << __LINE__ << endl;
+//     /* Use what() (derived from std::runtime_error) to fetch the error message */
+//     cout << "# ERR: " << e.what();
+//     cout << " (MySQL error code: " << e.getErrorCode();
+//     cout << ", SQLState: " << e.getSQLState() << " )" << endl;
+//     return EXIT_FAILURE;
+//   }
+//   cout << endl;
+//   cout << "... find more at http://www.mysql.com" << endl;
+//   cout << endl;
+//   return EXIT_SUCCESS;
 
-}
+// }
 
 void RunServer() {
 
@@ -411,7 +440,6 @@ void RunServer() {
 }
 
 int main(int argc, char** argv) {
-  return RunServer2();
-
-  // return 0;
+   RunServer();
+   return 0;
 }

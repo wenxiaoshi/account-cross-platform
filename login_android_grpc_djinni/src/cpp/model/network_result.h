@@ -9,6 +9,7 @@ namespace demo{
         public:
             int getCode();
             void setCode(std::string code);
+            void setCode(int code);
             std::string getMsg();
             void setMsg(std::string msg);
             std::string getData();
