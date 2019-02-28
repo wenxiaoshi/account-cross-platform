@@ -28,6 +28,7 @@
 #include <grpcpp/grpcpp.h>
 
 #include "hash_map.h"
+#include "common_utils.h"
 #include <set>
 
 #ifdef BAZEL_BUILD
@@ -44,6 +45,7 @@
 
 using namespace std;
 using namespace my_struct;
+using namespace utils;
 
 using grpc::Server;
 using grpc::ServerBuilder;
@@ -106,7 +108,7 @@ public:
   /**
   * 更新账号对应的设备Id
   **/
-  bool updateDeviceId(string phone,string token){
+  bool updateToken(string phone,string token){
     removeAccountDeviceId(phone);
     mMapPhoneAndDid.insert(phone, token);
     return true;
@@ -184,11 +186,13 @@ public:
       return result;
     }
 
+    //get from database
+    unsigned long uid = 1000; 
     //create token
-    string token = "1";
+    string token = CommonUtils::GenToken(1000,account);
 
     //更新账号对应的设备ID
-    if (!db.updateDeviceId(account,token))
+    if (!db.updateToken(account,token))
     {
       result.setCode(2003);
       result.setMsg("更新账号的token失败");
@@ -220,11 +224,13 @@ public:
       return result;
     }
 
+    //get from database
+    unsigned long uid = 1000; 
     //create token
-    string token = "2";
+    string token = CommonUtils::GenToken(1000,account);
 
     //更新账号对应的设备ID
-    if (!db.updateDeviceId(account,token)){
+    if (!db.updateToken(account,token)){
       result.setCode(2003);
       result.setMsg("更新账号的token失败");
       return result;
@@ -242,11 +248,28 @@ public:
   
     //check token is valid or not
     //is invalid ,then return
-
-    LoginDatabase db;
+    string decodeToken = CommonUtils::DecryptToken(token);
+    if (decodeToken.empty())
+    {
+      result.setMsg("token不合法");
+      return result;
+    }
+    
+    std::vector<string> vToken;
+    CommonUtils::splitString(decodeToken, vToken, ":");
+    if (vToken.size() != 5)
+    {
+      result.setMsg("token不合法");
+      return result;
+    }
 
     //get account by token
-    string account = "get account from token";
+    string uid = vToken[0]
+    string account = vToken[1];
+
+    //todo check this account is valid or not
+
+    LoginDatabase db;
 
     //查询账号是否存在
     if(!db.isHadSign(account)){
@@ -267,11 +290,26 @@ public:
   
     //check token is valid or not
     //is invalid ,then return
-
-    LoginDatabase db;
+    string decodeToken = CommonUtils::DecryptToken(token);
+    if (decodeToken.empty())
+    {
+      result.setMsg("token不合法");
+      return result;
+    }
+    
+    std::vector<string> vToken;
+    CommonUtils::splitString(decodeToken, vToken, ":");
+    if (vToken.size() != 5)
+    {
+      result.setMsg("token不合法");
+      return result;
+    }
 
     //get account by token
-    string account = "get account from token";
+    string uid = vToken[0]
+    string account = vToken[1];
+
+    LoginDatabase db;
 
     //检核设备是否在线
     if (!db.judeDeviceIdOnline(account, token)){
