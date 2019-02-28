@@ -9,7 +9,7 @@ using namespace utils;
 using namespace project_constants;
 
 
-bool CheckParam::checkAccountValid(std::string account,std::string & errorMsg){
+bool ParamUtils::checkAccountValid(std::string account,std::string & errorMsg){
     if (account.empty()){
         errorMsg = MsgTip::TOAST_ERROR_ACCOUNT_EMPTY;
         return false;
@@ -17,7 +17,7 @@ bool CheckParam::checkAccountValid(std::string account,std::string & errorMsg){
     return true;
 }
 
-bool CheckParam::checkPasswordValid(std::string password,std::string & errorMsg){
+bool ParamUtils::checkPasswordValid(std::string password,std::string & errorMsg){
     if (password == ""){
         errorMsg = MsgTip::TOAST_ERROR_PASSWORD_EMPTY;
         return false;

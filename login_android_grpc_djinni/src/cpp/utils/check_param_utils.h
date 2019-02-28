@@ -11,7 +11,7 @@
 
 namespace utils{
 
-    class CheckParam{
+    class ParamUtils{
     public:
         static bool checkAccountValid(std::string account,std::string & errorMsg);
         static bool checkPasswordValid(std::string password,std::string & errorMsg);

@@ -31,4 +31,11 @@ namespace project_constants{
         const static std::string TOAST_ACCOUNT_OUT_OFF_LINE;
     };
 
+    class Constants{
+    public:
+        const static std::string TOKEN;
+        const static std::string IS_CONNECT;
+        const static std::string USER_ACCOUNT;
+    };
+
 }
