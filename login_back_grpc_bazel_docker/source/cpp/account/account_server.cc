@@ -30,8 +30,9 @@
 #include "hash_map.h"
 #include "common_utils.h"
 #include <set>
-#include "source/sqlite3/sqlite3.h"
+
 #include "my_log.h"
+#include "my_db.h"
 
 #ifdef BAZEL_BUILD
 #include "source/protos/account.grpc.pb.h"
@@ -49,6 +50,7 @@ using namespace std;
 using namespace my_struct;
 using namespace utils;
 using namespace log_utils;
+using namespace db_utils;
 
 using grpc::Server;
 using grpc::ServerBuilder;
@@ -394,58 +396,16 @@ class AccountServiceImpl final : public Account::Service {
   }
 };
 
+void RunDb() {
 
-// int RunServer2() {
-//   const char   *url = ("tcp://127.0.0.1");
-//   const string user("root");
-//   const string pass("");
-//   const string database("test");
+  if (!Database::database->init()) {
+     cout << "error : database run fail !" << endl;
+     return;
+  }
 
-//    cout << endl;
-//   cout << "Connector/C++ standalone program example..." << endl;
-//   cout << endl;
-//   try {
-//     sql::Driver * driver = sql::mysql::get_driver_instance();
-//     /* Using the Driver to create a connection */
-//     cout << "Creating session on " << url << " ..."
-//          << endl << endl;
-//     boost::scoped_ptr< sql::Connection >
-//       con(driver->connect(url, user, pass));
-//     con->setSchema(database);
-//     boost::scoped_ptr< sql::Statement > stmt(con->createStatement());
-//     boost::scoped_ptr< sql::ResultSet >
-//       res(stmt->executeQuery("SELECT 'Welcome to Connector/C++' AS _message"));
-//     cout << "\t... running 'SELECT 'Welcome to Connector/C++' AS _message'"
-//          << endl;
-//     while (res->next())
-//     {
-//       cout << "\t... MySQL replies: " << res->getString("_message") << endl;
-//       cout << "\t... say it again, MySQL" << endl;
-//       cout << "\t....MySQL replies: " << res->getString(1) << endl;
-//     }
-//   }
-//   catch (sql::SQLException &e)
-//   {
-    /*
-      The JDBC API throws three different exceptions:
-    - sql::MethodNotImplementedException (derived from sql::SQLException)
-    - sql::InvalidArgumentException (derived from sql::SQLException)
-    - sql::SQLException (derived from std::runtime_error)
-    */
-//     cout << "# ERR: SQLException in " << __FILE__;
-//     cout << "(" << "EXAMPLE_FUNCTION" << ") on line " << __LINE__ << endl;
-//     /* Use what() (derived from std::runtime_error) to fetch the error message */
-//     cout << "# ERR: " << e.what();
-//     cout << " (MySQL error code: " << e.getErrorCode();
-//     cout << ", SQLState: " << e.getSQLState() << " )" << endl;
-//     return EXIT_FAILURE;
-//   }
-//   cout << endl;
-//   cout << "... find more at http://www.mysql.com" << endl;
-//   cout << endl;
-//   return EXIT_SUCCESS;
-
-// }
+  Database::database->create();
+  Database::database->query();
+}
 
 void RunServer() {
 
@@ -485,22 +445,8 @@ void RunServer() {
 int main(int argc, char** argv) {
    
     // LOG::error("test");
-    
-    sqlite3 *sql = NULL; // 一个打开的数据库实例
 
-    const char * path = "source/db/user_sys.db";//某个sql文件的路径
-
-    // 根据文件路径打开数据库连接。如果数据库不存在，则创建。
-    // 数据库文件的路径必须以C字符串传入。
-    int result = sqlite3_open_v2(path, &sql, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_NOMUTEX | SQLITE_OPEN_SHAREDCACHE, NULL);
-
-    if (result == SQLITE_OK) {
-        std::clog << "打开数据库连接成功";
-    }
-    else {
-        std::clog << "打开数据库连接失败";
-    }
-
+   RunDb();
    RunServer();
    return 0;
 }
