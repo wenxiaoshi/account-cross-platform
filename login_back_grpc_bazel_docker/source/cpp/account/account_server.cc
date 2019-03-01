@@ -189,7 +189,7 @@ public:
     //get from database
     unsigned long uid = 1000; 
     //create token
-    string token = CommonUtils::GenToken(1000,account);
+    string token = CommonUtils::GenToken(uid,account);
 
     //更新账号对应的设备ID
     if (!db.updateToken(account,token))
@@ -200,7 +200,7 @@ public:
     }
 
     result.setCode(0);
-
+    result.setData(token);
     
     return result;
   };
@@ -227,7 +227,7 @@ public:
     //get from database
     unsigned long uid = 1000; 
     //create token
-    string token = CommonUtils::GenToken(1000,account);
+    string token = CommonUtils::GenToken(uid, account);
 
     //更新账号对应的设备ID
     if (!db.updateToken(account,token)){
@@ -237,7 +237,7 @@ public:
     }
 
     result.setCode(0);
-
+    result.setData(token);
     
     return result;
   };
@@ -264,7 +264,7 @@ public:
     }
 
     //get account by token
-    string uid = vToken[0]
+    string uid = vToken[0];
     string account = vToken[1];
 
     //todo check this account is valid or not
@@ -291,12 +291,14 @@ public:
     //check token is valid or not
     //is invalid ,then return
     string decodeToken = CommonUtils::DecryptToken(token);
+    //string decodeToken = "1:111:1:1:1";
     if (decodeToken.empty())
     {
       result.setMsg("token不合法");
       return result;
     }
-    
+    cout << "token Decrypt finish" << endl;
+   
     std::vector<string> vToken;
     CommonUtils::splitString(decodeToken, vToken, ":");
     if (vToken.size() != 5)
@@ -306,7 +308,7 @@ public:
     }
 
     //get account by token
-    string uid = vToken[0]
+    string uid = vToken[0];
     string account = vToken[1];
 
     LoginDatabase db;

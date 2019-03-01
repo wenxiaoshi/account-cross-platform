@@ -37,7 +37,7 @@ cc_binary(
     name = "account_server",
     srcs = ["cpp/account/account_server.cc"],
     defines = ["BAZEL_BUILD"],
-    deps = [":account", "//:grpc++",":hashmap"],
+    deps = [":account", "//:grpc++",":hashmap",":commonutils"],
     data = ["//mypem:ca.crt","//mypem:server.crt","//mypem:server.key"],
 )
 
@@ -45,4 +45,17 @@ cc_library(
     name = "hashmap",
     srcs = ["cpp/account/hash_map.cpp"],
     hdrs = ["cpp/account/hash_map.h"],
+)
+
+cc_library(
+    name = "commonutils",
+    srcs = ["cpp/account/common_utils.cpp"],
+    hdrs = ["cpp/account/common_utils.h"],
+    deps = [":aes_cipher"],
+)
+
+cc_library(
+    name = "aes_cipher",
+    srcs = ["cpp/account/aes_encryptor.cpp","cpp/account/aes.cpp"],
+    hdrs = ["cpp/account/aes_encryptor.h","cpp/account/aes.h"],
 )

@@ -8,6 +8,7 @@
 #endif //ANDROID_TOKEN_UTILS_H
 
 #include <string>
+#include <vector>
 #include "aes_encryptor.h"
 
 using namespace std;
