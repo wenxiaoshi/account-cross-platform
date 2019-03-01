@@ -32,7 +32,7 @@
 #include <set>
 
 #include "my_log.h"
-#include "my_db.h"
+#include "source/db/my_db.h"
 
 #ifdef BAZEL_BUILD
 #include "source/protos/account.grpc.pb.h"
@@ -404,7 +404,8 @@ void RunDb() {
   }
 
   Database::database->create();
-  Database::database->query();
+  Database::database->insertAccount("test","111");
+  Database::database->queryAccountId("test");
 }
 
 void RunServer() {
@@ -416,10 +417,10 @@ void RunServer() {
   
   std::ifstream skey("mypem/server.key");
   std::string strServerKey((std::istreambuf_iterator<char>(skey)),std::istreambuf_iterator<char>());
-  std::cout << "key: " <<strServerKey << std::endl;
+  //std::cout << "key: " <<strServerKey << std::endl;
   std::ifstream sCrt("mypem/server.crt");  
   std::string strServerCert((std::istreambuf_iterator<char>(sCrt)),std::istreambuf_iterator<char>());
-  std::cout << "crt: " << strServerCert << std::endl;
+  //std::cout << "crt: " << strServerCert << std::endl;
   
   grpc::SslServerCredentialsOptions::PemKeyCertPair pkcp ={strServerKey.c_str(),strServerCert.c_str()};
   

@@ -59,8 +59,9 @@ cc_library(
 
 cc_library(
     name = "my_db",
-    srcs = ["cpp/db/my_db.cc"],
-    hdrs = ["cpp/db/my_db.h"],
+    srcs = ["db/my_db.cc"],
+    hdrs = ["db/my_db.h"],
+    deps = [":sqlite3"],
 )
 
 cc_library(
