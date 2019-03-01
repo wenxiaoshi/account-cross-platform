@@ -481,7 +481,12 @@ void RunServer() {
 }
 
 int main(int argc, char** argv) {
-    sqlite3 *sql = NULL; // 一个打开的数据库实例
+    ofstream logfile("source/log/error.log");
+    clog.rdbuf(logfile.rdbuf());
+    clog<<"error"<<endl;
+    clog<<"error1"<<endl;
+    
+	sqlite3 *sql = NULL; // 一个打开的数据库实例
     const char * path = "source/db/user_sys.db";//某个sql文件的路径
 
     // 根据文件路径打开数据库连接。如果数据库不存在，则创建。
