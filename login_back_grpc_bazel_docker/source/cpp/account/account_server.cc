@@ -31,6 +31,7 @@
 #include "common_utils.h"
 #include <set>
 #include "source/sqlite3/sqlite3.h"
+#include "my_log.h"
 
 #ifdef BAZEL_BUILD
 #include "source/protos/account.grpc.pb.h"
@@ -47,6 +48,7 @@
 using namespace std;
 using namespace my_struct;
 using namespace utils;
+using namespace log_utils;
 
 using grpc::Server;
 using grpc::ServerBuilder;
@@ -481,12 +483,11 @@ void RunServer() {
 }
 
 int main(int argc, char** argv) {
-    ofstream logfile("source/log/error.log");
-    clog.rdbuf(logfile.rdbuf());
-    clog<<"error"<<endl;
-    clog<<"error1"<<endl;
+   
+    // LOG::error("test");
     
-	sqlite3 *sql = NULL; // 一个打开的数据库实例
+    sqlite3 *sql = NULL; // 一个打开的数据库实例
+
     const char * path = "source/db/user_sys.db";//某个sql文件的路径
 
     // 根据文件路径打开数据库连接。如果数据库不存在，则创建。
