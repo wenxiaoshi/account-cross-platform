@@ -31,6 +31,7 @@
 #include "common_utils.h"
 #include <set>
 #include "source/sqlite3/sqlite3.h"
+#include "my_log.h"
 
 #ifdef BAZEL_BUILD
 #include "source/protos/account.grpc.pb.h"
@@ -47,6 +48,7 @@
 using namespace std;
 using namespace my_struct;
 using namespace utils;
+using namespace log_utils;
 
 using grpc::Server;
 using grpc::ServerBuilder;
@@ -447,6 +449,7 @@ class AccountServiceImpl final : public Account::Service {
 
 void RunServer() {
 
+
   std::string server_address("0.0.0.0:50051");
   AccountServiceImpl service;
 
@@ -481,6 +484,9 @@ void RunServer() {
 }
 
 int main(int argc, char** argv) {
+ 
+    Log::error("test");
+
     sqlite3 *sql = NULL; // 一个打开的数据库实例
     const char * path = "source/db/user_sys.db";//某个sql文件的路径
 
