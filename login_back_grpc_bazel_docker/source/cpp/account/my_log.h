@@ -1,6 +1,8 @@
 
 #include "string"
 
+using namespace std;
+
 namespace log_utils{
 
 	class LOG

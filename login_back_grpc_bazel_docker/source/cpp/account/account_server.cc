@@ -449,7 +449,6 @@ class AccountServiceImpl final : public Account::Service {
 
 void RunServer() {
 
-
   std::string server_address("0.0.0.0:50051");
   AccountServiceImpl service;
 
@@ -484,10 +483,11 @@ void RunServer() {
 }
 
 int main(int argc, char** argv) {
- 
-    Log::error("test");
-
+   
+    // LOG::error("test");
+    
     sqlite3 *sql = NULL; // 一个打开的数据库实例
+
     const char * path = "source/db/user_sys.db";//某个sql文件的路径
 
     // 根据文件路径打开数据库连接。如果数据库不存在，则创建。
