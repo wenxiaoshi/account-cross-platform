@@ -56,11 +56,12 @@ bool Database::init() {
 void Database::checkAndCreateTable() {
 
     if (!isTableExist(TABLE_USER_ACCOUNT)) {
-        const char* sqlSentence = "CREATE TABLE USER_ACCOUNT(           \
+        string str_sql = "CREATE TABLE " + TABLE_USER_ACCOUNT + "(           \
             ID          INTEGER PRIMARY KEY AUTOINCREMENT   NOT NULL,   \
             ACCOUNT     CHAR(50)                            NOT NULL,   \
             PASSWORD    CHAR(50)                            NOT NULL    \
             );";
+        const char* sqlSentence = str_sql.c_str();
 
         // 创建用户表
         ret = sqlite3_exec(sql, sqlSentence, NULL, NULL, &zErrMsg);
@@ -151,6 +152,8 @@ bool Database::isExist(string str_sql){
     //执行SQL语句    
     if (result == SQLITE_OK) {
         while (sqlite3_step(stmt) == SQLITE_ROW) {
+            int count = sqlite3_column_int(stmt, 0);
+            cout << count << endl;
             isExist = true;
         }
     } else {
@@ -168,7 +171,6 @@ bool Database::isExist(string str_sql){
  * 新增用户账号
 **/
 bool Database::addUserAccount(string account, string password){
-    string tableName = "USER_ACCOUNT";
     
     vector<string> v_key;
     v_key.push_back("ACCOUNT");
@@ -178,7 +180,7 @@ bool Database::addUserAccount(string account, string password){
         v_value.push_back("'" + account + "'");
         v_value.push_back("'" + password + "'");
     
-    return insert(tableName, v_key, v_value);
+    return insert(TABLE_USER_ACCOUNT, v_key, v_value);
 }
 
 
@@ -201,7 +203,7 @@ int Database::queryAccountId(string account){
 	int id = -1;
 
     //获得SQL语句
-    string str_sql = "SELECT ID FROM USER_ACCOUNT  WHERE ACCOUNT = '" + account + "' ;";
+    string str_sql = "SELECT ID FROM " + TABLE_USER_ACCOUNT + "  WHERE ACCOUNT = '" + account + "' ;";
     const char *sqlSentence = str_sql.c_str();
     cout << "info : sql queryAccountId | " << str_sql << endl;
 
