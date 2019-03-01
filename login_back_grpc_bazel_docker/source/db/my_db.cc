@@ -154,7 +154,10 @@ bool Database::isExist(string str_sql){
         while (sqlite3_step(stmt) == SQLITE_ROW) {
             int count = sqlite3_column_int(stmt, 0);
             cout << count << endl;
-            isExist = true;
+            if(count > 0) {
+	    	isExist = true;
+	    }
+	    
         }
     } else {
         cout << "error : sql is invalid !" << endl;

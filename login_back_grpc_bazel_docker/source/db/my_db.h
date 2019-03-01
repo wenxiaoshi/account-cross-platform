@@ -19,7 +19,7 @@ namespace db_utils{
 
 		
 	
-		bool isUserExist(string account)
+		bool isUserExist(string account);
 
 		bool addUserAccount(string account, string password);
 	
