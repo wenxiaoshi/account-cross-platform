@@ -403,9 +403,10 @@ void RunDb() {
      return;
   }
 
-  Database::database->create();
-  Database::database->insertAccount("test","111");
-  Database::database->queryAccountId("test");
+  Database::database->addUserAccount("test","111");
+  int id = Database::database->queryAccountId("test");
+  cout << "uid = " << id << endl;
+
 }
 
 void RunServer() {

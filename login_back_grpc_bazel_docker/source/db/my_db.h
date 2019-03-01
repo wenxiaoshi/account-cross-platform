@@ -17,26 +17,31 @@ namespace db_utils{
 
 		bool init();
 
-		bool create();
-		bool insertAccount(string account, string password);
-		bool update();
-                bool query();
-		bool queryAccountId(string account);
+		
+	
+		bool isUserExist(string account)
+
+		bool addUserAccount(string account, string password);
+	
+		int queryAccountId(string account);
+	
 	private:
+		string TABLE_USER_ACCOUNT = "user_account";
 
 		sqlite3 *sql = NULL;
 
 		char *zErrMsg = NULL;
 		int ret = 0;
-
 		bool isHadInit = false;
 
-		static int callback(void *NotUsed, int argc, char **argv, char **azColName);
+		void checkAndCreateTable();
 
 		bool insert(string tabls_name, std::vector<string> v_key, std::vector<string> v_value);
-		//bool create();
-		//bool insert(string tabls_name, std::vector<string> v_key, std::vector<string> v_value);
-		//bool update();
-		//bool query();
+		bool update();
+
+
+		bool isExist(string str_sql);
+		bool isTableExist(string tableName);
+
 	};
 }
