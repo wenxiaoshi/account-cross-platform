@@ -101,7 +101,7 @@ namespace demo {
         }
 
         //回调原生接口
-        this->m_listener->on_login_finish(ActionResult(result.getCode(),"",""));
+        this->m_listener->on_login_finish(ActionResult(result.getCode(),result.getMsg(),""));
     }
 
     /**
