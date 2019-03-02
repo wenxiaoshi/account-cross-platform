@@ -24,15 +24,17 @@
 #include <sstream>
 #include <stdexcept>
 #include <stdlib.h>
+#include <vector>
+#include <set>
 
 #include <grpcpp/grpcpp.h>
 
 #include "hash_map.h"
 #include "common_utils.h"
-#include <set>
-
+#include "user_account.h"
+#include "user_session.h"
 #include "my_log.h"
-#include "my_db.h"
+#include "source/db/my_db.h"
 
 #ifdef BAZEL_BUILD
 #include "source/protos/account.grpc.pb.h"
@@ -51,6 +53,7 @@ using namespace my_struct;
 using namespace utils;
 using namespace log_utils;
 using namespace db_utils;
+using namespace my_model;
 
 using grpc::Server;
 using grpc::ServerBuilder;
@@ -92,155 +95,159 @@ public:
 class LoginDatabase {
 public:
 
-   /**
-  * 这部分往后需要改用数据库存储，现抽离出来，便于往后改造不影响其他模块
+  /**
+  * 数据库工具类，对数据库进行操作
   **/
 
   /**
   * 判断是否已经注册
   **/
-  bool isHadSign(string phone){
-    return !mMapPhoneAndPsw.find(phone).empty();
+  bool isHadSign(string account){
+    return Database::database->isUserExist(account);
   };
   
   /**
-  * 判断密码是否正确
-  **/
-  bool isPasswordCorrect(string phone,string password){
-    return strncmp(mMapPhoneAndPsw.find(phone).c_str(),password.data(),mMapPhoneAndPsw.find(phone).size()) == 0;
-  }
-
-  /**
-  * 更新账号对应的设备Id
-  **/
-  bool updateToken(string phone,string token){
-    removeAccountDeviceId(phone);
-    mMapPhoneAndDid.insert(phone, token);
-    return true;
-  }
-
-  /**
-  * 清除账号对应的设备Id
-  **/
-  bool removeAccountDeviceId(string phone){
-    string token = mMapPhoneAndDid.find(phone);
-    mMapPhoneAndDid.remove(phone);
-    std::cout << "removeAccountToken " << token << std::endl;
-    return true;
-  }
-
-  /**
-  * 判断某设备是否联通
-  **/
-  bool judeDeviceIdOnline(string phone, string token){
-    string tokenSys = mMapPhoneAndDid.find(phone);
-    std::cout << "judeDeviceIdOnline" << tokenSys << "/" << token << std::endl;
-    return isStringEqual(tokenSys,token);
-  }
-
-  /**
   * 新增账号
   **/
-  bool insertAccountToDB(string phone,string password){
-    mMapPhoneAndPsw.insert(phone, password);
-    return true;
+  bool insertAccountToDB(string account,string encrypt_password){
+    return Database::database->addUserAccount(account, encrypt_password);
   }
-private:
-  static HashMap mMapPhoneAndPsw;
-  static HashMap mMapPhoneAndDid;
 
-  bool isStringEqual(string origin,string target){
-    const char* oChar = origin.data();
-    const char* tChar = target.data();
-    if (origin.size() != target.size())
-    {
+  /**
+  * 根据账号获取用户信息
+  **/
+  UserAccount getUserAccount(string account){
+    return UserAccount userAccount = Database::database->queryUserAccountByAccount(account);
+  }
+
+  /**
+  * 新增账号Session，创建账号时使用
+  **/
+  bool createUserSession(int uid, string token){
+    return Database::database->addUserSession(uid, token);
+  }
+
+  /**
+  * 更新账号Session，登录时更新
+  **/
+  bool onlineUserSession(int uid, string token){
+    return Database::database->updateUserSession(uid, token, true);
+  }
+
+  /**
+  * 更新账号Session，退出登录时更新
+  **/
+  bool offlineUserSession(int uid, string token){
+    return Database::database->updateUserSession(uid, token, false);
+  }
+
+  /**
+  * 判断某账号是否在线
+  **/
+  bool checkUserIdOnline(int uid, string token){
+    UserSession userSession = Database::database->queryUserSessionByUid(uid);
+    if (!userSession.isOnline()) {
       return false;
     }
-    for (std::size_t i = 0; i < origin.size(); ++i)
-    {
-      if (oChar[i] != tChar[i])
-      {
-        return false;
-      }
-    }
-    return true;
+    string db_token = userSession.getToken();
+    return isEqual(token, db_token);
   }
+
+
+private:
+
+  
 };
 
-HashMap LoginDatabase::mMapPhoneAndPsw(100);
-HashMap LoginDatabase::mMapPhoneAndDid(100);
 
 class LoginCore{
 public:
   HandleResult handleUserLogin(std::string account,std::string password){
     HandleResult result;
     
-    LoginDatabase db;
+    LoginDatabase login_db;
+
+    UserAccount userAccount = login_db.getUserAccount(account);
 
     //查询账号是否存在
-    if(!db.isHadSign(account)){
+    if(userAccount.getUid() <= 0) {
       result.setCode(2000);
       result.setMsg("该账号不存在");
       return result;
     }
 
-     //查询密码是否正确
-     if(!db.isPasswordCorrect(account,password)){
+    //查询密码是否正确
+    //todo 获得加密后密码，进行校验
+    string encrypt_password = password;
+    string db_password = userAccount.getPassword();
+    if(!isEqual(db_password, encrypt_password)) {
       result.setCode(2001);
       result.setMsg("密码错误");
       return result;
     }
 
-    //get from database
-    unsigned long uid = 1000; 
-    //create token
+    //获取用户UID
+    int uid = userAccount.getUid(); 
+    //生成Token
     string token = CommonUtils::GenToken(uid,account);
 
-    //更新账号对应的设备ID
-    if (!db.updateToken(account,token))
-    {
+    //更新Token到数据库
+    if (!login_db.onlineUserSession(uid,token)) {
       result.setCode(2003);
       result.setMsg("更新账号的token失败");
       return result;
     }
 
+    //返回Token
     result.setCode(0);
     result.setData(token);
-    
     return result;
   };
-   HandleResult handleUserSign(std::string account,std::string password){
+
+  HandleResult handleUserSign(std::string account,std::string password){
     HandleResult result;
     
-    LoginDatabase db;
+    LoginDatabase login_db;
     
     //查询账号是否存在
-    if(db.isHadSign(account)){
+    if(login_db.isHadSign(account)){
       result.setCode(2002);
       result.setMsg("该账号已注册");
       return result;
     }
 
-     
+    //todo 密码初始化，进行加密，再保存数据库
+    string encrypt_password = password;
+
     //新增账号
-    if (!db.insertAccountToDB(account,password)){
+    if (!login_db.insertAccountToDB(account,encrypt_password)){
       result.setCode(2004);
       result.setMsg("新增账号失败");
       return result;
     }
 
-    //get from database
-    unsigned long uid = 1000; 
-    //create token
-    string token = CommonUtils::GenToken(uid, account);
-
-    //更新账号对应的设备ID
-    if (!db.updateToken(account,token)){
-      result.setCode(2003);
-      result.setMsg("更新账号的token失败");
+    //获得用户信息
+    UserAccount userAccount = login_db.getUserAccount(account);
+    if (userAccount.getUid() <= 0) {
+      result.setCode(2004);
+      result.setMsg("获取账号信息失败");
       return result;
     }
 
+    //获得用户UID
+    int uid = userAccount.getUid(); 
+    
+    //生成Token
+    string token = CommonUtils::GenToken(uid, account);
+
+    //新增账号Session
+    if (!login_db.createUserSession(uid,token)){
+      result.setCode(2003);
+      result.setMsg("新增账号Session失败");
+      return result;
+    }
+
+    //返回Token
     result.setCode(0);
     result.setData(token);
     
@@ -251,87 +258,100 @@ public:
    HandleResult handleUserLogout(string token){
     HandleResult result;
   
-    //check token is valid or not
-    //is invalid ,then return
+    //解密Token
     string decodeToken = CommonUtils::DecryptToken(token);
-    if (decodeToken.empty())
-    {
+    if (decodeToken.empty()) {
       result.setMsg("token不合法");
       return result;
     }
     
-    std::vector<string> vToken;
+    //解析Token，获取用户信息
+    vector<string> vToken;
     CommonUtils::splitString(decodeToken, vToken, ":");
-    if (vToken.size() != 5)
-    {
+    if (vToken.size() != 5) {
       result.setMsg("token不合法");
       return result;
     }
 
-    //get account by token
-    string uid = vToken[0];
-    string account = vToken[1];
+    //获得账号UID
+    string str_uid = vToken[0];
+    stringstream ss;
+    ss<<str_uid;
+    int uid;
+    ss>>uid;
 
-    //todo check this account is valid or not
+    //获取数据库操作类
+    LoginDatabase login_db;
 
-    LoginDatabase db;
-
-    //查询账号是否存在
-    if(!db.isHadSign(account)){
-      result.setMsg("账号不存在");
-      return result;
-    }
-
-    //清除账号对应的设备ID
-    if (!db.removeAccountDeviceId(account)){
+    //更新账号对应的Session信息
+    if (!login_db.offlineUserSession(uid, token)){
       result.setMsg("更新账号的token失败");
       return result;
     }
     
+    result.setCode(0);
     return result;
   };
- HandleResult handleUserCheckConnect(std::string token){
+
+HandleResult handleUserCheckConnect(std::string token){
     HandleResult result;
   
-    //check token is valid or not
-    //is invalid ,then return
+    //解密Token
     string decodeToken = CommonUtils::DecryptToken(token);
-    //string decodeToken = "1:111:1:1:1";
-    if (decodeToken.empty())
-    {
-      result.setMsg("token不合法");
+    if (decodeToken.empty()) {
+      result.setCode(2006);
+      result.setMsg("用户token不合法");
       return result;
     }
-    cout << "token Decrypt finish" << endl;
    
+    //解析Token，获取用户信息
     std::vector<string> vToken;
     CommonUtils::splitString(decodeToken, vToken, ":");
-    if (vToken.size() != 5)
-    {
-      result.setMsg("token不合法");
+    if (vToken.size() != 5) {
+      result.setCode(2006);
+      result.setMsg("用户token不合法");
       return result;
     }
 
-    //get account by token
-    string uid = vToken[0];
-    string account = vToken[1];
+    ///获得账号UID
+    string str_uid = vToken[0];
+    stringstream ss;
+    ss<<str_uid;
+    int uid;
+    ss>>uid;
 
-    LoginDatabase db;
+    //获取数据库操作类
+    LoginDatabase login_db;
 
-    //检核设备是否在线
-    if (!db.judeDeviceIdOnline(account, token)){
+    //检查账号是否在线
+    if (!login_db.checkUserIdOnline(uid, token)){
       result.setCode(2005);
-      result.setMsg("该设备不在线");
+      result.setMsg("该账号不在线");
       return result;
     }
 
     result.setCode(0);
-
-
     return result;
   };
 
- 
+private:
+  
+  /**
+  * 判断字符串是否相等
+  **/
+  bool isEqual(string origin,string target) {
+    const char* oChar = origin.data();
+    const char* tChar = target.data();
+    if (origin.size() != target.size()) {
+      return false;
+    }
+    for (unsigned int i = 0; i < origin.size(); i++) {
+      if (oChar[i] != tChar[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
 
 };
 
@@ -400,11 +420,8 @@ void RunDb() {
 
   if (!Database::database->init()) {
      cout << "error : database run fail !" << endl;
-     return;
   }
 
-  Database::database->create();
-  Database::database->query();
 }
 
 void RunServer() {
@@ -416,10 +433,10 @@ void RunServer() {
   
   std::ifstream skey("mypem/server.key");
   std::string strServerKey((std::istreambuf_iterator<char>(skey)),std::istreambuf_iterator<char>());
-  std::cout << "key: " <<strServerKey << std::endl;
+  //std::cout << "key: " <<strServerKey << std::endl;
   std::ifstream sCrt("mypem/server.crt");  
   std::string strServerCert((std::istreambuf_iterator<char>(sCrt)),std::istreambuf_iterator<char>());
-  std::cout << "crt: " << strServerCert << std::endl;
+  //std::cout << "crt: " << strServerCert << std::endl;
   
   grpc::SslServerCredentialsOptions::PemKeyCertPair pkcp ={strServerKey.c_str(),strServerCert.c_str()};
   

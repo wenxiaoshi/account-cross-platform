@@ -28,7 +28,7 @@ cc_binary(
     name = "account_server",
     srcs = ["cpp/account/account_server.cc"],
     defines = ["BAZEL_BUILD"],
-    deps = [":account", "//:grpc++",":hashmap",":commonutils",":sqlite3",":my_log",":my_db"],
+    deps = [":account", "//:grpc++",":hashmap",":commonutils",":sqlite3",":my_log",":my_db",":my_model"],
     data = ["//mypem:ca.crt","//mypem:server.crt","//mypem:server.key"],
 )
 
@@ -59,8 +59,9 @@ cc_library(
 
 cc_library(
     name = "my_db",
-    srcs = ["cpp/db/my_db.cc"],
-    hdrs = ["cpp/db/my_db.h"],
+    srcs = ["db/my_db.cc"],
+    hdrs = ["db/my_db.h"],
+    deps = [":sqlite3",":my_model"],
 )
 
 cc_library(
@@ -69,3 +70,10 @@ cc_library(
     hdrs = ["sqlite3/sqlite3.h","sqlite3/sqlite3ext.h"],
     linkopts = ["-ldl"],
 )
+
+cc_library(
+    name = "my_model",
+    srcs = ["cpp/account/user_account.cc","cpp/account/user_session.cc"],
+    hdrs = ["cpp/account/user_account.h","cpp/account/user_session.h"],
+)
+
