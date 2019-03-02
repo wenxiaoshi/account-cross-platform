@@ -18,13 +18,13 @@ void UserAccount::setUid(int uid){
 string UserAccount::getAccount(){
 	return account;
 }
-void UserAccount::setAccount(int account){
+void UserAccount::setAccount(string account){
 	this->account = account;
 }
 
 string UserAccount::getPassword(){
-
-}
-void UserAccount::setPassword(int password){
 	return password;
+}
+void UserAccount::setPassword(string password){
+	this->password = password;
 }
