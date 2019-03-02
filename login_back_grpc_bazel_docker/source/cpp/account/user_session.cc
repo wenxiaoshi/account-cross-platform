@@ -4,7 +4,7 @@
 using namespace my_model;
 using namespace std;
 
-UserSession::UserSession(int uid, string token, bool isOnline) : uid(uid),token(token),isOnline(isOnline) {
+UserSession::UserSession(int uid, string token, bool isOnline) : uid(uid),token(token),mIsOnline(isOnline) {
 
 }
 
@@ -23,8 +23,8 @@ void UserSession::setToken(string token){
 }
 
 bool UserSession::isOnline(){
-	return isOnline;
+	return mIsOnline;
 }
 void UserSession::setOnline(bool isOnline){
-	this->isOnline = isOnline;
+	this->mIsOnline = isOnline;
 }

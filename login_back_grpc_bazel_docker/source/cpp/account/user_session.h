@@ -21,7 +21,7 @@ namespace my_model{
 	private:
 		int uid;
 		string token;
-		bool isOnline;
+		bool mIsOnline;
 	};
 
 }
