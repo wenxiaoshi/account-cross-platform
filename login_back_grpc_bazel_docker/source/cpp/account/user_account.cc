@@ -15,16 +15,16 @@ void UserAccount::setUid(int uid){
 	this->uid = uid;
 }
 
-int UserAccount::getAccount(){
+string UserAccount::getAccount(){
 	return account;
 }
-string UserAccount::setAccount(int account){
+void UserAccount::setAccount(int account){
 	this->account = account;
 }
 
-int UserAccount::getPassword(){
+string UserAccount::getPassword(){
 
 }
-string UserAccount::setPassword(int password){
+void UserAccount::setPassword(int password){
 	return password;
 }
