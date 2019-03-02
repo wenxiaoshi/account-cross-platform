@@ -328,9 +328,8 @@ bool Database::isUserExist(string account){
  * 获得用户信息
 **/
 UserAccount Database::queryUserAccountByAccount(string account){
-	UserAccount userAccount;
     
-    uid = -1;
+    int uid = -1;
     string account;
     string password;
 
@@ -369,15 +368,18 @@ UserAccount Database::queryUserAccountByAccount(string account){
  * 根据用户Uid
  * 获得用户Session
 **/
-UserSession Database::queryUserSessionByUid(int uid){
+UserSession Database::queryUserSessionByUid(int o_uid){
     UserAccount userAccount;
     
     int uid = -1;
     string token;
     bool isOnline = false;
 
+    stringstream ss;
+    ss<<o_uid;
+
     //获得SQL语句
-    string str_sql = "SELECT UID , TOKEN , IS_ONLINE FROM " + TABLE_USER_ACCOUNT + "  WHERE UID = '" + uid + "' ;";
+    string str_sql = "SELECT UID , TOKEN , IS_ONLINE FROM " + TABLE_USER_ACCOUNT + "  WHERE UID = '" + ss.str() + "' ;";
     const char *sqlSentence = str_sql.c_str();
     cout << "info : sql querySession | " << str_sql << endl;
 

@@ -22,7 +22,7 @@ namespace db_utils{
 		bool init();
 
 		//TABLE_USER_ACCOUNT 相关
-		bool isUserExist(string account)
+		bool isUserExist(string account);
 		bool addUserAccount(string account, string password);
 		UserAccount queryUserAccountByAccount(string account);
 	
