@@ -327,14 +327,14 @@ bool Database::isUserExist(string account){
  * 根据用户账号
  * 获得用户信息
 **/
-UserAccount Database::queryUserAccountByAccount(string account){
+UserAccount Database::queryUserAccountByAccount(string o_account){
     
     int uid = -1;
     string account;
     string password;
 
     //获得SQL语句
-    string str_sql = "SELECT ID , ACCOUNT , PASSWORD FROM " + TABLE_USER_ACCOUNT + "  WHERE ACCOUNT = '" + account + "' ;";
+    string str_sql = "SELECT ID , ACCOUNT , PASSWORD FROM " + TABLE_USER_ACCOUNT + "  WHERE ACCOUNT = '" + o_account + "' ;";
     const char *sqlSentence = str_sql.c_str();
     cout << "info : sql queryAccount | " << str_sql << endl;
 
@@ -369,7 +369,6 @@ UserAccount Database::queryUserAccountByAccount(string account){
  * 获得用户Session
 **/
 UserSession Database::queryUserSessionByUid(int o_uid){
-    UserAccount userAccount;
     
     int uid = -1;
     string token;
