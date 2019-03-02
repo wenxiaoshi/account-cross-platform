@@ -7,7 +7,7 @@ namespace my_model{
 	
 	class UserAccount{
 	public:
-		UserAccount(int uid, string account, string password):;
+		UserAccount(int uid, string account, string password);
 
 		int getUid();
 		void setUid(int uid);
@@ -22,6 +22,6 @@ namespace my_model{
 		int uid;
 		string account;
 		string password;
-	}
+	};
 
 }

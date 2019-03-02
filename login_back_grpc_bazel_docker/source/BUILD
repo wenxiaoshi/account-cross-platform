@@ -73,7 +73,7 @@ cc_library(
 
 cc_library(
     name = "my_model",
-    srcs = ["cpp/account/user_account.cc"],
-    hdrs = ["cpp/account/user_account.h"],
+    srcs = ["cpp/account/user_account.cc","cpp/account/user_session.cc"],
+    hdrs = ["cpp/account/user_account.h","cpp/account/user_session.h"],
 )
 
