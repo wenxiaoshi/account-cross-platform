@@ -26,5 +26,5 @@ bool UserSession::isOnline(){
 	return isOnline;
 }
 void UserSession::setOnline(bool isOnline){
-	this.isOnline = isOnline;
+	this->isOnline = isOnline;
 }
