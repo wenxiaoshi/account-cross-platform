@@ -31,8 +31,6 @@
 
 #include "hash_map.h"
 #include "common_utils.h"
-#include "user_account.h"
-#include "user_session.h"
 #include "my_log.h"
 #include "source/db/my_db.h"
 
@@ -41,12 +39,6 @@
 #else
 #include "account.grpc.pb.h"
 #endif
-
-// #include <boost/scoped_ptr.hpp>
-// #include "source/mysql/jdbc/mysql_driver.h"
-// #include "source/mysql/jdbc/mysql_connection.h"
-// #include "source/mysql/jdbc/cppconn/resultset.h"
-// #include "source/mysql/jdbc/cppconn/statement.h"
 
 using namespace std;
 using namespace my_struct;
@@ -117,7 +109,7 @@ public:
   * 根据账号获取用户信息
   **/
   UserAccount getUserAccount(string account){
-    return UserAccount userAccount = Database::database->queryUserAccountByAccount(account);
+    return Database::database->queryUserAccountByAccount(account);
   }
 
   /**
@@ -153,6 +145,22 @@ public:
     return isEqual(token, db_token);
   }
 
+ /**
+  * 判断字符串是否相等
+  **/
+  bool isEqual(string origin,string target) {
+    const char* oChar = origin.data();
+    const char* tChar = target.data();
+    if (origin.size() != target.size()) {
+      return false;
+    }
+    for (unsigned int i = 0; i < origin.size(); i++) {
+      if (oChar[i] != tChar[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
 
 private:
 
@@ -180,7 +188,7 @@ public:
     //todo 获得加密后密码，进行校验
     string encrypt_password = password;
     string db_password = userAccount.getPassword();
-    if(!isEqual(db_password, encrypt_password)) {
+    if(!login_db.isEqual(db_password, encrypt_password)) {
       result.setCode(2001);
       result.setMsg("密码错误");
       return result;
@@ -335,23 +343,6 @@ HandleResult handleUserCheckConnect(std::string token){
   };
 
 private:
-  
-  /**
-  * 判断字符串是否相等
-  **/
-  bool isEqual(string origin,string target) {
-    const char* oChar = origin.data();
-    const char* tChar = target.data();
-    if (origin.size() != target.size()) {
-      return false;
-    }
-    for (unsigned int i = 0; i < origin.size(); i++) {
-      if (oChar[i] != tChar[i]) {
-        return false;
-      }
-    }
-    return true;
-  }
 
 };
 
