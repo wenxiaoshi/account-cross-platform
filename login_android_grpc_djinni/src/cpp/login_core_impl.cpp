@@ -126,11 +126,15 @@ namespace demo {
                 //获取返回数据的对象
                 ReqResult result = mNW.checkConnect(token);
 
-                if (result.getCode() == ResultCode::DEVICE_OFFLINE){
+                if (result.getCode() != ResultCode::SUCCESS){
 
                     //如果处于登录状态，则踢下登录
                     if(LoginCoreImpl::isLogin){
-                        this->m_listener->on_disconnect(ActionResult(ResultCode::DEVICE_OFFLINE,MsgTip::TOAST_ACCOUNT_OUT_OFF_LINE,""));
+                        if (result.getCode() == ResultCode::DEVICE_OFFLINE) {
+                            this->m_listener->on_disconnect(ActionResult(ResultCode::DEVICE_OFFLINE,MsgTip::TOAST_ACCOUNT_OUT_OFF_LINE,""));
+                        } else {
+                            this->m_listener->on_disconnect(ActionResult(result.getCode(),result.getMsg(),""));
+                        }
                     }
 
                     //清除本地用户状态
