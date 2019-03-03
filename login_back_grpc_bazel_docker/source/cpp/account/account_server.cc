@@ -26,7 +26,6 @@
 #include <stdlib.h>
 #include <vector>
 #include <set>
-#include <time.h>
 
 #include <grpcpp/grpcpp.h>
 
@@ -141,23 +140,6 @@ public:
     return Database::database->queryUserSessionByUid(uid);
   }
 
- /**
-  * 判断字符串是否相等
-  **/
-  bool isEqual(string origin,string target) {
-    const char* oChar = origin.data();
-    const char* tChar = target.data();
-    if (origin.size() != target.size()) {
-      return false;
-    }
-    for (unsigned int i = 0; i < origin.size(); i++) {
-      if (oChar[i] != tChar[i]) {
-        return false;
-      }
-    }
-    return true;
-  }
-
 private:
 
   
@@ -190,7 +172,7 @@ public:
 
     //查询密码是否正确
     string db_password = userAccount.getPassword();
-    if(!login_db.isEqual(db_password, encrypt_password)) {
+    if(!isEqual(db_password, encrypt_password)) {
       result.setCode(2001);
       result.setMsg("密码错误");
       return result;
@@ -365,7 +347,24 @@ HandleResult handleUserCheckConnect(std::string token){
 
 private:
 
-  /**
+ /**
+  * 判断字符串是否相等
+  **/
+  bool isEqual(string origin,string target) {
+    const char* oChar = origin.data();
+    const char* tChar = target.data();
+    if (origin.size() != target.size()) {
+      return false;
+    }
+    for (unsigned int i = 0; i < origin.size(); i++) {
+      if (oChar[i] != tChar[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+ /**
   * 将string转换成int
   **/
   int getIntByString(string str) {
@@ -376,12 +375,12 @@ private:
     return i_data;
   }
 
-  /**
+ /**
   * 判断时间是否过期
   **/
-  bool isTimeExpired(int time){
+  bool isTimeExpired(int end_time){
     time_t now_time = time(NULL);
-    return now_time < time;
+    return now_time < end_time;
   }
 
 };

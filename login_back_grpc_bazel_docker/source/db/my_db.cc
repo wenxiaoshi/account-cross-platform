@@ -106,7 +106,6 @@ void Database::checkAndCreateTable() {
  * 根据SQL判断是否存在
 **/
 bool Database::isExist(string str_sql){
-    cout << str_sql << endl;
     
     //获得SQL语句
     const char *sqlSentence = str_sql.c_str();
