@@ -11,6 +11,7 @@
 #include <sstream>
 #include <iostream>
 #include <string.h>
+#include <regex>
 
 using namespace utils;
 using namespace std;
@@ -119,7 +120,7 @@ bool ParamUtils::CheckAccountValid(string account,string & errorMsg){
         return false;
     }
     string pattern = "^[1][3,4,5,6,7,8,9]\\d{9}$";
-    if (!patternMatch(pattern, account)) {
+    if (!PatternMatch(pattern, account)) {
         errorMsg = MsgTip::ERROR_ACCOUNT_NOT_VALID_PHONE_NUM;
         return false;
     }
@@ -132,7 +133,7 @@ bool ParamUtils::CheckPasswordValid(string password,string & errorMsg){
         return false;
     }
     string pattern = "^[a-z0-9A-Z]{6,18}$";
-    if (!patternMatch(pattern, password)) {
+    if (!PatternMatch(pattern, password)) {
         errorMsg = MsgTip::ERROR_PASSWORD_NOT_VALID;
         return false;
     }

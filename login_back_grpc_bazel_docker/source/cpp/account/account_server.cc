@@ -33,6 +33,7 @@
 #include "common_utils.h"
 #include "my_log.h"
 #include "source/db/my_db.h"
+#include "my_constant.h"
 
 #ifdef BAZEL_BUILD
 #include "source/protos/account.grpc.pb.h"
@@ -302,7 +303,8 @@ HandleResult handleUserCheckConnect(std::string token){
       result.setMsg("用户token不合法");
       return result;
     }
-   
+
+    cout << "info : check_connect token is " << decodeToken << endl;   
     //解析Token，获取用户信息
     std::vector<string> vToken;
     CommonUtils::SplitString(decodeToken, vToken, ":");
@@ -382,7 +384,8 @@ private:
   **/
   bool isTimeExpired(int end_time){
     time_t now_time = time(NULL);
-    return now_time < end_time;
+    cout << "now_time = " << now_time << " end_time = " << end_time << endl;
+    return now_time > end_time;
   }
 
 };
@@ -402,7 +405,7 @@ class AccountServiceImpl final : public Account::Service {
     string error_msg;
     
     //校验用户账号
-    if (!CommonUtils::CheckAccountValid(account, error_msg)) {
+    if (!ParamUtils::CheckAccountValid(account, error_msg)) {
       reply->set_code(ResultCode::ERROR_PARAM_IS_INVALID);
       reply->set_msg(error_msg);
       isParamValid = false;
@@ -410,7 +413,7 @@ class AccountServiceImpl final : public Account::Service {
     };
 
     //校验用户密码
-    if (isParamValid && !CommonUtils::CheckPasswordValid(password, error_msg)) {
+    if (isParamValid && !ParamUtils::CheckPasswordValid(password, error_msg)) {
       reply->set_code(ResultCode::ERROR_PARAM_IS_INVALID);
       reply->set_msg(error_msg);
       isParamValid = false;
@@ -441,7 +444,7 @@ class AccountServiceImpl final : public Account::Service {
     string error_msg;
     
     //校验用户账号
-    if (!CommonUtils::CheckAccountValid(account, error_msg)) {
+    if (!ParamUtils::CheckAccountValid(account, error_msg)) {
       reply->set_code(ResultCode::ERROR_PARAM_IS_INVALID);
       reply->set_msg(error_msg);
       isParamValid = false;
@@ -449,7 +452,7 @@ class AccountServiceImpl final : public Account::Service {
     };
 
     //校验用户密码
-    if (isParamValid && !CommonUtils::CheckPasswordValid(password, error_msg)) {
+    if (isParamValid && !ParamUtils::CheckPasswordValid(password, error_msg)) {
       reply->set_code(ResultCode::ERROR_PARAM_IS_INVALID);
       reply->set_msg(error_msg);
       isParamValid = false;
@@ -495,7 +498,7 @@ class AccountServiceImpl final : public Account::Service {
     string error_msg;
     
     //校验用户token
-    if (!CommonUtils::CheckTokenValid(token, error_msg)) {
+    if (!ParamUtils::CheckTokenValid(token, error_msg)) {
       reply->set_code(ResultCode::ERROR_PARAM_IS_INVALID);
       reply->set_msg(error_msg);
       isParamValid = false;

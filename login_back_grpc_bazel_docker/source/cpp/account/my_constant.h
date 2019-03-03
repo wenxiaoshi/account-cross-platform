@@ -20,7 +20,7 @@ namespace constants{
         const static string ERROR_PASSWORD_NOT_VALID;
         const static string ERROR_TOKEN_EMPTY;
 
-		const static string ACCOUNT_OUT_OFF_LINE
+	const static string MSG_ACCOUNT_OUT_OFF_LINE;
     };
 
     class Constants{

@@ -13,6 +13,6 @@ const string MsgTip::ERROR_PASSWORD_EMPTY = "密码不能为空，请重新输�
 const string MsgTip::ERROR_PASSWORD_NOT_VALID = "密码格式错误，请输入6-18位的数字或字母";
 const string MsgTip::ERROR_TOKEN_EMPTY = "Token不能为空";
 
-const string MsgTip::TOAST_ACCOUNT_OUT_OFF_LINE = "您的账号在另一设备登录，如非本人，请重新登录";
+const string MsgTip::MSG_ACCOUNT_OUT_OFF_LINE = "您的账号在另一设备登录，如非本人，请重新登录";
 
 
