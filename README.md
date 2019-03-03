@@ -17,7 +17,10 @@
 
 ## 项目架构图
 
-![](images/login-android.png)
+<center class="half">
+<img src="http://melon-personal.oss-cn-shenzhen.aliyuncs.com/login-android.png" width="200"/>
+<img src="http://melon-personal.oss-cn-shenzhen.aliyuncs.com/login-android.png" width="200"/>
+</center>
 
 ![](images/login-back.png)
 
