@@ -19,8 +19,8 @@
 
 <table>
     <tr>
-        <td><center>客户端架构图</center></td>
-        <td><center>服务器端架构图</center></td>
+        <td><center>客户端</center></td>
+        <td><center>服务端</center></td>
     </tr>
     <tr>
         <td><center><img src="http://melon-personal.oss-cn-shenzhen.aliyuncs.com/login-android.png"></center></td>
