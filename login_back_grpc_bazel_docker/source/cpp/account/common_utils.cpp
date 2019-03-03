@@ -4,6 +4,7 @@
 #include <exception> 
 
 #include "common_utils.h"
+#include "my_constant.h"
 
 #include <time.h>
 #include <random>
@@ -13,6 +14,7 @@
 
 using namespace utils;
 using namespace std;
+using namespace constants;
 
 unsigned char* CommonUtils::AES_KEY = (unsigned char *) "$L&^E*Usd9k!Ld4%"; // token30天有效时间
 
@@ -108,5 +110,46 @@ string CommonUtils::EncryptPwd(string account, string password){
         cout << "error : " << e.what() << endl;
         return "";
     }
+}
+
+bool ParamUtils::CheckAccountValid(string account,string & errorMsg){
+    if (account.empty()) {
+        errorMsg = MsgTip::ERROR_ACCOUNT_EMPTY;
+        return false;
+    }
+    string pattern = "^[1][3,4,5,6,7,8,9]\\d{9}$";
+    if (!patternMatch(pattern, account)) {
+        errorMsg = MsgTip::ERROR_ACCOUNT_NOT_VALID_PHONE_NUM;
+        return false;
+    }
+    return true;
+}
+
+bool ParamUtils::CheckPasswordValid(string password,string & errorMsg){
+    if (password == ""){
+        errorMsg = MsgTip::ERROR_PASSWORD_EMPTY;
+        return false;
+    }
+    string pattern = "^[a-z0-9A-Z]{6,18}$";
+    if (!patternMatch(pattern, password)) {
+        errorMsg = MsgTip::ERROR_PASSWORD_NOT_VALID;
+        return false;
+    }
+    return true;
+}
+
+bool ParamUtils::CheckTokenValid(string token,string & errorMsg){
+    if (token == ""){
+        errorMsg = MsgTip::ERROR_TOKEN_EMPTY;
+        return false;
+    }
+    return true;
+}
+
+bool ParamUtils::PatternMatch(string pattern, string source_str){
+    string strPattern(pattern);
+    regex r(strPattern);
+    smatch result;
+    return regex_search(source_str, result, r);
 }
 

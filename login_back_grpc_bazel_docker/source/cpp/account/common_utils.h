@@ -27,11 +27,23 @@ namespace utils{
 
         static void SplitString(const std::string& s, std::vector<std::string>& v, const std::string& c);
         
+       
+
     private:
         static string GenRandomStr();
         const static long TOKEN_TIMEOUT;
         static unsigned char* AES_KEY;
         static AesEncryptor* aesEncryptor;
+    };
+
+    class ParamUtils{
+    public:
+        static bool CheckAccountValid(string account,string & errorMsg);
+        static bool CheckPasswordValid(string password,string & errorMsg);
+        static bool CheckTokenValid(string token,string & errorMsg);
+
+    private:
+        static bool PatternMatch(string pattern, string source_str);
     };
 
 }
