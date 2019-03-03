@@ -113,7 +113,6 @@ file(GLOB login_sources
         ../../../src/cpp/storage/*.cpp
         ../../../src/cpp/network/*.h
         ../../../src/cpp/network/*.cpp
-#        ../../../grpc/include/grpc++/*.h
         )
 
 add_library( # Sets the name of the library.

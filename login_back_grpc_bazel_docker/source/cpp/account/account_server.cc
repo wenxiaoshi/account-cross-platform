@@ -46,6 +46,8 @@ using namespace utils;
 using namespace log_utils;
 using namespace db_utils;
 using namespace my_model;
+using namespace my_model;
+using namespace constants;
 
 using grpc::Server;
 using grpc::ServerBuilder;
@@ -393,12 +395,37 @@ class AccountServiceImpl final : public Account::Service {
                   CodeReply* reply) override {
     std::cout << "登录请求-入口" << std::endl;
     
-    LoginCore loginCore;
-    HandleResult result = loginCore.handleUserLogin(request->account(),request->password());
+    string account = request->account();
+    string password = request->password();
+
+    bool isParamValid = true;
+    string error_msg;
     
-    reply->set_code(result.getCode());
-    reply->set_msg(result.getMsg());
-    reply->set_data(result.getData());
+    //校验用户账号
+    if (!CommonUtils::CheckAccountValid(account, error_msg)) {
+      reply->set_code(ResultCode::ERROR_PARAM_IS_INVALID);
+      reply->set_msg(error_msg);
+      isParamValid = false;
+      std::cout << "error : account is not valid" << std::endl;
+    };
+
+    //校验用户密码
+    if (isParamValid && !CommonUtils::CheckPasswordValid(password, error_msg)) {
+      reply->set_code(ResultCode::ERROR_PARAM_IS_INVALID);
+      reply->set_msg(error_msg);
+      isParamValid = false;
+      std::cout << "error : password is not valid" << std::endl;
+    };
+
+    //参数正确，执行请求
+    if (isParamValid) {
+      LoginCore loginCore;
+      HandleResult result = loginCore.handleUserLogin(account,password);
+      reply->set_code(result.getCode());
+      reply->set_msg(result.getMsg());
+      reply->set_data(result.getData());
+    }
+    
     std::cout << "登录请求-结束" << std::endl;
     return Status::OK;
   }
@@ -406,13 +433,38 @@ class AccountServiceImpl final : public Account::Service {
   Status requestUserSign(ServerContext* context, const SignRequest* request,
                   CodeReply* reply) override {
     std::cout << "注册请求-入口" << std::endl;
-        
-    LoginCore loginCore;
-    HandleResult result = loginCore.handleUserSign(request->account(),request->password());
+       
+    string account = request->account();
+    string password = request->password();
+
+    bool isParamValid = true;
+    string error_msg;
     
-    reply->set_code(result.getCode());
-    reply->set_msg(result.getMsg());
-    reply->set_data(result.getData());
+    //校验用户账号
+    if (!CommonUtils::CheckAccountValid(account, error_msg)) {
+      reply->set_code(ResultCode::ERROR_PARAM_IS_INVALID);
+      reply->set_msg(error_msg);
+      isParamValid = false;
+      std::cout << "error : account is not valid" << std::endl;
+    };
+
+    //校验用户密码
+    if (isParamValid && !CommonUtils::CheckPasswordValid(password, error_msg)) {
+      reply->set_code(ResultCode::ERROR_PARAM_IS_INVALID);
+      reply->set_msg(error_msg);
+      isParamValid = false;
+      std::cout << "error : password is not valid" << std::endl;
+    };
+
+    //参数正确，执行请求
+    if (isParamValid) {
+      LoginCore loginCore;
+      HandleResult result = loginCore.handleUserSign(account,password);
+      reply->set_code(result.getCode());
+      reply->set_msg(result.getMsg());
+      reply->set_data(result.getData());
+    } 
+   
     std::cout << "注册请求-结束" << std::endl;
     return Status::OK;
   }
@@ -420,9 +472,11 @@ class AccountServiceImpl final : public Account::Service {
   Status requestLogout(ServerContext* context, const LogoutRequest* request,
                   CodeReply* reply) override {
     std::cout << "下线请求-入口" << std::endl;
-        
+
+    string token = request->token();
+
     LoginCore loginCore;
-    HandleResult result = loginCore.handleUserLogout(request->token());
+    HandleResult result = loginCore.handleUserLogout(token);
     
     reply->set_code(result.getCode());
     reply->set_msg(result.getMsg());
@@ -435,12 +489,28 @@ class AccountServiceImpl final : public Account::Service {
                   CodeReply* reply) override {
     std::cout << "连线检测请求-入口" << std::endl;
 
-    LoginCore loginCore;
-    HandleResult result = loginCore.handleUserCheckConnect(request->token());
+    string token = request->token();
+
+    bool isParamValid = true;
+    string error_msg;
     
-    reply->set_code(result.getCode());
-    reply->set_msg(result.getMsg());
-    reply->set_data(result.getData());
+    //校验用户token
+    if (!CommonUtils::CheckTokenValid(token, error_msg)) {
+      reply->set_code(ResultCode::ERROR_PARAM_IS_INVALID);
+      reply->set_msg(error_msg);
+      isParamValid = false;
+      std::cout << "error : token is not valid" << std::endl;
+    };
+
+    //参数正确，执行请求
+    if (isParamValid) {
+      LoginCore loginCore;
+      HandleResult result = loginCore.handleUserCheckConnect(token);  
+      reply->set_code(result.getCode());
+      reply->set_msg(result.getMsg());
+      reply->set_data(result.getData());
+    }
+    
     std::cout << "连线检测请求-结束" << std::endl;
     return Status::OK;
   }
