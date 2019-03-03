@@ -100,14 +100,22 @@
 1. 补充参数校验
 2. DB采用Sqlite进行数据存储
 3. 用户密码初始化，加密处理
+
 	3-1. 将用户账号进行Sha256消息摘要计算
+	
 		salt = Sha256 (account)
+		
 	3-2. 将salt与密码合并，获得字符数组，进行MD5计算
+	
 	    encrypt_password = MD5 (salt + password)
 4. 登录后返回Token
+
 	4-1. 获得加密前Token
+	
 		Info = [UID]:[Account]:[随机6位数字]:[生成Token时间（秒）]:[Token过期时间（秒）]
-	4-2. 用AES对称算法进行加密处理	
+		
+	4-2. 用AES对称算法进行加密处理
+	
 		Toekn = AES ("Info"）
 5. 根据Token判断登录状态是否过期
 6. 根据Token判断用户是否在线
