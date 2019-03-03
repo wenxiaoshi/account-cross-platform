@@ -1,6 +1,6 @@
 # 单终端登录系统
 
-客户端下载链接：[MyLogin](http://melon-personal.oss-cn-shenzhen.aliyuncs.com/app-release.apk)
+客户端下载链接：[MyLogin](https://fir.im/5vh8)
 
 ## 功能简介
 
@@ -9,20 +9,24 @@
 
 ## 技术简介
 
-- 客户端用Android实现，采用Djinni实现跨平台开发（Android & IOS with C++）
-- 后台用C++实现
-- 采用GPRC进行远程通信，自己生成非对称密钥（crt\key\pem），使用SSL进行数据传输加密
-- 采用Bazel构建后台项目，以及依赖管理
-- 采用Docker部署项目，并使用Docker Compose编排容器
+- 客户端用Android实现，采用Djinni实现跨平台开发，业务逻辑在C层实现
+- 服务端用C++实现，数据库使用SQLite3
+- 使用GPRC进行远程通信，生成非对称密钥，使用SSL进行数据传输加密
+- 使用Bazel构建后台项目，以及依赖管理
+- 使用Docker部署项目，并使用Docker Compose编排容器
 
 ## 项目架构图
 
-<center class="half">
-<img src="http://melon-personal.oss-cn-shenzhen.aliyuncs.com/login-android.png" width="200"/>
-<img src="http://melon-personal.oss-cn-shenzhen.aliyuncs.com/login-android.png" width="200"/>
-</center>
-
-![](images/login-back.png)
+<table>
+    <tr>
+        <td><center>客户端架构图</center></td>
+        <td><center>服务器端架构图</center></td>
+    </tr>
+    <tr>
+        <td><center><img src="http://melon-personal.oss-cn-shenzhen.aliyuncs.com/login-android.png"></center></td>
+        <td><center><img src="http://melon-personal.oss-cn-shenzhen.aliyuncs.com/login-android.png"></center></td>
+    </tr>
+</table>
 
 ## 项目流程图
 
