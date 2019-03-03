@@ -46,7 +46,7 @@ bool Database::init() {
         checkAndCreateTable();
         return true;
     } else {
-        cout << "error : open db fail !" << endl;
+        cout << "error : open db fail ! error_code = " << result <<  endl;
         return false;
     }
 

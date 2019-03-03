@@ -4,8 +4,6 @@
 
 FROM gcc
 
-#MAINTAINER Weiwen Tu <tuweiwen@ipin.com>
-
 # This section for common define
 ENV WORK_DIR /account
 ENV LOG_DIR /data/log
