@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <vector>
 #include <set>
+#include <time.h>
 
 #include <grpcpp/grpcpp.h>
 
@@ -134,15 +135,10 @@ public:
   }
 
   /**
-  * 判断某账号是否在线
+  * 根据UID获取用户Session信息
   **/
-  bool checkUserIdOnline(int uid, string token){
-    UserSession userSession = Database::database->queryUserSessionByUid(uid);
-    if (!userSession.isOnline()) {
-      return false;
-    }
-    string db_token = userSession.getToken();
-    return isEqual(token, db_token);
+  UserSession getUserSession(int uid){
+    return Database::database->queryUserSessionByUid(uid);
   }
 
  /**
@@ -170,7 +166,7 @@ private:
 
 class LoginCore{
 public:
-  HandleResult handleUserLogin(std::string account,std::string password){
+  HandleResult handleUserLogin(string account,string password){
     HandleResult result;
     
     LoginDatabase login_db;
@@ -184,9 +180,15 @@ public:
       return result;
     }
 
+    //获得加密后password
+    string encrypt_password = CommonUtils::EncryptPwd(account, password);
+    if (encrypt_password.empty()) {
+      result.setCode(2007);
+      result.setMsg("初始化密码失败");
+      return result;
+    }
+
     //查询密码是否正确
-    //todo 获得加密后密码，进行校验
-    string encrypt_password = password;
     string db_password = userAccount.getPassword();
     if(!login_db.isEqual(db_password, encrypt_password)) {
       result.setCode(2001);
@@ -212,7 +214,7 @@ public:
     return result;
   };
 
-  HandleResult handleUserSign(std::string account,std::string password){
+  HandleResult handleUserSign(string account,string password){
     HandleResult result;
     
     LoginDatabase login_db;
@@ -224,10 +226,15 @@ public:
       return result;
     }
 
-    //todo 密码初始化，进行加密，再保存数据库
-    string encrypt_password = password;
+    //获得加密后password
+    string encrypt_password = CommonUtils::EncryptPwd(account, password);
+    if (encrypt_password.empty()) {
+      result.setCode(2007);
+      result.setMsg("初始化密码失败");
+      return result;
+    }
 
-    //新增账号
+    //新增用户，插入账号信息到数据库
     if (!login_db.insertAccountToDB(account,encrypt_password)){
       result.setCode(2004);
       result.setMsg("新增账号失败");
@@ -275,7 +282,7 @@ public:
     
     //解析Token，获取用户信息
     vector<string> vToken;
-    CommonUtils::splitString(decodeToken, vToken, ":");
+    CommonUtils::SplitString(decodeToken, vToken, ":");
     if (vToken.size() != 5) {
       result.setMsg("token不合法");
       return result;
@@ -314,27 +321,41 @@ HandleResult handleUserCheckConnect(std::string token){
    
     //解析Token，获取用户信息
     std::vector<string> vToken;
-    CommonUtils::splitString(decodeToken, vToken, ":");
+    CommonUtils::SplitString(decodeToken, vToken, ":");
     if (vToken.size() != 5) {
       result.setCode(2006);
       result.setMsg("用户token不合法");
       return result;
     }
 
-    ///获得账号UID
+    //获取Token过期时间
+    string token_end_time = vToken[4];
+    int end_time = getIntByString(token_end_time);
+
+    //判断Token是否过期
+    if (isTimeExpired(end_time)) {
+      result.setCode(2008);
+      result.setMsg("用户token已过期");
+      return result;
+    }
+
+    //获得账号UID
     string str_uid = vToken[0];
-    stringstream ss;
-    ss<<str_uid;
-    int uid;
-    ss>>uid;
+    int uid = getIntByString(str_uid);
 
     //获取数据库操作类
     LoginDatabase login_db;
 
     //检查账号是否在线
-    if (!login_db.checkUserIdOnline(uid, token)){
-      result.setCode(2005);
+    UserSession userSession = login_db.getUserSession(uid);
+    if (!userSession.isOnline()){
+      result.setCode(2009);
       result.setMsg("该账号不在线");
+      return result;
+    }
+    if (!isEqual(token, userSession.getToken())){
+      result.setCode(2005);
+      result.setMsg("该账号在另一端登录");
       return result;
     }
 
@@ -343,6 +364,25 @@ HandleResult handleUserCheckConnect(std::string token){
   };
 
 private:
+
+  /**
+  * 将string转换成int
+  **/
+  int getIntByString(string str) {
+    stringstream ss;
+    ss<<str;
+    int i_data;
+    ss>>i_data;
+    return i_data;
+  }
+
+  /**
+  * 判断时间是否过期
+  **/
+  bool isTimeExpired(int time){
+    time_t now_time = time(NULL);
+    return now_time < time;
+  }
 
 };
 
