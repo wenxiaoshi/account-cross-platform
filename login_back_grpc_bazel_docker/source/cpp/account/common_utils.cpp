@@ -1,6 +1,7 @@
 //
 // Created by melon on 2019/2/28.
 //
+#include <exception> 
 
 #include "common_utils.h"
 
@@ -74,6 +75,31 @@ void CommonUtils::SplitString(const std::string& s, std::vector<std::string>& v,
 }
 
 string CommonUtils::EncryptPwd(string account, string password){
-    MD5 md5(password);
+    if (account.empty() || password.empty()) {
+        return "";
+    }
+    try {      
+        //用sha256对account进行消息摘要，目的是给password加盐
+        char sha256_account[256];
+        SHA256 sha256;
+        sha256.digest(account,sizeof(account)-1,sha256_account);
+        cout << "info : sha256 " << sha256_account << endl;
+
+        //获取加密前password字符数组
+        char* c_password = password.c_str();
+
+        //合并salt到password字符数组
+        size_t length = 256 + c_password.size();
+        char c_source[length];
+        snprintf(c_source, sizeof(c_source), "%s%s", sha256_account, c_password)
+        cout << "info :  digest " << c_source << endl;
+
+        //对字符数组进行MD5计算
+        MD5 md5(c_source, length);
+        return md5.toString();
+    } catch (exception& e) {  
+        cout << "error : " << e.what() << endl;
+        return "";
+    }
 }
 

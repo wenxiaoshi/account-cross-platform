@@ -42,13 +42,13 @@ cc_library(
     name = "commonutils",
     srcs = ["cpp/account/common_utils.cpp"],
     hdrs = ["cpp/account/common_utils.h"],
-    deps = [":aes_cipher"],
+    deps = [":cipher"],
 )
 
 cc_library(
-    name = "aes_cipher",
-    srcs = ["cpp/account/aes_encryptor.cpp","cpp/account/aes.cpp"],
-    hdrs = ["cpp/account/aes_encryptor.h","cpp/account/aes.h"],
+    name = "cipher",
+    srcs = ["cpp/account/aes_encryptor.cpp","cpp/account/aes.cpp","cpp/account/md5.cc","cpp/account/sha256.cc"],
+    hdrs = ["cpp/account/aes_encryptor.h","cpp/account/aes.h","cpp/account/md5.h","cpp/account/sha256.h"],
 )
 
 cc_library(
