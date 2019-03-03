@@ -318,7 +318,7 @@ namespace cipher_center {
 	template <typename InIter, typename OutIter>
 	void hash256(InIter first, InIter last, OutIter first2, OutIter last2,
 	             int buffer_size = PICOSHA2_BUFFER_SIZE_FOR_INPUT_ITERATOR) {
-	    picosha2::impl::hash256_impl(
+	    cipher_center::impl::hash256_impl(
 	        first, last, first2, last2, buffer_size,
 	        typename std::iterator_traits<InIter>::iterator_category());
 	}

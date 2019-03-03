@@ -81,22 +81,23 @@ string CommonUtils::EncryptPwd(string account, string password){
     if (account.empty() || password.empty()) {
         return "";
     }
-    try {      
-        
+    try {       
         cout << "info : encryt ac`" << account << " psd`" << password << endl;
 	    //用sha256对account进行消息摘要，目的是给password加盐
-        std::string sha256_account;
-        picosha2::hash256_hex_string(account.c_str(), sha256_account);
+        string sha256_account;
+        hash256_hex_string(account, sha256_account);
         cout << "info : sha256 " << sha256_account << endl;
+        const char* c_account = sha256_account.c_str();
 
         //获取加密前password字符数组
         const char* c_password = password.c_str();
 
         //合并salt到password字符数组
-        size_t length = strlen(sha256_account) + strlen(c_password);
+        size_t length = strlen(c_account) + strlen(c_password);
         cout << "info :  digest length " << length << endl;
-        char c_source[length];
-        snprintf(c_source, sizeof(c_source), "%s%s", sha256_account, c_password);
+        char c_source[length+1];
+        snprintf(c_source, length+1, "%s%s", c_account, c_password);
+
         cout << "info :  digest " << c_source << endl;
 
         //对字符数组进行MD5计算
