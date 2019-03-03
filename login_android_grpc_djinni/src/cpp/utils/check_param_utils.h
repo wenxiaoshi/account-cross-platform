@@ -9,12 +9,17 @@
 
 #include "string"
 
+using namespace std;
+
 namespace utils{
 
     class ParamUtils{
     public:
-        static bool checkAccountValid(std::string account,std::string & errorMsg);
-        static bool checkPasswordValid(std::string password,std::string & errorMsg);
+        static bool checkAccountValid(string account,string & errorMsg);
+        static bool checkPasswordValid(string password,string & errorMsg);
+
+    private:
+        static bool patternMatch(string pattern, string source_str);
     };
 
 }

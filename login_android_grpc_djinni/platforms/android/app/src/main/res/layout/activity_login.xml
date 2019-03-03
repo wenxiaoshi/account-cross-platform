@@ -21,8 +21,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="账号："
-                android:textColor="#000000"
+                android:text="@string/activity_xml_login_account"
+                android:textColor="@color/black"
                 android:textSize="18sp"/>
 
             <EditText
@@ -32,7 +32,9 @@
                 android:inputType="phone"
                 android:maxLines="1"
                 android:maxLength="16"
-                android:textColor="#000000"
+                android:hint="@string/activity_xml_login_hint_type_phone"
+                android:textColorHint="@color/gray"
+                android:textColor="@color/black"
                 android:textSize="18sp"/>
 
         </LinearLayout>
@@ -46,8 +48,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="密码："
-                android:textColor="#000000"
+                android:text="@string/activity_xml_login_password"
+                android:textColor="@color/black"
                 android:textSize="18sp"/>
 
             <EditText
@@ -57,7 +59,9 @@
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:maxLength="30"
-                android:textColor="#000000"
+                android:hint="@string/activity_xml_login_hint_type_password"
+                android:textColorHint="@color/gray"
+                android:textColor="@color/black"
                 android:textSize="18sp"/>
 
         </LinearLayout>
@@ -73,14 +77,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="20dp"
-                android:text="登录" />
+                android:text="@string/activity_xml_login_login" />
 
             <Button
                 android:id="@+id/bt_sign"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:text="注册" />
+                android:text="@string/activity_xml_login_sign" />
 
         </LinearLayout>
 
@@ -101,7 +105,7 @@
             android:id="@+id/tv_result_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="登录成功"
+            android:text="@string/activity_xml_login_login_success"
             android:textColor="@color/black"
             android:textSize="22sp"/>
 
@@ -114,7 +118,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="账号："
+                android:text="@string/activity_xml_login_account"
                 android:textColor="@color/black"
                 android:textSize="18sp"/>
 
@@ -122,7 +126,6 @@
                 android:id="@+id/tv_result_account"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="13533192332"
                 android:textSize="18sp"
                 android:textColor="@color/black"/>
 
@@ -133,7 +136,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
-            android:text="退出登录"
+            android:text="@string/activity_xml_login_logout"
             android:textSize="14sp" />
 
     </LinearLayout>

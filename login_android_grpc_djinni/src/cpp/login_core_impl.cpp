@@ -5,7 +5,6 @@
 #include <vector>
 
 #include "NativeLoginListener.hpp"
-#include "NativeNetwork.h"
 
 #include "action_result.hpp"
 #include "login_core_impl.hpp"
@@ -17,8 +16,6 @@
 
 #include <iostream>
 #include <exception>
-
-#include "common_utils.h"
 
 #define TAG    "com.wechat.mylogin"
 #define LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG,TAG,__VA_ARGS__)
@@ -40,9 +37,6 @@ namespace demo {
     bool LoginCoreImpl::isLogin = false;
 
     void LoginCoreImpl::user_login(const std::string & account, const std::string & password) {
-
-//        string token = CommonUtils::GenToken(1000,"13533192332");
-//        token = CommonUtils::DecryptToken(token);
 
         //检查账号是否正确
         std::string accountErrorMsg;
