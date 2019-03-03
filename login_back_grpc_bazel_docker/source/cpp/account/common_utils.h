@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 #include "aes_encryptor.h"
+#include "md5.h"
 
 using namespace std;
 using namespace cipher_center;
@@ -21,7 +22,9 @@ namespace utils{
         static string GenToken(const unsigned long uid, const string account);
         static string DecryptToken(string token);
 
-        static void splitString(const std::string& s, std::vector<std::string>& v, const std::string& c);
+        static string EncryptPwd(string account, string password);
+
+        static void SplitString(const std::string& s, std::vector<std::string>& v, const std::string& c);
         
     private:
         static string GenRandomStr();

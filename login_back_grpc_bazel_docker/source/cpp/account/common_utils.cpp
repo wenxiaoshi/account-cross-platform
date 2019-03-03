@@ -58,7 +58,7 @@ string CommonUtils::GenRandomStr(){
     return strStream.str();
 }
 
-void CommonUtils::splitString(const std::string& s, std::vector<std::string>& v, const std::string& c) {
+void CommonUtils::SplitString(const std::string& s, std::vector<std::string>& v, const std::string& c) {
             std::string::size_type pos1, pos2;
             pos2 = s.find(c);
             pos1 = 0;
@@ -71,5 +71,9 @@ void CommonUtils::splitString(const std::string& s, std::vector<std::string>& v,
             }
             if(pos1 != s.length())
                 v.push_back(s.substr(pos1));
+}
+
+string CommonUtils::EncryptPwd(string account, string password){
+    MD5 md5(password);
 }
 

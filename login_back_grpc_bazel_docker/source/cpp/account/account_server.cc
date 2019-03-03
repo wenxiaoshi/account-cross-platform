@@ -267,7 +267,7 @@ public:
     
     //解析Token，获取用户信息
     vector<string> vToken;
-    CommonUtils::splitString(decodeToken, vToken, ":");
+    CommonUtils::SplitString(decodeToken, vToken, ":");
     if (vToken.size() != 5) {
       result.setMsg("token不合法");
       return result;
@@ -306,7 +306,7 @@ HandleResult handleUserCheckConnect(std::string token){
    
     //解析Token，获取用户信息
     std::vector<string> vToken;
-    CommonUtils::splitString(decodeToken, vToken, ":");
+    CommonUtils::SplitString(decodeToken, vToken, ":");
     if (vToken.size() != 5) {
       result.setCode(2006);
       result.setMsg("用户token不合法");
