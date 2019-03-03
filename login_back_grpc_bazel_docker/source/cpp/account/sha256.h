@@ -369,7 +369,6 @@ namespace cipher_center {
 	}
 	template<typename OutIter>void hash256(std::ifstream& f, OutIter first, OutIter last){
 	    hash256(std::istreambuf_iterator<char>(f), std::istreambuf_iterator<char>(), first,last);
-
 	}
 }// namespace picosha2
 #endif // PICOSHA2_H

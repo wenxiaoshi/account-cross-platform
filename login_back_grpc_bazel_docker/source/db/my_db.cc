@@ -106,7 +106,6 @@ void Database::checkAndCreateTable() {
  * 根据SQL判断是否存在
 **/
 bool Database::isExist(string str_sql){
-    cout << str_sql << endl;
     
     //获得SQL语句
     const char *sqlSentence = str_sql.c_str();
@@ -221,9 +220,9 @@ bool Database::update(string tabls_name, std::vector<string> v_key, std::vector<
     string str_sql = "UPDATE " + tabls_name + " SET ";
 
     //set值组装
-    str_sql += v_key[0] + " = " + str_value[0];
+    str_sql += v_key[0] + " = " + v_value[0];
     for (unsigned int i = 1; i < v_key.size(); i++) {
-        str_sql += ", " + v_key[i] + " = " + str_value[i];
+        str_sql += ", " + v_key[i] + " = " + v_value[i];
     }
 
     //where条件组装
@@ -231,7 +230,7 @@ bool Database::update(string tabls_name, std::vector<string> v_key, std::vector<
         str_sql += " WHERE " + where_key[0] + " = " + where_value[0];
     }
     for (unsigned int i = 1; i < where_key.size(); i++) {
-        str_sql += "and " + v_key[i] + " = " + str_value[i];
+        str_sql += "and " + where_key[i] + " = " + where_value[i];
     }
 
     str_sql += ";";
@@ -378,7 +377,7 @@ UserSession Database::queryUserSessionByUid(int o_uid){
     ss<<o_uid;
 
     //获得SQL语句
-    string str_sql = "SELECT UID , TOKEN , IS_ONLINE FROM " + TABLE_USER_ACCOUNT + "  WHERE UID = '" + ss.str() + "' ;";
+    string str_sql = "SELECT UID , TOKEN , IS_ONLINE FROM " + TABLE_USER_SESSION + "  WHERE UID = '" + ss.str() + "' ;";
     const char *sqlSentence = str_sql.c_str();
     cout << "info : sql querySession | " << str_sql << endl;
 

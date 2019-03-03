@@ -26,14 +26,11 @@
 #include <stdlib.h>
 #include <vector>
 #include <set>
-#include <time.h>
 
 #include <grpcpp/grpcpp.h>
 
 #include "hash_map.h"
 #include "common_utils.h"
-#include "user_account.h"
-#include "user_session.h"
 #include "my_log.h"
 #include "source/db/my_db.h"
 
@@ -42,12 +39,6 @@
 #else
 #include "account.grpc.pb.h"
 #endif
-
-// #include <boost/scoped_ptr.hpp>
-// #include "source/mysql/jdbc/mysql_driver.h"
-// #include "source/mysql/jdbc/mysql_connection.h"
-// #include "source/mysql/jdbc/cppconn/resultset.h"
-// #include "source/mysql/jdbc/cppconn/statement.h"
 
 using namespace std;
 using namespace my_struct;
@@ -148,7 +139,6 @@ public:
   UserSession getUserSession(int uid){
     return Database::database->queryUserSessionByUid(uid);
   }
-
 
 private:
 
@@ -356,8 +346,8 @@ HandleResult handleUserCheckConnect(std::string token){
   };
 
 private:
-  
-  /**
+
+ /**
   * 判断字符串是否相等
   **/
   bool isEqual(string origin,string target) {
@@ -374,7 +364,7 @@ private:
     return true;
   }
 
-  /**
+ /**
   * 将string转换成int
   **/
   int getIntByString(string str) {
@@ -385,12 +375,12 @@ private:
     return i_data;
   }
 
-  /**
+ /**
   * 判断时间是否过期
   **/
-  bool isTimeExpired(int time){
+  bool isTimeExpired(int end_time){
     time_t now_time = time(NULL);
-    return now_time < time;
+    return now_time < end_time;
   }
 
 };
