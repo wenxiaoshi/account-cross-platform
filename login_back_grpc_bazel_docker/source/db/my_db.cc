@@ -78,7 +78,7 @@ void Database::checkAndCreateTable() {
             LOGE("create table USER_ACCOUNT fail | " + string(zErrMsg));
             sqlite3_free(zErrMsg);
         } else {
-            LOGI("create table USER_ACCOUNT success");
+            LOGD("create table USER_ACCOUNT success");
         }
     }
     
@@ -100,7 +100,7 @@ void Database::checkAndCreateTable() {
                 LOGE("create table USER_SESSION fail | " + string(zErrMsg));
                 sqlite3_free(zErrMsg);
             } else {
-                LOGI("create table USER_SESSION success");
+                LOGD("create table USER_SESSION success");
             }
         } else {
             LOGE("create table TABLE_USER_SESSION fail | TABLE_USER_ACCOUNT is not exist");
@@ -184,7 +184,7 @@ bool Database::insert(string tabls_name, std::vector<string> v_key, std::vector<
     //执行插入语句
     int result =  sqlite3_exec(sql, sqlSentence, NULL, NULL, &zErrMsg);
     if (result == SQLITE_OK) {
-        LOGI("db insert success");
+        LOGD("db insert success");
     } else {
         LOGW("db insert fail | " + string(zErrMsg));
         return false;
@@ -244,7 +244,7 @@ bool Database::update(string tabls_name, std::vector<string> v_key, std::vector<
     //执行插入语句
     int result =  sqlite3_exec(sql, sqlSentence, NULL, NULL, &zErrMsg);
     if (result == SQLITE_OK) {
-        LOGI("db update success");
+        LOGD("db update success");
     } else {
         LOGW("db update fail | " + string(zErrMsg));
         return false;

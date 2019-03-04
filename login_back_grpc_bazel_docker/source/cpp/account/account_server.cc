@@ -309,8 +309,6 @@ HandleResult handleUserCheckConnect(std::string token){
       return result;
     }
 
-    LOGD("check_connect token is " + decodeToken);
-
     std::vector<string> vToken;
     CommonUtils::SplitString(decodeToken, vToken, ":");
     if (vToken.size() != 5) {
@@ -404,7 +402,7 @@ class AccountServiceImpl final : public Account::Service {
     string account = request->account();
     string password = request->password();
 
-    LogMBean log_bean(requestUserLogin);
+    LogMBean log_bean("requestUserLogin");
 
     bool isParamValid = true;
     string error_msg;
@@ -434,6 +432,7 @@ class AccountServiceImpl final : public Account::Service {
       reply->set_data(result.getData());
     }
     
+    //打印接口日志
     log_bean.addParam("account", account);
     log_bean.addParam("password", password);
     LOGM(log_bean);
@@ -443,10 +442,10 @@ class AccountServiceImpl final : public Account::Service {
   Status requestUserSign(ServerContext* context, const SignRequest* request,
                   CodeReply* reply) override {
 
+    LogMBean log_bean("requestUserSign");
+      
     string account = request->account();
     string password = request->password();
-
-    LOGI("requestUserSign | account = " + account + ", password = " + password);
 
     bool isParamValid = true;
     string error_msg;
@@ -476,31 +475,42 @@ class AccountServiceImpl final : public Account::Service {
       reply->set_data(result.getData());
     } 
    
+    //打印接口日志
+    log_bean.addParam("account", account);
+    log_bean.addParam("password", password);
+    LOGM(log_bean);
+
     return Status::OK;
   }
 
   Status requestLogout(ServerContext* context, const LogoutRequest* request,
                   CodeReply* reply) override {
 
+    LogMBean log_bean("requestLogout");
+
     string token = request->token();
 
-    LOGI("requestLogout | token = " + token);
-
+    //执行请求
     LoginCore loginCore;
     HandleResult result = loginCore.handleUserLogout(token);
     
     reply->set_code(result.getCode());
     reply->set_msg(result.getMsg());
     reply->set_data(result.getData());
+
+    //打印接口日志
+    log_bean.addParam("token", token);
+    LOGM(log_bean);
+
     return Status::OK;
   }
 
   Status checkConnect(ServerContext* context, const ConnectRequest* request,
                   CodeReply* reply) override {
 
-    string token = request->token();
+    LogMBean log_bean("checkConnect");
 
-    LOGI("checkConnect | token = " + token);
+    string token = request->token();
 
     bool isParamValid = true;
     string error_msg;
@@ -522,6 +532,10 @@ class AccountServiceImpl final : public Account::Service {
       reply->set_data(result.getData());
     }
     
+    //打印接口日志
+    log_bean.addParam("token", token);
+    LOGM(log_bean);
+
     return Status::OK;
   }
 };
