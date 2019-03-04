@@ -55,6 +55,7 @@ cc_library(
     name = "my_log",
     srcs = ["cpp/account/my_log.cc"],
     hdrs = ["cpp/account/my_log.h"],
+    deps = [":file_utils"],
 )
 
 cc_library(
@@ -81,4 +82,10 @@ cc_library(
     name = "my_constant",
     srcs = ["cpp/account/my_constant.cc"],
     hdrs = ["cpp/account/my_constant.h"],
+)
+
+cc_library(
+    name = "file_utils",
+    srcs = ["cpp/account/file_utils.cpp"],
+    hdrs = ["cpp/account/file_utils.h"],
 )

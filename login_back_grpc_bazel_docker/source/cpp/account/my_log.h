@@ -12,6 +12,7 @@ namespace utils{
         static void LOGI(string msg);
         static void LOGW(string msg);
     private:
+    	static void SimpleWrite(string type, string msg);
     };
 
 }
