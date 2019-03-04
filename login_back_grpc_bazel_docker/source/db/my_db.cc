@@ -7,6 +7,11 @@
 #include <sstream>
 
 #include "my_db.h"
+#include "source/cpp/account/my_log.h"
+
+#define LOGD(msg)  utils::LogUtil::LOGD(msg);
+#define LOGW(msg)  utils::LogUtil::LOGW(msg);
+#define LOGI(msg)  utils::LogUtil::LOGI(msg);
 
 using namespace db_utils;
 using namespace std;
@@ -28,7 +33,7 @@ Database::~Database(){
 **/
 bool Database::init() {
 	if (isHadInit) {
-		cout << "warning : database had init !" << endl;
+		LOGW("database had init !");
 		return true;
 	}
 	isHadInit = true;

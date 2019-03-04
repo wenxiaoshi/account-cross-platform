@@ -1,17 +1,17 @@
 
-#include "string"
+#include <string>
 
 using namespace std;
 
-namespace log_utils{
+namespace utils{
 
-	class LOG
-	{
-	public:
-		static void error(string info);
-	private:
-		static void init();
-		static bool isHadInit;
-	};
+    class LogUtil{
+    public:
+        static void LOGD(string msg);
+        static void LOGE(string msg);
+        static void LOGI(string msg);
+        static void LOGW(string msg);
+    private:
+    };
 
 }

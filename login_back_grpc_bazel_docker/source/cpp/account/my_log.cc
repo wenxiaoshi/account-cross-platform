@@ -2,22 +2,21 @@
 #include "my_log.h"
 #include <iostream>
 #include <fstream>
-using namespace std;
-using namespace log_utils;
 
-bool LOG::isHadInit = false;
+using namespace utils;
 
-void LOG::init(){
-	if (!isHadInit)
-	{
-	   isHadInit = true;
-	   ofstream logfile("source/log/error.log");
-    	   clog.rdbuf(logfile.rdbuf());
-	}
+void LogUtil::LOGD(string msg){
+    cout << "DEBUG : " << msg << endl
 }
 
-void LOG::error(string info){
-	init();
-	clog<<info<<endl;
+void LogUtil::LOGE(string msg){
+    cout << "ERROR : " << msg << endl
 }
 
+void LogUtil::LOGI(string msg){
+    cout << "INFO : " << msg << endl
+}
+
+void LogUtil::LOGW(string msg){
+    cout << "WARN : " << msg << endl
+}
