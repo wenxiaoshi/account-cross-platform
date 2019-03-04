@@ -16,10 +16,7 @@
 #include <assert.h>
 #include <string>
 
-#include "log_utils.h"
 #include "file_utils.h"
-
-#define LOGD(msg)  utils::LogUtil::LOGD(msg)
 
 //判断是否为目录
 bool utils::File::isDir(const char *path)
@@ -180,7 +177,6 @@ char* utils::File::readFile(const char *fileName) {
     FILE *fp;
     fp = fopen(fileName, "r");
     if (NULL == fp) {
-        LOGD("[file_utils]read file fp null");
         return NULL;
     }
 

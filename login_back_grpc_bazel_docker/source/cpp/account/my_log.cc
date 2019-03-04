@@ -2,7 +2,7 @@
 #include "my_log.h"
 #include "file_utils.h"
 
-#include <time.h> 
+
 #include <stdio.h> 
 #include <iostream>
 #include <fstream>
@@ -11,19 +11,23 @@
 using namespace utils;
 
 void LogUtil::LOGD(string msg){
-    SimpleWrite("DEBUG : ", msg);
+    SimpleWrite("[ DEBUG ] ", msg);
 }
 
 void LogUtil::LOGE(string msg){
-    SimpleWrite("ERROR : ", msg);
+    SimpleWrite("[ ERROR ] ", msg);
 }
 
 void LogUtil::LOGI(string msg){
-    SimpleWrite("INFO : ", msg);
+    SimpleWrite("[ INFO ] ", msg);
 }
 
 void LogUtil::LOGW(string msg){
-    SimpleWrite("WARN : ", msg);
+    SimpleWrite("[ WARN ] ", msg);
+}
+
+void LogUtil::LOGM(LogMBean bean){
+	SimpleWrite("[ INFO ] ", bean.toString());
 }
 
 void LogUtil::SimpleWrite(string type, string msg){
@@ -33,8 +37,11 @@ void LogUtil::SimpleWrite(string type, string msg){
 
 	time_t t = time(NULL); 
     char c_time[11]; 
-    strftime(c_time, sizeof(c_time), "%Y-%m-%d",localtime(&t)); 
-	string fileName = string(c_time) + ".log";
+    char c_log_time[25];
+    strftime(c_time, sizeof(c_time), "%F",localtime(&t)); 
+    strftime(c_log_time, sizeof(c_log_time), "%F %T",localtime(&t));
+    
+    string fileName = string(c_time) + ".log";
 
 	string filePath = dirName + fileName;
 
@@ -50,7 +57,7 @@ void LogUtil::SimpleWrite(string type, string msg){
 	
 	try{
 		FILE *fp = fopen(c_filePath, "a+");  
-	    fprintf(fp, "%s%ul test %s\n", type, t, msg);  
+	    fprintf(fp, "%s %s %s\n", type.c_str(),c_log_time, msg.c_str());  
 	    fclose(fp); 
 	} catch (exception& e) {  
         cout << "WARN : log file can not be open !" << endl;

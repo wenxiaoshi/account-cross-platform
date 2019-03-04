@@ -45,6 +45,7 @@
 #define LOGW(msg)  utils::LogUtil::LOGW(msg);
 #define LOGI(msg)  utils::LogUtil::LOGI(msg);
 #define LOGE(msg)  utils::LogUtil::LOGE(msg);
+#define LOGM(bean) utils::LogUtil::LOGM(bean);
 
 using namespace std;
 using namespace my_struct;
@@ -63,6 +64,7 @@ using account::ConnectRequest;
 using account::LogoutRequest;
 using account::CodeReply;
 using account::Account;
+using utils::LogMBean;
 
 class HandleResult{
 private:
@@ -307,7 +309,7 @@ HandleResult handleUserCheckConnect(std::string token){
       return result;
     }
 
-    LOGI("check_connect token is " + decodeToken);
+    LOGD("check_connect token is " + decodeToken);
 
     std::vector<string> vToken;
     CommonUtils::SplitString(decodeToken, vToken, ":");
@@ -402,7 +404,7 @@ class AccountServiceImpl final : public Account::Service {
     string account = request->account();
     string password = request->password();
 
-    LOGI("requestUserLogin | account = " + account + ", password = " + password);
+    LogMBean log_bean(requestUserLogin);
 
     bool isParamValid = true;
     string error_msg;
@@ -432,6 +434,9 @@ class AccountServiceImpl final : public Account::Service {
       reply->set_data(result.getData());
     }
     
+    log_bean.addParam("account", account);
+    log_bean.addParam("password", password);
+    LOGM(log_bean);
     return Status::OK;
   }
 
@@ -557,7 +562,7 @@ void RunServer() {
   builder.RegisterService(&service);
   // Finally assemble the server.
   std::unique_ptr<Server> server(builder.BuildAndStart());
-  LOGI("Server listening on " + server_address);
+  LOGD("Server listening on " + server_address);
 
   // Wait for the server to shutdown. Note that some other thread must be
   // responsible for shutting down the server for this call to ever return.
@@ -566,8 +571,6 @@ void RunServer() {
 
 int main(int argc, char** argv) {
    
-    // LOG::error("test");
-
    RunDb();
    RunServer();
    return 0;

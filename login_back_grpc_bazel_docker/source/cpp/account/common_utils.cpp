@@ -5,6 +5,7 @@
 
 #include "common_utils.h"
 #include "my_constant.h"
+#include "my_log.h"
 
 #include <time.h>
 #include <random>
@@ -90,7 +91,7 @@ string CommonUtils::EncryptPwd(string account, string password){
         return "";
     }
     try {       
-        LOGI("encryt ac`" + account + " psd`" + password);
+        LOGD("encryt ac`" + account + " psd`" + password);
 	    //用sha256对account进行消息摘要，目的是给password加盐
         string sha256_account;
         hash256_hex_string(account, sha256_account);
@@ -107,7 +108,7 @@ string CommonUtils::EncryptPwd(string account, string password){
         //对字符数组进行MD5计算
         MD5 md5(c_source, length);
         string result = md5.toString();
-        LOGI("md5 | " + result);
+        LOGD("md5 | " + result);
     	return result;
     } catch (exception& e) {  
         LOGW("EncryptPwd is fail !");
