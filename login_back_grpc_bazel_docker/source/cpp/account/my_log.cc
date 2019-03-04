@@ -50,7 +50,7 @@ void LogUtil::SimpleWrite(string type, string msg){
 	
 	try{
 		FILE *fp = fopen(c_filePath, "a+");  
-	    fprintf(fp, "%s%ul %s\n", type, t, msg);  
+	    fprintf(fp, "%s%ul test %s\n", type, t, msg);  
 	    fclose(fp); 
 	} catch (exception& e) {  
         cout << "WARN : log file can not be open !" << endl;
