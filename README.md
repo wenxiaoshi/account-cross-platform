@@ -57,19 +57,18 @@
 ## 项目实现
 
 ### 接口说明
-| 接口名  | 含义  | 备注 
-|:------|------|------|
-| requestUserLogin | 请求登录接口 |  |
-| requestUserSign | 请求注册接口 |  |
-| requestLogout | 退出登录接口 |  |
-| checkConnect | 检查在线状态接口 |  |
+| 接口名  | 方法 | 参数 | 返参 |
+|:------|------|------|------|
+| 用户登录 | requestUserLogin | account password | token |
+| 用户注册 | requestUserSign | account password | token |
+| 退出登录 | requestLogout | token | |
+| 检查用户在线状态 | checkConnect | token | |
 
 ### 错误码说明
 
 | 错误码  | 含义  | 备注 
 |:------|------|------|
 | 0 | 成功 |  |
-| -1 | 失败 | 默认 |
 | 1010 | pem文件不存在 |  |
 | 2000 | 该账号不存在 |  |
 | 2001 | 用户密码错误 |  |
