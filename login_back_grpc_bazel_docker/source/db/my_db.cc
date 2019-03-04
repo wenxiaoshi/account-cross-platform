@@ -47,7 +47,7 @@ bool Database::init() {
     int result = sqlite3_open_v2(path, &sql, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_NOMUTEX | SQLITE_OPEN_SHAREDCACHE, NULL);
 
     if (result == SQLITE_OK) {
-        LOGI("open db success !");
+        LOGD("open db success !");
         //打开数据库成功，检查表是否存在
         checkAndCreateTable();
         return true;

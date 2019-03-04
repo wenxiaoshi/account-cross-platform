@@ -307,7 +307,7 @@ HandleResult handleUserCheckConnect(std::string token){
       return result;
     }
 
-    LOGI("check_connect token is " + decodeToken);
+    LOGD("check_connect token is " + decodeToken);
 
     std::vector<string> vToken;
     CommonUtils::SplitString(decodeToken, vToken, ":");
@@ -557,7 +557,7 @@ void RunServer() {
   builder.RegisterService(&service);
   // Finally assemble the server.
   std::unique_ptr<Server> server(builder.BuildAndStart());
-  LOGI("Server listening on " + server_address);
+  LOGD("Server listening on " + server_address);
 
   // Wait for the server to shutdown. Note that some other thread must be
   // responsible for shutting down the server for this call to ever return.
@@ -566,8 +566,6 @@ void RunServer() {
 
 int main(int argc, char** argv) {
    
-    // LOG::error("test");
-
    RunDb();
    RunServer();
    return 0;
