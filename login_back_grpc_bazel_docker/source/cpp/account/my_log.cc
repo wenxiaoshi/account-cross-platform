@@ -53,7 +53,6 @@ void LogUtil::SimpleWrite(string type, string msg){
 	}
 	
 	const char * c_filePath = filePath.c_str();
-	cout << "DEBUG : log file path = " << filePath << endl;
 	
 	try{
 		FILE *fp = fopen(c_filePath, "a+");  

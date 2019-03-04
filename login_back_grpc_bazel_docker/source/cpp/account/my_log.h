@@ -8,17 +8,6 @@ using namespace std;
 
 namespace utils{
 
-    class LogUtil{
-    public:
-        static void LOGD(string msg);
-        static void LOGE(string msg);
-        static void LOGI(string msg);
-        static void LOGW(string msg);
-        static void LOGM(LogMBean bean);
-    private:
-    	static void SimpleWrite(string type, string msg);
-    };
-
     class LogMBean{
 
     public:
@@ -32,12 +21,12 @@ namespace utils{
     		v_value.push_back(value);
     	};
 
-    	string getString(){
+    	string toString(){
     		string msg = "Request method: " + method + ", Args [{";
     		if (v_key.size() > 0) {
     			msg += v_key[0] + ":" + v_value[0];
     		}
-    		for (unsigned int i = 0; i < count; i++) {
+    		for (unsigned int i = 1; i < v_key.size(); i++) {
     			msg += "," + v_key[i] + ":" + v_value[i];
     		}
     		msg += "}], cost ";
@@ -53,6 +42,17 @@ namespace utils{
     	clock_t start_time;
     	vector<string> v_key;
     	vector<string> v_value;
+    };
+
+    class LogUtil{
+    public:
+        static void LOGD(string msg);
+        static void LOGE(string msg);
+        static void LOGI(string msg);
+        static void LOGW(string msg);
+        static void LOGM(utils::LogMBean bean);
+    private:
+        static void SimpleWrite(string type, string msg);
     };
 
 }
