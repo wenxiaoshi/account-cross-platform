@@ -13,6 +13,11 @@
 #include <string.h>
 #include <regex>
 
+#define LOGD(msg)  utils::LogUtil::LOGD(msg);
+#define LOGW(msg)  utils::LogUtil::LOGW(msg);
+#define LOGI(msg)  utils::LogUtil::LOGI(msg);
+#define LOGE(msg)  utils::LogUtil::LOGE(msg);
+
 using namespace utils;
 using namespace std;
 using namespace constants;
@@ -85,11 +90,10 @@ string CommonUtils::EncryptPwd(string account, string password){
         return "";
     }
     try {       
-        cout << "info : encryt ac`" << account << " psd`" << password << endl;
+        LOGI("encryt ac`" + account + " psd`" + password);
 	    //用sha256对account进行消息摘要，目的是给password加盐
         string sha256_account;
         hash256_hex_string(account, sha256_account);
-        cout << "info : sha256 " << sha256_account << endl;
         const char* c_account = sha256_account.c_str();
 
         //获取加密前password字符数组
@@ -97,19 +101,16 @@ string CommonUtils::EncryptPwd(string account, string password){
 
         //合并salt到password字符数组
         size_t length = strlen(c_account) + strlen(c_password);
-        cout << "info :  digest length " << length << endl;
         char c_source[length+1];
         snprintf(c_source, length+1, "%s%s", c_account, c_password);
-
-        cout << "info :  digest " << c_source << endl;
 
         //对字符数组进行MD5计算
         MD5 md5(c_source, length);
         string result = md5.toString();
-    	cout << "info : md5 " << result << endl;
+        LOGI("md5 | " + result);
     	return result;
     } catch (exception& e) {  
-        cout << "error : " << e.what() << endl;
+        LOGW("EncryptPwd is fail !");
         return "";
     }
 }

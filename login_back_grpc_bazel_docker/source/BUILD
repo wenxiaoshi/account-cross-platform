@@ -42,7 +42,7 @@ cc_library(
     name = "commonutils",
     srcs = ["cpp/account/common_utils.cpp"],
     hdrs = ["cpp/account/common_utils.h"],
-    deps = [":cipher",":my_constant"],
+    deps = [":cipher",":my_constant",":my_log"],
 )
 
 cc_library(
