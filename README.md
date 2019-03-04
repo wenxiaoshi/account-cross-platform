@@ -50,7 +50,7 @@
 
 ### 流程图
 
-![](images/login-design.png)
+![](http://melon-personal.oss-cn-shenzhen.aliyuncs.com/login-design.png)
 
 ## 项目实现
 
@@ -97,7 +97,7 @@
 
 ##### 日志样例
 
-![](images/login_log.png)
+![](http://melon-personal.oss-cn-shenzhen.aliyuncs.com/login_log.png)
 
 ### 版本说明
 
