@@ -15,12 +15,11 @@
 #include <fcntl.h>
 #include <assert.h>
 #include <string>
-#include <android/log.h>
 
+#include "log_utils.h"
 #include "file_utils.h"
 
-#define TAG    "com.wechat.mylogin"
-#define LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG,TAG,__VA_ARGS__)
+#define LOGD(msg)  utils::LogUtil::LOGD(msg)
 
 //判断是否为目录
 bool utils::File::isDir(const char *path)
@@ -164,7 +163,7 @@ bool utils::File::deleteFile(const char* file_path) {
 
 }
 //以追加的方式写入文件
-bool utils::File::writeFile(const char *fileName,const char *content) {
+    bool utils::File::writeFile(const char *fileName,const char *content) {
     FILE *fp;
     fp = fopen(fileName, "w");
     if (NULL == fp) {

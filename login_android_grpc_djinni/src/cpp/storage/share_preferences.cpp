@@ -5,14 +5,14 @@
 #include <android/log.h>
 #include <utils/glob_utils.h>
 #include "share_preferences.h"
+#include <utils/log_utils.h>
 
 using namespace std;
 using namespace utils;
 using namespace my_struct;
 using namespace storage;
 
-#define TAG    "com.wechat.mylogin"
-#define LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG,TAG,__VA_ARGS__)
+#define LOGW(msg)  utils::LogUtil::LOGW(msg)
 
 HashMap* SharePreferences::shareMap = NULL;
 
@@ -62,7 +62,7 @@ bool SharePreferences::execute() {
         }
     }
     if (!writeFileToSharePref()){
-        LOGD("ERROR : [share_pref]when save kv, share file save fail");
+        LOGW("[share_pref]when save kv, share file save fail");
         return false;
     }
     return true;
@@ -126,7 +126,7 @@ bool SharePreferences::writeFileToSharePref() {
     }
     std::string content = shareMap->list();
     if (!File::writeFile(file_path,content.data())){
-        LOGD("ERROR : [share_pref]file write fail");
+        LOGW("[share_pref]file write fail");
         return false;
     }
     return true;
@@ -139,7 +139,7 @@ bool SharePreferences::checkAndCreateSharePrefFile() {
     const char* filePath = file_path;
     if (!File::isFileExist(filePath)){
         if (!File::createFile(dir_path,file_path)){
-            LOGD("ERROR : [share_preferences]create file fail");
+            LOGW("[share_preferences]create file fail");
             return false;
         }
     }
