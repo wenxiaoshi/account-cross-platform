@@ -61,7 +61,7 @@ cc_library(
     name = "my_db",
     srcs = ["db/my_db.cc"],
     hdrs = ["db/my_db.h"],
-    deps = [":sqlite3",":my_model"],
+    deps = [":sqlite3",":my_model",":my_log"],
 )
 
 cc_library(

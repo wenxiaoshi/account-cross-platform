@@ -44,9 +44,7 @@
 using namespace std;
 using namespace my_struct;
 using namespace utils;
-using namespace log_utils;
 using namespace db_utils;
-using namespace my_model;
 using namespace my_model;
 using namespace constants;
 
