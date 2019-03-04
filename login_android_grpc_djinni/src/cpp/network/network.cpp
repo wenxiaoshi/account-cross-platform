@@ -6,12 +6,15 @@
 #include <jni.h>
 
 #include <grpc++/grpc++.h>
-//#include "../../../platforms/android/app/.externalNativeBuild/cmake/debug/armeabi-v7a/gens/account.grpc.pb.h"
+
 #include "account.grpc.pb.h"
 #include "../model/network_result.h"
 #include "../utils/network_utils.h"
-
+#include "../utils/log_utils.h"
 #include "network.h"
+#include "../model/proj_constants.h"
+
+#define LOGD(msg)  utils::LogUtil::LOGD(msg);
 
 using grpc::Channel;
 using grpc::ClientContext;
@@ -25,6 +28,7 @@ using account::ConnectRequest;
 using account::CodeReply;
 
 using namespace demo;
+using namespace project_constants;
 
 namespace network{
 
@@ -55,7 +59,8 @@ namespace network{
             } else {
                 //todo 网络错误吗转换
                 reply.set_code(-1);
-                reply.set_msg(status.error_message());
+                reply.set_msg(MsgTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
+                LOGD(status.error_message());
                 return reply;
             }
         }
@@ -80,7 +85,8 @@ namespace network{
             } else {
                 //todo 网络错误吗转换
                 reply.set_code(-1);
-                reply.set_msg(status.error_message());
+                reply.set_msg(MsgTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
+                LOGD(status.error_message());
                 return reply;
             }
         }
@@ -104,7 +110,8 @@ namespace network{
             } else {
                 //todo 网络错误吗转换
                 reply.set_code(-1);
-                reply.set_msg(status.error_message());
+                reply.set_msg(MsgTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
+                LOGD(status.error_message());
                 return reply;
             }
         }
@@ -128,7 +135,8 @@ namespace network{
             } else {
                 //todo 网络错误吗转换
                 reply.set_code(-1);
-                reply.set_msg(status.error_message());
+                reply.set_msg(MsgTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
+                LOGD(status.error_message());
                 return reply;
             }
         }

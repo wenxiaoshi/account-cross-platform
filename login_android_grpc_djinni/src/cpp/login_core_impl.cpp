@@ -1,7 +1,6 @@
 #include <cstdint>
 #include <iostream>
 #include <ctime>
-#include <android/log.h>
 #include <vector>
 
 #include "NativeLoginListener.hpp"

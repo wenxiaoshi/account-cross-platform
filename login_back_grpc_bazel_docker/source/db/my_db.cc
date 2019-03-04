@@ -12,6 +12,7 @@
 #define LOGD(msg)  utils::LogUtil::LOGD(msg);
 #define LOGW(msg)  utils::LogUtil::LOGW(msg);
 #define LOGI(msg)  utils::LogUtil::LOGI(msg);
+#define LOGE(msg)  utils::LogUtil::LOGE(msg);
 
 using namespace db_utils;
 using namespace std;
@@ -46,12 +47,12 @@ bool Database::init() {
     int result = sqlite3_open_v2(path, &sql, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_NOMUTEX | SQLITE_OPEN_SHAREDCACHE, NULL);
 
     if (result == SQLITE_OK) {
-        cout << "info : open db success !" << endl;
+        LOGI("open db success !");
         //打开数据库成功，检查表是否存在
         checkAndCreateTable();
         return true;
     } else {
-        cout << "error : open db fail ! error_code = " << result <<  endl;
+        LOGE("open db fail ! error_code = " + result);
         return false;
     }
 
@@ -74,10 +75,10 @@ void Database::checkAndCreateTable() {
         ret = sqlite3_exec(sql, sqlSentence, NULL, NULL, &zErrMsg);
         // 创建失败，打印信息
         if( ret != SQLITE_OK ){
-            cout << "error : create table USER_ACCOUNT fail" << zErrMsg <<  endl;
+            LOGE("create table USER_ACCOUNT fail | " + zErrMsg);
             sqlite3_free(zErrMsg);
         } else {
-            cout << "info : create table USER_ACCOUNT success" << endl;
+            LOGI("create table USER_ACCOUNT success");
         }
     }
     
@@ -96,13 +97,13 @@ void Database::checkAndCreateTable() {
             ret = sqlite3_exec(sql, sqlSentence, NULL, NULL, &zErrMsg);
             // 创建失败，打印信息
             if( ret != SQLITE_OK ){
-                cout << "error : create table USER_SESSION fail" << zErrMsg <<  endl;
+                LOGE("create table USER_SESSION fail | " + zErrMsg);
                 sqlite3_free(zErrMsg);
             } else {
-                cout << "info : create table USER_SESSION success" << endl;    
+                LOGI("create table USER_SESSION success");
             }
         } else {
-            cout << "error : create table TABLE_USER_SESSION fail | TABLE_USER_ACCOUNT is not exist" <<  endl;
+            LOGE("create table TABLE_USER_SESSION fail | TABLE_USER_ACCOUNT is not exist");
         }
     }
 }
@@ -127,11 +128,10 @@ bool Database::isExist(string str_sql){
             int count = sqlite3_column_int(stmt, 0);
             if(count > 0) {
                 isExist = true;
-            }
-        
+            } 
         }
     } else {
-        cout << "error : sql is invalid !" << endl;
+        LOGW("sql is invalid !");
     }
 
     //清理语句句柄，准备执行下一个语句
@@ -155,7 +155,7 @@ bool Database::insert(string tabls_name, std::vector<string> v_key, std::vector<
     
     //检查数据是否正确
     if (tabls_name.empty() || v_key.size() == 0 || v_value.size() == 0) {
-        cout << "error : db insert , param is invalid !" << endl;
+        LOGW("db insert , param is invalid !");
         return false;
     }
 
@@ -175,9 +175,8 @@ bool Database::insert(string tabls_name, std::vector<string> v_key, std::vector<
     char c_sql[bufSize];
     try {  
          snprintf(c_sql,bufSize,"INSERT INTO %s(%s) VALUES(%s);",tabls_name.c_str(),str_key.c_str(),str_value.c_str());
-         cout << "info : insert sql " << c_sql << endl;
     } catch (exception& e) {  
-         cout << "error : db insert , sqlSentence create fail " << e.what() << endl;  
+         LOGW("db insert , sqlSentence create fail");
          return false;
     }
     const char *sqlSentence = c_sql;
@@ -185,9 +184,9 @@ bool Database::insert(string tabls_name, std::vector<string> v_key, std::vector<
     //执行插入语句
     int result =  sqlite3_exec(sql, sqlSentence, NULL, NULL, &zErrMsg);
     if (result == SQLITE_OK) {
-        cout << "info : insert success" << endl;
+        LOGI("db insert success");
     } else {
-        cout << "error : insert fail " << zErrMsg << endl;
+        LOGW("db insert fail | " + zErrMsg);
         return false;
     }
 
@@ -201,12 +200,12 @@ bool Database::insert(string tabls_name, std::vector<string> v_key, std::vector<
 bool Database::update(string tabls_name, std::vector<string> v_key, std::vector<string> v_value, std::vector<string> where_key, std::vector<string> where_value){
 	//检查数据是否正确
     if (tabls_name.empty() || v_key.size() == 0 || v_value.size() == 0) {
-        cout << "error : db update , param is invalid !" << endl;
+        LOGW("db update fail, param is invalid !");
         return false;
     }
 
     if (v_key.size() != v_value.size() || where_key.size() != where_value.size()) {
-        cout << "error : db update , param is invalid !" << endl;
+        LOGW("db update fail, param is invalid !");
         return false;
     }
 
@@ -245,9 +244,9 @@ bool Database::update(string tabls_name, std::vector<string> v_key, std::vector<
     //执行插入语句
     int result =  sqlite3_exec(sql, sqlSentence, NULL, NULL, &zErrMsg);
     if (result == SQLITE_OK) {
-        cout << "info : update success" << endl;
+        LOGI("db update success");
     } else {
-        cout << "error : update fail | sql is " << str_sql << zErrMsg << endl;
+        LOGW("db update fail | " + zErrMsg);
         return false;
     }
 
@@ -262,7 +261,11 @@ bool Database::update(string tabls_name, std::vector<string> v_key, std::vector<
  * 新增用户账号
 **/
 bool Database::addUserAccount(string account, string password){
-    
+    if (account.empty() || password.empty()) {
+        LOGW("db | addUserAccount | param is empty");
+        return false;
+    }
+
     vector<string> v_key;
     v_key.push_back("ACCOUNT");
     v_key.push_back("PASSWORD");
@@ -279,7 +282,11 @@ bool Database::addUserAccount(string account, string password){
  * 新增用户在线Session
 **/
 bool Database::addUserSession(int uid, string token){
-    
+    if (uid <= 0 || token.empty()) {
+        LOGW("db | addUserSession | param is invalid");
+        return false;
+    }
+
     vector<string> v_key;
     v_key.push_back("UID");
     v_key.push_back("TOKEN");
@@ -295,8 +302,16 @@ bool Database::addUserSession(int uid, string token){
     return insert(TABLE_USER_SESSION, v_key, v_value);
 }
 
+/**
+ * 对外接口
+ * 更新用户在线Session
+**/
 bool Database::updateUserSession(int uid, string token, bool isOnline){
-    
+    if (uid <= 0 || token.empty()) {
+        LOGW("db | updateUserSession | param is invalid");
+        return false;
+    }
+
     vector<string> v_key;
     v_key.push_back("TOKEN");
     v_key.push_back("IS_ONLINE");
@@ -322,6 +337,11 @@ bool Database::updateUserSession(int uid, string token, bool isOnline){
  * 判断用户是否存在
 **/
 bool Database::isUserExist(string account){
+    if (account.empty()) {
+        LOGW("db | isUserExist | param is empty");
+        return false;
+    }
+
     string str_sql = "select count(*) from " + TABLE_USER_ACCOUNT + " where ACCOUNT = '" + account + "';";
     return isExist(str_sql);
 }
@@ -332,7 +352,11 @@ bool Database::isUserExist(string account){
  * 获得用户信息
 **/
 UserAccount Database::queryUserAccountByAccount(string o_account){
-    
+    if (o_account.empty()) {
+        LOGW("db | queryUserAccountByAccount | param is empty");
+        return UserAccount(-1, "", "");
+    }
+
     int uid = -1;
     string account;
     string password;
@@ -340,7 +364,6 @@ UserAccount Database::queryUserAccountByAccount(string o_account){
     //获得SQL语句
     string str_sql = "SELECT ID , ACCOUNT , PASSWORD FROM " + TABLE_USER_ACCOUNT + "  WHERE ACCOUNT = '" + o_account + "' ;";
     const char *sqlSentence = str_sql.c_str();
-    cout << "info : sql queryAccount | " << str_sql << endl;
 
     //stmt语句句柄
     sqlite3_stmt *stmt = NULL;
@@ -358,7 +381,7 @@ UserAccount Database::queryUserAccountByAccount(string o_account){
             password = string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2)));
         }
     } else {
-        cout << "error : sql is invalid !" << endl;
+        LOGW("sql is invalid !");
     }
 
     //清理语句句柄，准备执行下一个语句
@@ -373,7 +396,11 @@ UserAccount Database::queryUserAccountByAccount(string o_account){
  * 获得用户Session
 **/
 UserSession Database::queryUserSessionByUid(int o_uid){
-    
+    if (o_uid <= 0) {
+        LOGW("db | queryUserSessionByUid | param is invalid");
+        return UserAccount(-1, "", "");
+    }
+
     int uid = -1;
     string token;
     bool isOnline = false;
@@ -384,7 +411,6 @@ UserSession Database::queryUserSessionByUid(int o_uid){
     //获得SQL语句
     string str_sql = "SELECT UID , TOKEN , IS_ONLINE FROM " + TABLE_USER_SESSION + "  WHERE UID = '" + ss.str() + "' ;";
     const char *sqlSentence = str_sql.c_str();
-    cout << "info : sql querySession | " << str_sql << endl;
 
     //stmt语句句柄
     sqlite3_stmt *stmt = NULL;
@@ -402,7 +428,7 @@ UserSession Database::queryUserSessionByUid(int o_uid){
             isOnline = sqlite3_column_int(stmt, 2)==1;
         }
     } else {
-        cout << "error : sql is invalid !" << endl;
+        LOGW("sql is invalid !");
     }
 
     //清理语句句柄，准备执行下一个语句
