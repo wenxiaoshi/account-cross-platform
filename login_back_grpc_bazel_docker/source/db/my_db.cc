@@ -75,7 +75,7 @@ void Database::checkAndCreateTable() {
         ret = sqlite3_exec(sql, sqlSentence, NULL, NULL, &zErrMsg);
         // 创建失败，打印信息
         if( ret != SQLITE_OK ){
-            LOGE("create table USER_ACCOUNT fail | " + zErrMsg);
+            LOGE("create table USER_ACCOUNT fail | " + string(zErrMsg));
             sqlite3_free(zErrMsg);
         } else {
             LOGI("create table USER_ACCOUNT success");
@@ -97,7 +97,7 @@ void Database::checkAndCreateTable() {
             ret = sqlite3_exec(sql, sqlSentence, NULL, NULL, &zErrMsg);
             // 创建失败，打印信息
             if( ret != SQLITE_OK ){
-                LOGE("create table USER_SESSION fail | " + zErrMsg);
+                LOGE("create table USER_SESSION fail | " + string(zErrMsg));
                 sqlite3_free(zErrMsg);
             } else {
                 LOGI("create table USER_SESSION success");
@@ -186,7 +186,7 @@ bool Database::insert(string tabls_name, std::vector<string> v_key, std::vector<
     if (result == SQLITE_OK) {
         LOGI("db insert success");
     } else {
-        LOGW("db insert fail | " + zErrMsg);
+        LOGW("db insert fail | " + string(zErrMsg));
         return false;
     }
 
@@ -246,7 +246,7 @@ bool Database::update(string tabls_name, std::vector<string> v_key, std::vector<
     if (result == SQLITE_OK) {
         LOGI("db update success");
     } else {
-        LOGW("db update fail | " + zErrMsg);
+        LOGW("db update fail | " + string(zErrMsg));
         return false;
     }
 
@@ -398,7 +398,7 @@ UserAccount Database::queryUserAccountByAccount(string o_account){
 UserSession Database::queryUserSessionByUid(int o_uid){
     if (o_uid <= 0) {
         LOGW("db | queryUserSessionByUid | param is invalid");
-        return UserAccount(-1, "", "");
+        return UserSession(-1, "", false);
     }
 
     int uid = -1;
