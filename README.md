@@ -11,8 +11,7 @@
 	* [接口说明](#接口说明)
 	* [错误码说明](#错误码说明)
 	* [日志说明](#日志说明)
-		* [日志规则](#日志规则)
-		* [日志样例](#日志样例)
+	* [数据库说明](#数据库说明)
 	* [版本说明](#版本说明)
 	* [常用后端命令](#常用后端命令)
 * [更新日志](#更新日志)
@@ -99,6 +98,22 @@
 #### 日志样例
 
 ![](http://melon-personal.oss-cn-shenzhen.aliyuncs.com/login_log.png)
+
+#### 数据库说明
+
+使用SQLite3作为数据库
+
+| 表名 | 字段  | 类型  | 备注 |
+|:--|----|------|------|
+| user_account |  |  ||
+|  | ID | INTEGER PRIMARY KEY | 用户UID |
+|  | ACCOUNT | CHAR | 用户账号 |
+|  | PASSWORD | CHAR | 用户密码 |
+| user_session |  |  ||
+|  | ID | INTEGER PRIMARY KEY | |
+|  | UID | INTEGER | 用户UID，外键关联 user_account（ID）|
+|  | TOKEN | CHAR | 用户Token |
+|  | IS_ONLINE | INTEGER | 是否在线（1.在线 0.离线） |
 
 ### 版本说明
 
