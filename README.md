@@ -89,12 +89,12 @@
 || Android Studio | 3.2.1 | Android IDE |
 || Gradle | 4.6 |  |
 || Android Plugin Version | 3.2.1 |  |
-|| GRPC-Android | 1.18.0 |  |
-|| protobuf-gradle-plugin | 0.8.6 |  |
+|| GRPC-C++ | 1.18.0 |  |
+|| Protobuffer | 3.6.1 |  |
 | 后端 |  |  ||
 || Ubuntu | 18.04-x86_64 |  |
 || Bazel | 0.20.0 |  |
-|| GRPC | 1.18.0 |  |
+|| GRPC-C++ | 1.18.0 |  |
 || Docker | 18.09.1 | Community |
 || Docker Compose | 1.23.2 |  |
 
