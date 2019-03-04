@@ -42,7 +42,7 @@ cc_library(
     name = "commonutils",
     srcs = ["cpp/account/common_utils.cpp"],
     hdrs = ["cpp/account/common_utils.h"],
-    deps = [":cipher",":my_constant"],
+    deps = [":cipher",":my_constant",":my_log"],
 )
 
 cc_library(
@@ -55,13 +55,14 @@ cc_library(
     name = "my_log",
     srcs = ["cpp/account/my_log.cc"],
     hdrs = ["cpp/account/my_log.h"],
+    deps = [":file_utils"],
 )
 
 cc_library(
     name = "my_db",
     srcs = ["db/my_db.cc"],
     hdrs = ["db/my_db.h"],
-    deps = [":sqlite3",":my_model"],
+    deps = [":sqlite3",":my_model",":my_log"],
 )
 
 cc_library(
@@ -81,4 +82,10 @@ cc_library(
     name = "my_constant",
     srcs = ["cpp/account/my_constant.cc"],
     hdrs = ["cpp/account/my_constant.h"],
+)
+
+cc_library(
+    name = "file_utils",
+    srcs = ["cpp/account/file_utils.cpp"],
+    hdrs = ["cpp/account/file_utils.h"],
 )

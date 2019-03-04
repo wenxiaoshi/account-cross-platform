@@ -30,6 +30,7 @@ namespace project_constants{
         const static std::string TOAST_ERROR_ACCOUNT_NOT_VALID_PHONE_NUM;
         const static std::string TOAST_ERROR_PASSWORD_EMPTY;
         const static std::string TOAST_ERROR_PASSWORD_NOT_VALID;
+        const static std::string TOAST_ERROR_NETWORK_UNVALAIBLE;
         const static std::string TOAST_ACCOUNT_OUT_OFF_LINE;
     };
 

@@ -29,10 +29,10 @@
 
 #include <grpcpp/grpcpp.h>
 
+#include "source/db/my_db.h"
 #include "hash_map.h"
 #include "common_utils.h"
 #include "my_log.h"
-#include "source/db/my_db.h"
 #include "my_constant.h"
 
 #ifdef BAZEL_BUILD
@@ -41,12 +41,16 @@
 #include "account.grpc.pb.h"
 #endif
 
+#define LOGD(msg)  utils::LogUtil::LOGD(msg);
+#define LOGW(msg)  utils::LogUtil::LOGW(msg);
+#define LOGI(msg)  utils::LogUtil::LOGI(msg);
+#define LOGE(msg)  utils::LogUtil::LOGE(msg);
+#define LOGM(bean) utils::LogUtil::LOGM(bean);
+
 using namespace std;
 using namespace my_struct;
 using namespace utils;
-using namespace log_utils;
 using namespace db_utils;
-using namespace my_model;
 using namespace my_model;
 using namespace constants;
 
@@ -60,6 +64,7 @@ using account::ConnectRequest;
 using account::LogoutRequest;
 using account::CodeReply;
 using account::Account;
+using utils::LogMBean;
 
 class HandleResult{
 private:
@@ -304,8 +309,6 @@ HandleResult handleUserCheckConnect(std::string token){
       return result;
     }
 
-    cout << "info : check_connect token is " << decodeToken << endl;   
-    //解析Token，获取用户信息
     std::vector<string> vToken;
     CommonUtils::SplitString(decodeToken, vToken, ":");
     if (vToken.size() != 5) {
@@ -384,7 +387,6 @@ private:
   **/
   bool isTimeExpired(int end_time){
     time_t now_time = time(NULL);
-    cout << "now_time = " << now_time << " end_time = " << end_time << endl;
     return now_time > end_time;
   }
 
@@ -396,10 +398,11 @@ class AccountServiceImpl final : public Account::Service {
 
   Status requestUserLogin(ServerContext* context, const LoginRequest* request,
                   CodeReply* reply) override {
-    std::cout << "登录请求-入口" << std::endl;
-    
+
     string account = request->account();
     string password = request->password();
+
+    LogMBean log_bean("requestUserLogin");
 
     bool isParamValid = true;
     string error_msg;
@@ -409,7 +412,7 @@ class AccountServiceImpl final : public Account::Service {
       reply->set_code(ResultCode::ERROR_PARAM_IS_INVALID);
       reply->set_msg(error_msg);
       isParamValid = false;
-      std::cout << "error : account is not valid" << std::endl;
+      LOGW("account is not valid");
     };
 
     //校验用户密码
@@ -417,7 +420,7 @@ class AccountServiceImpl final : public Account::Service {
       reply->set_code(ResultCode::ERROR_PARAM_IS_INVALID);
       reply->set_msg(error_msg);
       isParamValid = false;
-      std::cout << "error : password is not valid" << std::endl;
+      LOGW("password is not valid");
     };
 
     //参数正确，执行请求
@@ -429,14 +432,18 @@ class AccountServiceImpl final : public Account::Service {
       reply->set_data(result.getData());
     }
     
-    std::cout << "登录请求-结束" << std::endl;
+    //打印接口日志
+    log_bean.addParam("account", account);
+    log_bean.addParam("password", password);
+    LOGM(log_bean);
     return Status::OK;
   }
 
   Status requestUserSign(ServerContext* context, const SignRequest* request,
                   CodeReply* reply) override {
-    std::cout << "注册请求-入口" << std::endl;
-       
+
+    LogMBean log_bean("requestUserSign");
+      
     string account = request->account();
     string password = request->password();
 
@@ -448,7 +455,7 @@ class AccountServiceImpl final : public Account::Service {
       reply->set_code(ResultCode::ERROR_PARAM_IS_INVALID);
       reply->set_msg(error_msg);
       isParamValid = false;
-      std::cout << "error : account is not valid" << std::endl;
+      LOGW("account is not valid");
     };
 
     //校验用户密码
@@ -456,7 +463,7 @@ class AccountServiceImpl final : public Account::Service {
       reply->set_code(ResultCode::ERROR_PARAM_IS_INVALID);
       reply->set_msg(error_msg);
       isParamValid = false;
-      std::cout << "error : password is not valid" << std::endl;
+      LOGW("password is not valid");
     };
 
     //参数正确，执行请求
@@ -468,29 +475,40 @@ class AccountServiceImpl final : public Account::Service {
       reply->set_data(result.getData());
     } 
    
-    std::cout << "注册请求-结束" << std::endl;
+    //打印接口日志
+    log_bean.addParam("account", account);
+    log_bean.addParam("password", password);
+    LOGM(log_bean);
+
     return Status::OK;
   }
 
   Status requestLogout(ServerContext* context, const LogoutRequest* request,
                   CodeReply* reply) override {
-    std::cout << "下线请求-入口" << std::endl;
+
+    LogMBean log_bean("requestLogout");
 
     string token = request->token();
 
+    //执行请求
     LoginCore loginCore;
     HandleResult result = loginCore.handleUserLogout(token);
     
     reply->set_code(result.getCode());
     reply->set_msg(result.getMsg());
     reply->set_data(result.getData());
-    std::cout << "下线请求-结束" << std::endl;
+
+    //打印接口日志
+    log_bean.addParam("token", token);
+    LOGM(log_bean);
+
     return Status::OK;
   }
 
   Status checkConnect(ServerContext* context, const ConnectRequest* request,
                   CodeReply* reply) override {
-    std::cout << "连线检测请求-入口" << std::endl;
+
+    LogMBean log_bean("checkConnect");
 
     string token = request->token();
 
@@ -502,7 +520,7 @@ class AccountServiceImpl final : public Account::Service {
       reply->set_code(ResultCode::ERROR_PARAM_IS_INVALID);
       reply->set_msg(error_msg);
       isParamValid = false;
-      std::cout << "error : token is not valid" << std::endl;
+      LOGW("token is not valid");
     };
 
     //参数正确，执行请求
@@ -514,7 +532,10 @@ class AccountServiceImpl final : public Account::Service {
       reply->set_data(result.getData());
     }
     
-    std::cout << "连线检测请求-结束" << std::endl;
+    //打印接口日志
+    log_bean.addParam("token", token);
+    LOGM(log_bean);
+
     return Status::OK;
   }
 };
@@ -522,7 +543,7 @@ class AccountServiceImpl final : public Account::Service {
 void RunDb() {
 
   if (!Database::database->init()) {
-     cout << "error : database run fail !" << endl;
+     LOGE("database run fail !");
   }
 
 }
@@ -555,7 +576,7 @@ void RunServer() {
   builder.RegisterService(&service);
   // Finally assemble the server.
   std::unique_ptr<Server> server(builder.BuildAndStart());
-  std::cout << "Server listening on " << server_address << std::endl;
+  LOGD("Server listening on " + server_address);
 
   // Wait for the server to shutdown. Note that some other thread must be
   // responsible for shutting down the server for this call to ever return.
@@ -564,8 +585,6 @@ void RunServer() {
 
 int main(int argc, char** argv) {
    
-    // LOG::error("test");
-
    RunDb();
    RunServer();
    return 0;
