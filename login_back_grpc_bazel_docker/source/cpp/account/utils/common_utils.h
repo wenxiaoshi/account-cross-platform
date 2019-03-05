@@ -9,9 +9,9 @@
 
 #include <string>
 #include <vector>
-#include "aes_encryptor.h"
-#include "md5.h"
-#include "sha256.h"
+#include "../libs/aes_encryptor.h"
+#include "../libs/md5.h"
+#include "../libs/sha256.h"
 
 using namespace std;
 using namespace cipher_center;

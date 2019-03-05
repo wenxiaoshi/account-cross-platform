@@ -30,10 +30,9 @@
 #include <grpcpp/grpcpp.h>
 
 #include "source/db/my_db.h"
-#include "hash_map.h"
-#include "common_utils.h"
-#include "my_log.h"
-#include "my_constant.h"
+#include "utils/common_utils.h"
+#include "log/my_log.h"
+#include "constant/my_constant.h"
 
 #ifdef BAZEL_BUILD
 #include "source/protos/account.grpc.pb.h"
@@ -48,7 +47,6 @@
 #define LOGM(bean) utils::LogUtil::LOGM(bean);
 
 using namespace std;
-using namespace my_struct;
 using namespace utils;
 using namespace db_utils;
 using namespace my_model;

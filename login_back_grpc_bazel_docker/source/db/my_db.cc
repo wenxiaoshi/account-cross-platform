@@ -7,7 +7,7 @@
 #include <sstream>
 
 #include "my_db.h"
-#include "source/cpp/account/my_log.h"
+#include "source/cpp/account/log/my_log.h"
 
 #define LOGD(msg)  utils::LogUtil::LOGD(msg);
 #define LOGW(msg)  utils::LogUtil::LOGW(msg);
