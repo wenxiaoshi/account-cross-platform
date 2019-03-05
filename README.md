@@ -11,8 +11,9 @@
 	* [接口说明](#接口说明)
 	* [错误码说明](#错误码说明)
 	* [日志说明](#日志说明)
+	* [数据库说明](#数据库说明)
 	* [版本说明](#版本说明)
-* [常用后端命令](#常用后端命令)
+	* [常用后端命令](#常用后端命令)
 * [更新日志](#更新日志)
 	* [2019-3-4](#2019-3-4)
 	* [2019-2-10](#2019-2-10)
@@ -50,24 +51,23 @@
 
 ### 流程图
 
-![](images/login-design.png)
+![](http://melon-personal.oss-cn-shenzhen.aliyuncs.com/login-design.png)
 
 ## 项目实现
 
 ### 接口说明
-| 接口名  | 含义  | 备注 
-|:------|------|------|
-| requestUserLogin | 请求登录接口 |  |
-| requestUserSign | 请求注册接口 |  |
-| requestLogout | 退出登录接口 |  |
-| checkConnect | 检查在线状态接口 |  |
+| 接口名  | 方法 | 参数 | 返参 |
+|:------|------|------|------|
+| 用户登录 | requestUserLogin | account password | token |
+| 用户注册 | requestUserSign | account password | token |
+| 退出登录 | requestLogout | token | |
+| 检查用户在线状态 | checkConnect | token | |
 
 ### 错误码说明
 
 | 错误码  | 含义  | 备注 
 |:------|------|------|
 | 0 | 成功 |  |
-| -1 | 失败 | 默认 |
 | 1010 | pem文件不存在 |  |
 | 2000 | 该账号不存在 |  |
 | 2001 | 用户密码错误 |  |
@@ -84,20 +84,36 @@
 
 ### 日志说明
 
-##### 日志规则
+#### 日志规则
 
 日志文件按日期分割，例如 2019-3-5.log
 
 | 消息类型  | 含义  |
 |:------|------|
-| INFO | 相关INFO信息可以让运维保留下来，可用来分析 |
+| INFO | 相关INFO信息可以让运维保留下来，可用来分析，比如接口访问信息 |
 | DEBUG | 相关DEBUG信息提供给开发来用调试程序 |
 | WARN | 相关WARN信息提示程序没有按照预期的运行，但不会影响到整体正常运行，需要被FIX |
 | ERROR | 相关ERROR信息提示程序出现了严重错误，影响到系统的正常运行，必须被FIX |
 
-##### 日志样例
+#### 日志样例
 
-![](images/login_log.png)
+![](http://melon-personal.oss-cn-shenzhen.aliyuncs.com/login_log.png)
+
+### 数据库说明
+
+使用SQLite3作为数据库
+
+| 表名 | 字段  | 类型  | 备注 |
+|:--|----|------|------|
+| user_account |  |  ||
+|  | ID | INTEGER PRIMARY KEY | 用户UID |
+|  | ACCOUNT | CHAR | 用户账号 |
+|  | PASSWORD | CHAR | 用户密码 |
+| user_session |  |  ||
+|  | ID | INTEGER PRIMARY KEY | |
+|  | UID | INTEGER | 用户UID，外键关联 user_account（ID）|
+|  | TOKEN | CHAR | 用户Token |
+|  | IS_ONLINE | INTEGER | 是否在线（1.在线 0.离线） |
 
 ### 版本说明
 
@@ -116,7 +132,7 @@
 || Docker | 18.09.1 | Community |
 || Docker Compose | 1.23.2 |  |
 
-## 常用后端命令
+### 常用后端命令
 | 命令 | 备注 |
 |:--|----|
 | bazel build //source:account_server | 构建目标文件 |
