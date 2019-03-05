@@ -36,7 +36,7 @@ void LogUtil::SimpleWrite(string type, string msg){
 	string dirName = "/data/log/";
 
 	time_t t = time(NULL); 
-	cout << t << endl;
+
     char c_time[11]; 
     char c_log_time[25];
     strftime(c_time, sizeof(c_time), "%F",localtime(&t)); 
