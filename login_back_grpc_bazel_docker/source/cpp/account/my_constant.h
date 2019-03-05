@@ -34,30 +34,30 @@ namespace constants{
 
     class MsgTip{
     public:
-        const static string ERROR_ACCOUNT_EMPTY;
-        const static string ERROR_ACCOUNT_NOT_VALID_PHONE_NUM;
-        const static string ERROR_PASSWORD_EMPTY;
-        const static string ERROR_PASSWORD_NOT_VALID;
-        const static string ERROR_TOKEN_EMPTY;
+        const static string ERROR_ACCOUNT_EMPTY;                //1
+        const static string ERROR_ACCOUNT_NOT_VALID_PHONE_NUM;  //1
+        const static string ERROR_PASSWORD_EMPTY;               //1
+        const static string ERROR_PASSWORD_NOT_VALID;           //1
+        const static string ERROR_TOKEN_EMPTY;                  //1
 
-        const static string UserLogin_AccountNotExist;          //2001001
-        const static string UserLogin_PasswordInitFail;         //2001002
-        const static string UserLogin_PasswordError;            //2001003
-        const static string UserLogin_UpdateTokenFail;          //2001004
+        const static string UserLogin_AccountNotExist;          //1001001
+        const static string UserLogin_PasswordInitFail;         //1001002
+        const static string UserLogin_PasswordError;            //1001003
+        const static string UserLogin_UpdateTokenFail;          //1001004
 
-        const static string UserSign_AccountHadExist;           //2002001
-        const static string UserSign_PasswordInitFail;          //2002002
-        const static string UserSign_CreateAccountFail;         //2002003
-        const static string UserSign_GetAccountInfoFail;        //2002004
-        const static string UserSign_CreateSeesionFail;         //2002005
+        const static string UserSign_AccountHadExist;           //1002001
+        const static string UserSign_PasswordInitFail;          //1002002
+        const static string UserSign_CreateAccountFail;         //1002003
+        const static string UserSign_GetAccountInfoFail;        //1002004
+        const static string UserSign_CreateSeesionFail;         //1002005
 
-        const static string UserLogout_TokenNotValid;           //2003001
-        const static string UserLogout_UpdateSessionFail;       //2003002
-        
-        const static string CheckConnect_TokenNotValid;         //2004001
-        const static string CheckConnect_TokenHadExpire;        //2004002
-        const static string CheckConnect_AccountOffline;        //2004003
-        const static string CheckConnect_AccountTokenNotEqual;  //2004004
+        const static string UserLogout_TokenNotValid;           //1003001
+        const static string UserLogout_UpdateSessionFail;       //1003002
+
+        const static string CheckConnect_TokenNotValid;         //1004001
+        const static string CheckConnect_TokenHadExpire;        //1004002
+        const static string CheckConnect_AccountOffline;        //1004003
+        const static string CheckConnect_AccountTokenNotEqual;  //1004004
     };
 
     class Constants{
