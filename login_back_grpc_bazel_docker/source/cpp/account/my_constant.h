@@ -29,3 +29,15 @@ namespace constants{
     };
 
 }
+
+//错误码定义,100之前系统，100之后对应各个Request业务错误码
+enum RetCode 
+{
+    // 公共错误码 (0 ~ 99)
+    RetCode_Ok            = 0,
+
+
+    //业务逻辑错误
+    RetCode_InvalidAccount = 1001, // 账号密码错误
+    RetCode_Login_Expire   = 1002, // 登陆状态过期
+}
