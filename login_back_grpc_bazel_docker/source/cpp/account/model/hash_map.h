@@ -7,6 +7,9 @@
 #include <iostream>
 using namespace std;
 
+/**
+ *  HashMap数据结构
+ **/
 namespace my_struct{
 
     class HashNode{

@@ -9,6 +9,9 @@ using namespace std;
 
 namespace utils{
 
+    /**
+     *  日志打印接口Model
+     **/
     class LogMBean{
 
     public:
@@ -46,6 +49,9 @@ namespace utils{
     	vector<string> v_value;
     };
 
+    /**
+     *  日志打印工具类
+     **/
     class LogUtil{
     public:
         static void LOGD(string msg);

@@ -18,6 +18,9 @@ using namespace cipher_center;
 
 namespace utils{
 
+    /**
+     *  字符串操作工具类
+     **/
     class CommonUtils{
     public:
         static string GenToken(const unsigned long uid, const string account);
@@ -27,8 +30,6 @@ namespace utils{
 
         static void SplitString(const std::string& s, std::vector<std::string>& v, const std::string& c);
         
-       
-
     private:
         static string GenRandomStr();
         const static long TOKEN_TIMEOUT;
@@ -36,6 +37,9 @@ namespace utils{
         static AesEncryptor* aesEncryptor;
     };
 
+    /**
+     *  参数校验工具类
+     **/
     class ParamUtils{
     public:
         static bool CheckAccountValid(string account,string & errorMsg);

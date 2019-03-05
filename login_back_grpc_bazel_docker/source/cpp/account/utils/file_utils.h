@@ -4,6 +4,9 @@
 
 namespace utils{
 
+    /**
+     *  文件操作工具类
+     **/
     class File{
     public:
         static bool isFileExist(const char *dir);

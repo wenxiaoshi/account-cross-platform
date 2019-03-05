@@ -5,6 +5,9 @@ using namespace std;
 
 namespace constants{
 
+    /**
+     *  错误码Code
+     **/
     class ResultCode{
     public:
         const static int SUCCESS;
@@ -32,6 +35,9 @@ namespace constants{
 
     };
 
+    /**
+     *  错误码Message
+     **/
     class MsgTip{
     public:
         const static string ERROR_ACCOUNT_EMPTY;                //1

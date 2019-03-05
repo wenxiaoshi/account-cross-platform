@@ -17,6 +17,10 @@
 #include <string>
 
 #include "file_utils.h"
+#include "../log/my_log.h"
+
+#define LOGD(msg)  utils::LogUtil::LOGD(msg);
+#define LOGW(msg)  utils::LogUtil::LOGW(msg);
 
 //判断是否为目录
 bool utils::File::isDir(const char *path)
@@ -91,11 +95,10 @@ bool utils::File::isDirExist(const char *dir) {
         return false;
     if (opendir(dir) == NULL)
     {
-        printf(" 文件目录不存在\n");
+        LOGD("file dir is not exist");
         return false;
     }
-    printf(" 文件目录存在\n");
-
+    LOGD("file dir had exist");
     return true;
 }
 

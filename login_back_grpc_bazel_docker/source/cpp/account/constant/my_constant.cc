@@ -14,9 +14,9 @@ const string MsgTip::ERROR_PASSWORD_EMPTY = "密码不能为空，请重新输�
 const string MsgTip::ERROR_PASSWORD_NOT_VALID = "密码格式错误，请输入6-18位的数字或字母";//1
 const string MsgTip::ERROR_TOKEN_EMPTY = "Token不能为空";//1
 
-//业务逻辑错误（1xxx 账号模块，2xxx 卡包模块, ......）
+//业务逻辑错误（1xxxzzz 账号模块，2xxxzzz 卡包模块, ......）
 
-//1001XXX 用户登录接口
+//1001zzz 用户登录接口
 const int ResultCode::UserLogin_AccountNotExist = 1001001;
 const int ResultCode::UserLogin_PasswordInitFail = 1001002;
 const int ResultCode::UserLogin_PasswordError = 1001003;
@@ -27,7 +27,7 @@ const string MsgTip::UserLogin_PasswordInitFail = "初始化密码失败";//1001
 const string MsgTip::UserLogin_PasswordError = "密码输入错误";//1001003
 const string MsgTip::UserLogin_UpdateTokenFail = "用户Token更新失败";//1001004
 
-//1002XXX 用户注册接口
+//1002zzz 用户注册接口
 const int ResultCode::UserSign_AccountHadExist = 1002001;
 const int ResultCode::UserSign_PasswordInitFail = 1002002;
 const int ResultCode::UserSign_CreateAccountFail = 1002003;
@@ -40,14 +40,14 @@ const string MsgTip::UserSign_CreateAccountFail = "账号创建失败";//1002003
 const string MsgTip::UserSign_GetAccountInfoFail = "获取账号信息失败";//1002004
 const string MsgTip::UserSign_CreateSeesionFail = "账号会话信息创建失败";//1002005
 
-//1003XXX 用户退出登录接口
+//1003zzz 用户退出登录接口
 const int ResultCode::UserLogout_TokenNotValid = 1003001;
 const int ResultCode::UserLogout_UpdateSessionFail = 1003002;
 
 const string MsgTip::UserLogout_TokenNotValid = "Token格式错误";//1003001
 const string MsgTip::UserLogout_UpdateSessionFail = "账号会话信息更新失败";//1003002
 
-//1004XXX 检查在线状态接口
+//1004zzz 检查在线状态接口
 const int ResultCode::CheckConnect_TokenNotValid = 1004001;
 const int ResultCode::CheckConnect_TokenHadExpire = 1004002;
 const int ResultCode::CheckConnect_AccountOffline = 1004003;

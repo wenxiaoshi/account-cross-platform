@@ -27,7 +27,6 @@ grpc_proto_library(
 cc_binary(
     name = "account_server",
     srcs = ["cpp/account/account_server.cc"],
-    defines = ["BAZEL_BUILD"],
     deps = [":account", "//:grpc++",":hashmap",":commonutils",":sqlite3",":my_log",":my_db",":my_model",":my_constant"],
     data = ["//mypem:ca.crt","//mypem:server.crt","//mypem:server.key"],
 )

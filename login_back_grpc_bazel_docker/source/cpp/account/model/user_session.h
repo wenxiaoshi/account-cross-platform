@@ -5,6 +5,9 @@ using namespace std;
 
 namespace my_model{
 	
+    /**
+     *  用户会话Model
+     **/
 	class UserSession{
 	public:
 		UserSession(int uid, string token, bool isOnline);
