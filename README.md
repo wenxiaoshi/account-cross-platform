@@ -93,7 +93,7 @@ requestUserLogin
     "data": "[token]"
 }
 ```
----
+
 #### 用户注册
 ##### 请求方法
 
@@ -120,7 +120,7 @@ requestUserSign
     "data": "[token]"
 }
 ```
----
+
 #### 退出登录
 ##### 请求方法
 
@@ -144,7 +144,7 @@ requestLogout
     "data": ""
 }
 ```
----
+
 #### 检查用户在线状态
 ##### 请求方法
 
