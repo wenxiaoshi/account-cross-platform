@@ -5,6 +5,6 @@ services:
       image: grpcserver:1.0
       ports:
         - "50051:50051"
-          #depends_on:
-          #  - mongo
+      volumes:
+        - "/data/log:/data/log"
       command: ["./account_server"]

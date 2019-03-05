@@ -15,12 +15,11 @@
 #include <fcntl.h>
 #include <assert.h>
 #include <string>
+#include <iostream>
 
 #include "file_utils.h"
-#include "../log/my_log.h"
 
-#define LOGD(msg)  utils::LogUtil::LOGD(msg);
-#define LOGW(msg)  utils::LogUtil::LOGW(msg);
+using namespace std;
 
 //判断是否为目录
 bool utils::File::isDir(const char *path)
@@ -95,10 +94,10 @@ bool utils::File::isDirExist(const char *dir) {
         return false;
     if (opendir(dir) == NULL)
     {
-        LOGD("file dir is not exist");
+        cout << "[ DEBUG ] file dir is not exist" << endl;
         return false;
     }
-    LOGD("file dir had exist");
+    cout << "[ DEBUG ] file dir had exist" << endl;
     return true;
 }
 
