@@ -34,27 +34,27 @@ cc_binary(
 
 cc_library(
     name = "hashmap",
-    srcs = ["cpp/account/hash_map.cpp"],
-    hdrs = ["cpp/account/hash_map.h"],
+    srcs = ["cpp/account/model/hash_map.cpp"],
+    hdrs = ["cpp/account/model/hash_map.h"],
 )
 
 cc_library(
     name = "commonutils",
-    srcs = ["cpp/account/common_utils.cpp"],
-    hdrs = ["cpp/account/common_utils.h"],
+    srcs = ["cpp/account/utils/common_utils.cpp"],
+    hdrs = ["cpp/account/utils/common_utils.h"],
     deps = [":cipher",":my_constant",":my_log"],
 )
 
 cc_library(
     name = "cipher",
-    srcs = ["cpp/account/aes_encryptor.cpp","cpp/account/aes.cpp","cpp/account/md5.cc","cpp/account/sha256.cc"],
-    hdrs = ["cpp/account/aes_encryptor.h","cpp/account/aes.h","cpp/account/md5.h","cpp/account/sha256.h"],
+    srcs = ["cpp/account/libs/aes_encryptor.cpp","cpp/account/libs/aes.cpp","cpp/account/libs/md5.cc","cpp/account/libs/sha256.cc"],
+    hdrs = ["cpp/account/libs/aes_encryptor.h","cpp/account/libs/aes.h","cpp/account/libs/md5.h","cpp/account/libs/sha256.h"],
 )
 
 cc_library(
     name = "my_log",
-    srcs = ["cpp/account/my_log.cc"],
-    hdrs = ["cpp/account/my_log.h"],
+    srcs = ["cpp/account/log/my_log.cc"],
+    hdrs = ["cpp/account/log/my_log.h"],
     deps = [":file_utils"],
 )
 
@@ -74,18 +74,18 @@ cc_library(
 
 cc_library(
     name = "my_model",
-    srcs = ["cpp/account/user_account.cc","cpp/account/user_session.cc"],
-    hdrs = ["cpp/account/user_account.h","cpp/account/user_session.h"],
+    srcs = ["cpp/account/model/user_account.cc","cpp/account/model/user_session.cc"],
+    hdrs = ["cpp/account/model/user_account.h","cpp/account/model/user_session.h"],
 )
 
 cc_library(
     name = "my_constant",
-    srcs = ["cpp/account/my_constant.cc"],
-    hdrs = ["cpp/account/my_constant.h"],
+    srcs = ["cpp/account/constant/my_constant.cc"],
+    hdrs = ["cpp/account/constant/my_constant.h"],
 )
 
 cc_library(
     name = "file_utils",
-    srcs = ["cpp/account/file_utils.cpp"],
-    hdrs = ["cpp/account/file_utils.h"],
+    srcs = ["cpp/account/utils/file_utils.cpp"],
+    hdrs = ["cpp/account/utils/file_utils.h"],
 )
