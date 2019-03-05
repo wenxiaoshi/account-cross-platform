@@ -58,12 +58,114 @@
 ## 项目实现
 
 ### 接口说明
-| 接口名  | 方法 | 参数 | 返参 |
+| 接口名  | 接口方法 |
+|:------|------|
+| [用户登录](#用户登录) | requestUserLogin |
+| [用户注册](#用户注册) | requestUserSign |
+| [退出登录](#退出登录) | requestLogout |
+| [检查用户在线状态](#检查用户在线状态) | checkConnect |
+
+#### 用户登录
+##### 请求方法
+
+requestUserLogin
+
+##### 请求参数
+
+| 参数名  | 必选 | 类型 | 说明 |
 |:------|------|------|------|
-| 用户登录 | requestUserLogin | account password | token |
-| 用户注册 | requestUserSign | account password | token |
-| 退出登录 | requestLogout | token | |
-| 检查用户在线状态 | checkConnect | token | |
+| account | true | string | 用户账号 |
+| password | true | string | 用户密码 |
+
+##### 返回参数
+
+| 参数名  | 类型 | 说明 |
+|:------|------|------|
+| token | string | 用户Token |
+
+##### 返回结果
+```
+{
+    "code": 0,
+    "msg": "",
+    "data": "[token]"
+}
+```
+---
+#### 用户注册
+##### 请求方法
+
+requestUserSign
+
+##### 请求参数
+
+| 参数名  | 必选 | 类型 | 说明 |
+|:------|------|------|------|
+| account | true | string | 用户账号 |
+| password | true | string | 用户密码 |
+
+##### 返回参数
+
+| 参数名  | 类型 | 说明 |
+|:------|------|------|
+| token | string | 用户Token |
+
+##### 返回结果
+```
+{
+    "code": 0,
+    "msg": "",
+    "data": "[token]"
+}
+```
+---
+#### 退出登录
+##### 请求方法
+
+requestLogout
+
+##### 请求参数
+
+| 参数名  | 必选 | 类型 | 说明 |
+|:------|------|------|------|
+| token | true | string | 用户Token |
+
+##### 返回参数
+
+无
+
+##### 返回结果
+```
+{
+    "code": 0,
+    "msg": "",
+    "data": ""
+}
+```
+
+#### 检查用户在线状态
+##### 请求方法
+
+checkConnect
+
+##### 请求参数
+
+| 参数名  | 必选 | 类型 | 说明 |
+|:------|------|------|------|
+| token | true | string | 用户Token |
+
+##### 返回参数
+
+无
+
+##### 返回结果
+```
+{
+    "code": 0,
+    "msg": "",
+    "data": ""
+}
+```
 
 ### 错误码
 
