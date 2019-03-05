@@ -41,8 +41,7 @@ void LogUtil::SimpleWrite(string type, string msg){
     char c_log_time[25];
     strftime(c_time, sizeof(c_time), "%F",localtime(&t)); 
     strftime(c_log_time, sizeof(c_log_time), "%F %T",localtime(&t));
-    cout << c_log_time << endl; 
-    cout << c_time << endl;
+
     string fileName = string(c_time) + ".log";
 
 	string filePath = dirName + fileName;

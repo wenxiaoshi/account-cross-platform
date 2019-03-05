@@ -165,24 +165,24 @@ public:
 
     //查询账号是否存在
     if(userAccount.getUid() <= 0) {
-      result.setCode(2000);
-      result.setMsg("该账号不存在");
+      result.setCode(ResultCode::UserLogin_AccountNotExist);
+      result.setMsg(MsgTip::UserLogin_AccountNotExist);
       return result;
     }
 
     //获得加密后password
     string encrypt_password = CommonUtils::EncryptPwd(account, password);
     if (encrypt_password.empty()) {
-      result.setCode(2007);
-      result.setMsg("初始化密码失败");
+      result.setCode(ResultCode::UserLogin_PasswordInitFail);
+      result.setMsg(MsgTip::UserLogin_PasswordInitFail);
       return result;
     }
 
     //查询密码是否正确
     string db_password = userAccount.getPassword();
     if(!isEqual(db_password, encrypt_password)) {
-      result.setCode(2001);
-      result.setMsg("密码错误");
+      result.setCode(ResultCode::UserLogin_PasswordError);
+      result.setMsg(MsgTip::UserLogin_PasswordError);
       return result;
     }
 
@@ -193,13 +193,13 @@ public:
 
     //更新Token到数据库
     if (!login_db.onlineUserSession(uid,token)) {
-      result.setCode(2003);
-      result.setMsg("更新账号的token失败");
+      result.setCode(ResultCode::UserLogin_UpdateTokenFail);
+      result.setMsg(MsgTip::UserLogin_UpdateTokenFail);
       return result;
     }
 
     //返回Token
-    result.setCode(0);
+    result.setCode(ResultCode::SUCCESS);
     result.setData(token);
     return result;
   };
@@ -211,31 +211,31 @@ public:
     
     //查询账号是否存在
     if(login_db.isHadSign(account)){
-      result.setCode(2002);
-      result.setMsg("该账号已注册");
+      result.setCode(ResultCode::UserSign_AccountHadExist);
+      result.setMsg(MsgTip::UserSign_AccountHadExist);
       return result;
     }
 
     //获得加密后password
     string encrypt_password = CommonUtils::EncryptPwd(account, password);
     if (encrypt_password.empty()) {
-      result.setCode(2007);
-      result.setMsg("初始化密码失败");
+      result.setCode(ResultCode::UserSign_PasswordInitFail);
+      result.setMsg(MsgTip::UserSign_PasswordInitFail);
       return result;
     }
 
     //新增用户，插入账号信息到数据库
     if (!login_db.insertAccountToDB(account,encrypt_password)){
-      result.setCode(2004);
-      result.setMsg("新增账号失败");
+      result.setCode(ResultCode::UserSign_CreateAccountFail);
+      result.setMsg(MsgTip::UserSign_CreateAccountFail);
       return result;
     }
 
     //获得用户信息
     UserAccount userAccount = login_db.getUserAccount(account);
     if (userAccount.getUid() <= 0) {
-      result.setCode(2004);
-      result.setMsg("获取账号信息失败");
+      result.setCode(ResultCode::UserSign_GetAccountInfoFail);
+      result.setMsg(MsgTip::UserSign_GetAccountInfoFail);
       return result;
     }
 
@@ -247,13 +247,13 @@ public:
 
     //新增账号Session
     if (!login_db.createUserSession(uid,token)){
-      result.setCode(2003);
-      result.setMsg("新增账号Session失败");
+      result.setCode(ResultCode::UserSign_CreateSeesionFail);
+      result.setMsg(MsgTip::UserSign_CreateSeesionFail);
       return result;
     }
 
     //返回Token
-    result.setCode(0);
+    result.setCode(ResultCode::SUCCESS);
     result.setData(token);
     
     return result;
@@ -266,7 +266,8 @@ public:
     //解密Token
     string decodeToken = CommonUtils::DecryptToken(token);
     if (decodeToken.empty()) {
-      result.setMsg("token不合法");
+      result.setCode(ResultCode::UserLogout_TokenNotValid);
+      result.setMsg(MsgTip::UserLogout_TokenNotValid);
       return result;
     }
     
@@ -274,7 +275,8 @@ public:
     vector<string> vToken;
     CommonUtils::SplitString(decodeToken, vToken, ":");
     if (vToken.size() != 5) {
-      result.setMsg("token不合法");
+      result.setCode(ResultCode::UserLogout_TokenNotValid);
+      result.setMsg(MsgTip::UserLogout_TokenNotValid);
       return result;
     }
 
@@ -290,11 +292,12 @@ public:
 
     //更新账号对应的Session信息
     if (!login_db.offlineUserSession(uid, token)){
-      result.setMsg("更新账号的token失败");
+      result.setCode(ResultCode::UserLogout_UpdateSessionFail);
+      result.setMsg(MsgTip::UserLogout_UpdateSessionFail);
       return result;
     }
     
-    result.setCode(0);
+    result.setCode(ResultCode::SUCCESS);
     return result;
   };
 
@@ -304,16 +307,16 @@ HandleResult handleUserCheckConnect(std::string token){
     //解密Token
     string decodeToken = CommonUtils::DecryptToken(token);
     if (decodeToken.empty()) {
-      result.setCode(2006);
-      result.setMsg("用户token不合法");
+      result.setCode(ResultCode::CheckConnect_TokenNotValid);
+      result.setMsg(MsgTip::CheckConnect_TokenNotValid);
       return result;
     }
 
     std::vector<string> vToken;
     CommonUtils::SplitString(decodeToken, vToken, ":");
     if (vToken.size() != 5) {
-      result.setCode(2006);
-      result.setMsg("用户token不合法");
+      result.setCode(ResultCode::CheckConnect_TokenNotValid);
+      result.setMsg(MsgTip::CheckConnect_TokenNotValid);
       return result;
     }
 
@@ -323,8 +326,8 @@ HandleResult handleUserCheckConnect(std::string token){
 
     //判断Token是否过期
     if (isTimeExpired(end_time)) {
-      result.setCode(2008);
-      result.setMsg("用户token已过期");
+      result.setCode(ResultCode::CheckConnect_TokenHadExpire);
+      result.setMsg(MsgTip::CheckConnect_TokenHadExpire);
       return result;
     }
 
@@ -338,17 +341,17 @@ HandleResult handleUserCheckConnect(std::string token){
     //检查账号是否在线
     UserSession userSession = login_db.getUserSession(uid);
     if (!userSession.isOnline()){
-      result.setCode(2009);
-      result.setMsg("该账号不在线");
+      result.setCode(ResultCode::CheckConnect_AccountOffline);
+      result.setMsg(MsgTip::CheckConnect_AccountOffline);
       return result;
     }
     if (!isEqual(token, userSession.getToken())){
-      result.setCode(2005);
-      result.setMsg("该账号在另一端登录");
+      result.setCode(ResultCode::CheckConnect_AccountTokenNotEqual);
+      result.setMsg(MsgTip::CheckConnect_AccountTokenNotEqual);
       return result;
     }
 
-    result.setCode(0);
+    result.setCode(ResultCode::SUCCESS);
     return result;
   };
 
@@ -409,7 +412,7 @@ class AccountServiceImpl final : public Account::Service {
     
     //校验用户账号
     if (!ParamUtils::CheckAccountValid(account, error_msg)) {
-      reply->set_code(ResultCode::ERROR_PARAM_IS_INVALID);
+      reply->set_code(ResultCode::ReqParamError);
       reply->set_msg(error_msg);
       isParamValid = false;
       LOGW("account is not valid");
@@ -417,7 +420,7 @@ class AccountServiceImpl final : public Account::Service {
 
     //校验用户密码
     if (isParamValid && !ParamUtils::CheckPasswordValid(password, error_msg)) {
-      reply->set_code(ResultCode::ERROR_PARAM_IS_INVALID);
+      reply->set_code(ResultCode::ReqParamError);
       reply->set_msg(error_msg);
       isParamValid = false;
       LOGW("password is not valid");
@@ -452,7 +455,7 @@ class AccountServiceImpl final : public Account::Service {
     
     //校验用户账号
     if (!ParamUtils::CheckAccountValid(account, error_msg)) {
-      reply->set_code(ResultCode::ERROR_PARAM_IS_INVALID);
+      reply->set_code(ResultCode::ReqParamError);
       reply->set_msg(error_msg);
       isParamValid = false;
       LOGW("account is not valid");
@@ -460,7 +463,7 @@ class AccountServiceImpl final : public Account::Service {
 
     //校验用户密码
     if (isParamValid && !ParamUtils::CheckPasswordValid(password, error_msg)) {
-      reply->set_code(ResultCode::ERROR_PARAM_IS_INVALID);
+      reply->set_code(ResultCode::ReqParamError);
       reply->set_msg(error_msg);
       isParamValid = false;
       LOGW("password is not valid");
@@ -517,7 +520,7 @@ class AccountServiceImpl final : public Account::Service {
     
     //校验用户token
     if (!ParamUtils::CheckTokenValid(token, error_msg)) {
-      reply->set_code(ResultCode::ERROR_PARAM_IS_INVALID);
+      reply->set_code(ResultCode::ReqParamError);
       reply->set_msg(error_msg);
       isParamValid = false;
       LOGW("token is not valid");
