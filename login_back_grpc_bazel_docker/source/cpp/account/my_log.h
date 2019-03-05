@@ -3,6 +3,7 @@
 #include <vector>
 #include <time.h>
 #include <sstream>
+#include <iostream>
 
 using namespace std;
 
@@ -31,10 +32,11 @@ namespace utils{
     		}
     		msg += "}], cost ";
 
-			stringstream ss;
-		    ss<< clock() - start_time;
-		    msg += ss.str() + "ms";
-		    return msg;
+		double diff_seconds = (double)(clock() - start_time)/CLOCKS_PER_SEC;
+		stringstream ss;
+		ss<< diff_seconds * 1000;
+		msg += ss.str() + "ms";
+		return msg;
     	}
 
     private:
