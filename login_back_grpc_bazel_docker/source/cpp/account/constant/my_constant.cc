@@ -22,9 +22,9 @@ const int ResultCode::UserLogin_PasswordInitFail = 1001002;
 const int ResultCode::UserLogin_PasswordError = 1001003;
 const int ResultCode::UserLogin_UpdateTokenFail = 1001004;
 
-const string MsgTip::UserLogin_AccountNotExist = "该账号不存在";//1001001
-const string MsgTip::UserLogin_PasswordInitFail = "初始化密码失败";//1001002
-const string MsgTip::UserLogin_PasswordError = "密码输入错误";//1001003
+const string MsgTip::UserLogin_AccountNotExist = "账号不存在";//1001001
+const string MsgTip::UserLogin_PasswordInitFail = "密码初始化失败";//1001002
+const string MsgTip::UserLogin_PasswordError = "用户密码错误";//1001003
 const string MsgTip::UserLogin_UpdateTokenFail = "用户Token更新失败";//1001004
 
 //1002zzz 用户注册接口
@@ -34,10 +34,10 @@ const int ResultCode::UserSign_CreateAccountFail = 1002003;
 const int ResultCode::UserSign_GetAccountInfoFail = 1002004;
 const int ResultCode::UserSign_CreateSeesionFail = 1002005;
 
-const string MsgTip::UserSign_AccountHadExist = "该账号已经注册";//1002001
-const string MsgTip::UserSign_PasswordInitFail = "初始化密码失败";//1002002
+const string MsgTip::UserSign_AccountHadExist = "账号已经存在";//1002001
+const string MsgTip::UserSign_PasswordInitFail = "密码初始化失败";//1002002
 const string MsgTip::UserSign_CreateAccountFail = "账号创建失败";//1002003
-const string MsgTip::UserSign_GetAccountInfoFail = "获取账号信息失败";//1002004
+const string MsgTip::UserSign_GetAccountInfoFail = "账号信息获取失败";//1002004
 const string MsgTip::UserSign_CreateSeesionFail = "账号会话信息创建失败";//1002005
 
 //1003zzz 用户退出登录接口
@@ -56,4 +56,4 @@ const int ResultCode::CheckConnect_AccountTokenNotEqual = 1004004;
 const string MsgTip::CheckConnect_TokenNotValid = "Token格式错误";//1004001
 const string MsgTip::CheckConnect_TokenHadExpire = "Token已经失效";//1004002
 const string MsgTip::CheckConnect_AccountOffline = "账号已离线";//1004003
-const string MsgTip::CheckConnect_AccountTokenNotEqual = "Token与在线Token不符";//1004004
+const string MsgTip::CheckConnect_AccountTokenNotEqual = "Token校验失败";//1004004
