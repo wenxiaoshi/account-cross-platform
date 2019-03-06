@@ -53,7 +53,7 @@
     </tr>
     <tr>
         <td><center><img src="http://melon-personal.oss-cn-shenzhen.aliyuncs.com/login-android.png"></center></td>
-        <td><center><img src="http://melon-personal.oss-cn-shenzhen.aliyuncs.com/login-android.png"></center></td>
+        <td><center><img src="http://melon-personal.oss-cn-shenzhen.aliyuncs.com/login-back.png"></center></td>
     </tr>
 </table>
 
