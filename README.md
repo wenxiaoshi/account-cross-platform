@@ -263,6 +263,8 @@ checkConnect
 || GRPC-C++ | 1.18.0 |  |
 || Docker | 18.09.1 | Community |
 || Docker Compose | 1.23.2 |  |
+| 系统 |  |  ||
+|| ufw | 0.35 | Ubuntu 防火墙 |
 
 ### 常用后端命令
 | 命令 | 备注 |
