@@ -8,4 +8,11 @@
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
     <color name="gray">#cccccc</color>
+    <color name="gray_hint">#BFBFBF</color>
+    <color name="gray_line">#E3E3E3</color>
+    <color name="blue_tip">#566A92</color>
+
+    <color name="green_select">#20BF64</color>
+    <color name="green_not_select">#9EE5C0</color>
+
 </resources>

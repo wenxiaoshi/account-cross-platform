@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:paddingLeft="25dp"
+    android:paddingRight="25dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="153dp"
+        android:text="手机号登录"
+        android:textColor="@color/black"
+        android:textSize="24.5sp"/>
 
     <LinearLayout
         android:id="@+id/ll_login_operate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center_horizontal"
+        android:layout_marginTop="42dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -23,22 +33,28 @@
                 android:layout_height="wrap_content"
                 android:text="@string/activity_xml_login_account"
                 android:textColor="@color/black"
-                android:textSize="18sp"/>
+                android:textSize="16.5sp"/>
 
             <EditText
                 android:id="@+id/et_login_account"
-                android:layout_width="200dp"
-                android:layout_height="50dp"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginLeft="43dp"
                 android:inputType="phone"
                 android:maxLines="1"
                 android:maxLength="16"
                 android:hint="@string/activity_xml_login_hint_type_phone"
-                android:textColorHint="@color/gray"
+                android:textColorHint="@color/gray_hint"
                 android:textColor="@color/black"
-                android:textSize="18sp"/>
+                android:textSize="16.5sp"/>
 
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray_line"/>
+        
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -50,43 +66,42 @@
                 android:layout_height="wrap_content"
                 android:text="@string/activity_xml_login_password"
                 android:textColor="@color/black"
-                android:textSize="18sp"/>
+                android:textSize="16.5sp"/>
 
             <EditText
                 android:id="@+id/et_login_password"
-                android:layout_width="200dp"
-                android:layout_height="50dp"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginLeft="60dp"
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:maxLength="30"
                 android:hint="@string/activity_xml_login_hint_type_password"
-                android:textColorHint="@color/gray"
+                android:textColorHint="@color/gray_hint"
                 android:textColor="@color/black"
-                android:textSize="18sp"/>
+                android:textSize="16.5sp"/>
 
         </LinearLayout>
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/bt_sign"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal">
+            android:layout_marginTop="26dp"
+            android:text="@string/activity_xml_login_have_not_account"
+            android:textColor="@color/blue_tip"
+            android:textSize="15sp"/>
 
-            <Button
-                android:id="@+id/bt_login"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
-                android:text="@string/activity_xml_login_login" />
-
-            <Button
-                android:id="@+id/bt_sign"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:text="@string/activity_xml_login_sign" />
-
-        </LinearLayout>
+        <TextView
+            android:id="@+id/bt_login"
+            android:layout_width="match_parent"
+            android:layout_height="43dp"
+            android:layout_marginTop="55dp"
+            android:gravity="center"
+            android:text="@string/activity_xml_login_login"
+            android:textColor="@color/white"
+            android:textSize="16.5sp"
+            android:background="@drawable/selector_btn"/>
 
 
     </LinearLayout>
@@ -142,4 +157,4 @@
     </LinearLayout>
 
 
-</RelativeLayout>
+</LinearLayout>

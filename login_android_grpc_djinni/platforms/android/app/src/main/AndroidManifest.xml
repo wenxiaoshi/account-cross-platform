@@ -28,7 +28,7 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:theme="@style/MyAppTheme"/>
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
     </application>
 
