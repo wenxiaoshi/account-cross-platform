@@ -26,4 +26,21 @@
         <item name="colorPrimaryDark">@color/transparent</item>
     </style>
 
+    <style name="BaseActivityTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="android:configChanges">keyboardHidden|orientation|navigation</item>
+        <item name="android:windowSoftInputMode">adjustPan</item>
+        <item name="android:screenOrientation">portrait</item>
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:typeface">sans</item>
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="colorPrimary">@color/transparent</item>
+        <item name="colorPrimaryDark">@color/transparent</item>
+    </style>
+
+
 </resources>
