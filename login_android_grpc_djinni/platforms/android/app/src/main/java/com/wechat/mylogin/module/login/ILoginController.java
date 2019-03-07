@@ -1,4 +1,4 @@
-package com.wechat.mylogin.module;
+package com.wechat.mylogin.module.login;
 
 interface ILoginController {
 

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/bg_common"
     android:paddingLeft="25dp"
     android:paddingRight="25dp"
     android:orientation="vertical">
@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="153dp"
-        android:text="手机号登录"
+        android:text="@string/activity_xml_login_phone"
         android:textColor="@color/black"
         android:textSize="24.5sp"/>
 
@@ -23,7 +23,7 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal">
@@ -37,7 +37,7 @@
 
             <EditText
                 android:id="@+id/et_login_account"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginLeft="43dp"
                 android:inputType="phone"
@@ -56,7 +56,7 @@
             android:background="@color/gray_line"/>
         
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal">
@@ -70,8 +70,9 @@
 
             <EditText
                 android:id="@+id/et_login_password"
-                android:layout_width="wrap_content"
+                android:layout_width="0px"
                 android:layout_height="40dp"
+                android:layout_weight="1"
                 android:layout_marginLeft="60dp"
                 android:inputType="textPassword"
                 android:maxLines="1"
@@ -81,10 +82,19 @@
                 android:textColor="@color/black"
                 android:textSize="16.5sp"/>
 
+            <ImageView
+                android:id="@+id/iv_password_clean"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:src="@mipmap/wechat_delete"/>
+
         </LinearLayout>
 
         <TextView
-            android:id="@+id/bt_sign"
+            android:id="@+id/tv_turn_to_sign"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="26dp"
@@ -93,7 +103,7 @@
             android:textSize="15sp"/>
 
         <TextView
-            android:id="@+id/bt_login"
+            android:id="@+id/tv_login"
             android:layout_width="match_parent"
             android:layout_height="43dp"
             android:layout_marginTop="55dp"
@@ -103,56 +113,6 @@
             android:textSize="16.5sp"
             android:background="@drawable/selector_btn"/>
 
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_login_result"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="40dp"
-        android:layout_marginRight="40dp"
-        android:layout_marginTop="150dp"
-        android:visibility="gone"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/tv_result_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/activity_xml_login_login_success"
-            android:textColor="@color/black"
-            android:textSize="22sp"/>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/activity_xml_login_account"
-                android:textColor="@color/black"
-                android:textSize="18sp"/>
-
-            <TextView
-                android:id="@+id/tv_result_account"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:textColor="@color/black"/>
-
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/btn_exit_login"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:text="@string/activity_xml_login_logout"
-            android:textSize="14sp" />
 
     </LinearLayout>
 

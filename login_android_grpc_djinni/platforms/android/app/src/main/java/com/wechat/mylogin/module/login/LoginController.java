@@ -1,4 +1,4 @@
-package com.wechat.mylogin.module;
+package com.wechat.mylogin.module.login;
 
 
 import android.os.Handler;
@@ -12,12 +12,11 @@ import com.wechat.mylogin.constant.ResultCode;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 
 public class LoginController implements ILoginController {
 
-    private WeakReference<LoginActivity> pageActivity;
+    private WeakReference<AccountActivity> pageActivity;
     private WeakReference<LoginUIController> mUiController;
     private LoginCore mLoginCore;
     private LoginListener mLoginListener;
@@ -27,7 +26,7 @@ public class LoginController implements ILoginController {
 
     private Handler mMainHandler = new Handler(Looper.getMainLooper());
 
-    public LoginController(LoginActivity activity, LoginUIController controller){
+    public LoginController(AccountActivity activity, LoginUIController controller){
         pageActivity = new WeakReference<>(activity);
         mUiController = new WeakReference<>(controller);
 
