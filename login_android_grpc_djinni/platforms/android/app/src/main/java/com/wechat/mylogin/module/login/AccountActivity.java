@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.wechat.mylogin.BaseActivity;
 import com.wechat.mylogin.R;
 import com.wechat.mylogin.module.login.fragment.AccountFragment;
 import com.wechat.mylogin.module.login.fragment.LoginFragment;
@@ -16,7 +17,7 @@ import com.wechat.mylogin.module.login.fragment.UserFragment;
 
 import static com.wechat.mylogin.constant.Constants.KEY_ACCOUNT;
 
-public class AccountActivity extends AppCompatActivity implements LoginUIController {
+public class AccountActivity extends BaseActivity implements LoginUIController {
 
     //登录界面
     public static final String TAB_LOGIN = LoginFragment.class.getName();
@@ -42,6 +43,7 @@ public class AccountActivity extends AppCompatActivity implements LoginUIControl
 
         switchTo(TAB_LOGIN, null);
 
+        handleCheckStatus();
     }
 
     /**
@@ -79,6 +81,7 @@ public class AccountActivity extends AppCompatActivity implements LoginUIControl
      */
     @Override
     public void performLoginSuccess() {
+        hideProgress();
         String account = mLastShowFragment.getAccount();
         Bundle bundle = new Bundle();
         bundle.putString(KEY_ACCOUNT,account);
@@ -90,6 +93,7 @@ public class AccountActivity extends AppCompatActivity implements LoginUIControl
      */
     @Override
     public void performSignSuccess() {
+        hideProgress();
         String account = mLastShowFragment.getAccount();
         Bundle bundle = new Bundle();
         bundle.putString(KEY_ACCOUNT,account);
@@ -101,6 +105,7 @@ public class AccountActivity extends AppCompatActivity implements LoginUIControl
      */
     @Override
     public void performLoginFail() {
+        hideProgress();
     }
 
     /**
@@ -108,6 +113,7 @@ public class AccountActivity extends AppCompatActivity implements LoginUIControl
      */
     @Override
     public void performSignFail() {
+        hideProgress();
     }
 
     /**
@@ -123,6 +129,10 @@ public class AccountActivity extends AppCompatActivity implements LoginUIControl
      */
     @Override
     public void performUserOnline(String account) {
+        hideProgress();
+        if (TextUtils.isEmpty(account)){
+            return;
+        }
         Bundle bundle = new Bundle();
         bundle.putString(KEY_ACCOUNT,account);
         switchTo(TAB_USER,bundle);
@@ -148,6 +158,7 @@ public class AccountActivity extends AppCompatActivity implements LoginUIControl
      * 用户登录
      */
     public void handleLogin(String account, String password){
+        showProgress();
         mController.actionLoginIn(account,password);
     }
 
@@ -156,7 +167,17 @@ public class AccountActivity extends AppCompatActivity implements LoginUIControl
      * 用户注册
      */
     public void handleSign(String account, String password){
+        showProgress();
         mController.actionSignIn(account,password);
+    }
+
+    /**
+     * 主动事件
+     * 检查用户登录状态
+     */
+    public void handleCheckStatus(){
+        showProgress();
+        mController.actionCheckLoginStatus();
     }
 
     /**

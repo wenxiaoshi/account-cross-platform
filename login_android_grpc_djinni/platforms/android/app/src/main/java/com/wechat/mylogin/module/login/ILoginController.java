@@ -8,4 +8,6 @@ interface ILoginController {
 
     void actionLogout();
 
+    void actionCheckLoginStatus();
+
 }

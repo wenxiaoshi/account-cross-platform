@@ -33,19 +33,10 @@ public class LoginController implements ILoginController {
         mLoginListener = new LoginListener();
         mLoginCore = LoginCore.create(mLoginListener);
 
-        //进入页面，判断是否用户在线
-        executorCache.execute(new Runnable() {
-            @Override
-            public void run() {
-                mLoginCore.checkLoginStatus();
-            }
-        });
     }
 
     /**
      * 发起登录操作
-     * @param userAccount
-     * @param userPassword
      */
     @Override
     public void actionLoginIn(final String userAccount, final String userPassword){
@@ -59,8 +50,6 @@ public class LoginController implements ILoginController {
 
     /**
      * 发起注册操作
-     * @param userAccount
-     * @param userPassword
      */
     @Override
     public void actionSignIn(final String userAccount, final String userPassword){
@@ -86,6 +75,19 @@ public class LoginController implements ILoginController {
     }
 
     /**
+     * 发起检查登录状态操作
+     */
+    @Override
+    public void actionCheckLoginStatus() {
+        executorCache.execute(new Runnable() {
+            @Override
+            public void run() {
+                mLoginCore.checkLoginStatus();
+            }
+        });
+    }
+
+    /**
      * 发起退出登录操作
      */
     private void checkConnect(){
@@ -99,7 +101,6 @@ public class LoginController implements ILoginController {
 
     /**
      * 处理登录完成后的UI方法调用
-     * @param result
      */
     private void handleLoginResult(ActionResult result){
         if (isPageRecycle()){
@@ -171,6 +172,8 @@ public class LoginController implements ILoginController {
         if (result.getCode() == ResultCode.SUCCESS.getValue()){
             mUiController.get().performUserOnline(result.getData());
             checkConnect();
+        }else {
+            mUiController.get().performUserOnline("");
         }
         if (!TextUtils.isEmpty(result.getMsg())){
             handleToast(result.getMsg());

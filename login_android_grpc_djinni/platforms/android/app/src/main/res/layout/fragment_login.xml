@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="153dp"
+        android:layout_marginTop="140dp"
         android:text="@string/activity_xml_login_phone"
         android:textColor="@color/black"
         android:textSize="24.5sp"/>

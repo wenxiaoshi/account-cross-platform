@@ -4,34 +4,28 @@ import android.app.Dialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.LinearLayout;
 
 import com.wechat.mylogin.R;
 
 public class ProgressDialog extends Dialog {
 
-    private View contentView;
-
     public ProgressDialog(Context context){
         super(context);
-        initView();
+        init();
     }
 
-    private void initView(){
+    private void init(){
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_progressbar,null);
+        setContentView(view);
+
         Window window = getWindow();
         if (window != null){
-            window.getDecorView().setBackgroundColor(getContext().getResources().getColor(R.color.transparent));
+            window.setBackgroundDrawableResource(R.drawable.bg_corner_tran);
         }
 
+        setCancelable(false);
         setCanceledOnTouchOutside(false);
-
-        contentView = LayoutInflater.from(getContext()).inflate(R.layout.layout_progressbar, null);
-        setContentView(contentView);
-
-
-
     }
 
 }
