@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_common"
+    android:paddingLeft="25dp"
+    android:paddingRight="25dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="153dp"
+        android:text="@string/activity_xml_sign_phone"
+        android:textColor="@color/black"
+        android:textSize="24.5sp"/>
+
+    <LinearLayout
+        android:id="@+id/ll_login_operate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="42dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_xml_login_account"
+                android:textColor="@color/black"
+                android:textSize="16.5sp"/>
+
+            <EditText
+                android:id="@+id/et_login_account"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="43dp"
+                android:inputType="phone"
+                android:maxLines="1"
+                android:maxLength="11"
+                android:hint="@string/activity_xml_login_hint_type_phone"
+                android:background="@null"
+                android:textColorHint="@color/gray_hint"
+                android:textColor="@color/black"
+                android:textSize="16.5sp"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray_line"/>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_xml_login_password"
+                android:textColor="@color/black"
+                android:textSize="16.5sp"/>
+
+            <EditText
+                android:id="@+id/et_login_password"
+                android:layout_width="0px"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:layout_marginLeft="60dp"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:maxLength="30"
+                android:hint="@string/activity_xml_login_hint_type_password"
+                android:background="@null"
+                android:textColorHint="@color/gray_hint"
+                android:textColor="@color/black"
+                android:textSize="16.5sp"/>
+
+            <ImageView
+                android:id="@+id/iv_password_clean"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:src="@mipmap/wechat_delete"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_turn_to_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="21dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:text="@string/activity_xml_login_have_account"
+            android:textColor="@color/blue_tip"
+            android:textSize="15sp"/>
+
+        <TextView
+            android:id="@+id/tv_sign"
+            android:layout_width="match_parent"
+            android:layout_height="43dp"
+            android:layout_marginTop="50dp"
+            android:gravity="center"
+            android:text="@string/activity_xml_login_sign"
+            android:textColor="@color/white"
+            android:textSize="16.5sp"
+            android:background="@drawable/selector_btn"/>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

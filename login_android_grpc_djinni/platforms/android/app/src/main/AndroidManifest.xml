@@ -9,13 +9,9 @@
 
     <application
         android:name=".AppApplication"
-        android:allowBackup="true"
         android:icon="@mipmap/yonghu"
         android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/MyAppTheme"
-        tools:replace="android:appComponentFactory"
-        android:appComponentFactory="任意字符">
+        android:theme="@style/BaseActivityTheme">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,7 +20,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".module.LoginActivity"
+        <activity android:name=".module.login.AccountActivity"
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_common"
+    android:paddingLeft="25dp"
+    android:paddingRight="25dp"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="111dp"
+        android:src="@mipmap/yonghu"/>
+
+    <TextView
+        android:id="@+id/tv_user_account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="135 3319 2332"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:textSize="18.5sp"/>
+
+    <TextView
+        android:id="@+id/tv_exit_login"
+        android:layout_width="match_parent"
+        android:layout_height="43dp"
+        android:layout_marginTop="155dp"
+        android:gravity="center"
+        android:text="@string/activity_xml_login_logout"
+        android:textSize="16.5sp"
+        android:textColor="@color/white"
+        android:background="@drawable/bg_corner_green_dark"/>
+
+
+</LinearLayout>
