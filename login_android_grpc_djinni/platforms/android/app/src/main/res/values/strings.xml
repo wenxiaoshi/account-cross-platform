@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">MyLogin</string>
 
+    <string name="loading">正在加载...</string>
+
     <string name="login_action_result_success">登录成功</string>
     <string name="login_action_result_fail">登录失败</string>
     <string name="sign_action_result_success">注册成功</string>

@@ -41,5 +41,7 @@
         <item name="colorPrimaryDark">@color/transparent</item>
     </style>
 
+    <style name="Widget.Material.ProgressBar" parent="Base.Widget.AppCompat.ProgressBar">
+    </style>
 
 </resources>
