@@ -1,10 +1,19 @@
 version: '2'
-
 services:
   grpcserver:
-      image: grpcserver:1.0
-      ports:
-        - "50051:50051"
-      volumes:
-        - "/data/log:/data/log"
-      command: ["./account_server"]
+    image: grpcserver:1.0
+    ports:
+      - "50051:50051"
+    volumes:
+      - "/data/log:/data/log"
+    depends_on:
+      - redis
+    command: ["./account_server"]
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - "$PWD/conf/redis.conf:/etc/redis/redis.conf"
+      - "$PWD/data:/data"
+    command: ["redis-server","/etc/redis/redis.conf","--appendonly","yes"]

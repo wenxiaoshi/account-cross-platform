@@ -27,7 +27,7 @@ grpc_proto_library(
 cc_binary(
     name = "account_server",
     srcs = ["cpp/account/account_server.cc"],
-    deps = [":account", "//:grpc++",":hashmap",":commonutils",":sqlite3",":my_log",":my_db",":my_model",":my_constant"],
+    deps = [":account", "//:grpc++",":hashmap",":commonutils",":sqlite3",":my_log",":my_db",":my_model",":my_constant",":my_hiredis"],
     data = ["//mypem:ca.crt","//mypem:server.crt","//mypem:server.key"],
 )
 
@@ -88,3 +88,10 @@ cc_library(
     srcs = ["cpp/account/utils/file_utils.cpp"],
     hdrs = ["cpp/account/utils/file_utils.h"],
 )
+
+cc_import(
+    name = "my_hiredis",
+    hdrs = ["//include/redis:hiredis.h"],
+    static_library = "//include/redis:libhiredis.a"
+)
+
