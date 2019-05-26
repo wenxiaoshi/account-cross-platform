@@ -66,8 +66,8 @@ cc_library(
 
 cc_library(
     name = "sqlite3",
-    srcs = ["sqlite3/sqlite3.c","sqlite3/shell.c"],
-    hdrs = ["sqlite3/sqlite3.h","sqlite3/sqlite3ext.h"],
+    srcs = ["//include/sqlite3/sqlite3.c","//include/sqlite3/shell.c"],
+    hdrs = ["//include/sqlite3/sqlite3.h","//include/sqlite3/sqlite3ext.h"],
     linkopts = ["-ldl"],
 )
 
