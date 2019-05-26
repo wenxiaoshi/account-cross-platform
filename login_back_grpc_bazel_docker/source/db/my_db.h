@@ -1,7 +1,7 @@
 
 #include <string>
 
-#include "../include/sqlite3/sqlite3.h"
+#include "include/sqlite3/sqlite3.h"
 #include "source/cpp/account/model/user_account.h"
 #include "source/cpp/account/model/user_session.h"
 
