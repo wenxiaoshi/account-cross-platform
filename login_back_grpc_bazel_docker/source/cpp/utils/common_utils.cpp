@@ -3,9 +3,10 @@
 //
 #include <exception> 
 
-#include "common_utils.h"
 #include "../constant/my_constant.h"
-#include "../log/my_log.h"
+
+#include "common_utils.h"
+#include "log_utils.h"
 
 #include <time.h>
 #include <random>

@@ -16,10 +16,11 @@
 #include <grpcpp/grpcpp.h>
 #include <hiredis/hiredis.h>
 
-#include "source/db/my_db.h"
-#include "utils/common_utils.h"
-#include "log/my_log.h"
-#include "constant/my_constant.h"
+#include "../utils/db_utils.h"
+#include "../utils/common_utils.h"
+#include "../utils/log_utils.h"
+
+#include "../constant/my_constant.h"
 
 #include "source/protos/account.grpc.pb.h"
 
@@ -539,10 +540,10 @@ void RunServer() {
 
   ServerBuilder builder;
   
-  std::ifstream skey("mypem/server.key");
+  std::ifstream skey("source/pem/server.key");
   std::string strServerKey((std::istreambuf_iterator<char>(skey)),std::istreambuf_iterator<char>());
   //std::cout << "key: " <<strServerKey << std::endl;
-  std::ifstream sCrt("mypem/server.crt");  
+  std::ifstream sCrt("source/pem/server.crt");  
   std::string strServerCert((std::istreambuf_iterator<char>(sCrt)),std::istreambuf_iterator<char>());
   //std::cout << "crt: " << strServerCert << std::endl;
   

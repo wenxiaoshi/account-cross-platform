@@ -4,3 +4,5 @@ bazel-login_back_grpc_bazel_docker
 bazel-out
 bazel-testlogs
 .vscode
+tools
+third_party

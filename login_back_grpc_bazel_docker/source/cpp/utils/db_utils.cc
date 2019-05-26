@@ -6,8 +6,8 @@
 #include <vector>
 #include <sstream>
 
-#include "my_db.h"
-#include "source/cpp/account/log/my_log.h"
+#include "db_utils.h"
+#include "log_utils.h"
 
 #define LOGD(msg)  utils::LogUtil::LOGD(msg);
 #define LOGW(msg)  utils::LogUtil::LOGW(msg);
