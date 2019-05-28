@@ -15,9 +15,13 @@
 
 #include <grpcpp/grpcpp.h>
 #include <hiredis/hiredis.h>
+#include "source/libs/json/json.h"
 
-#include "../utils/db_utils.h"
+#include "source/cpp/manager/db/db_manager.h"
+#include "source/cpp/manager/redis/redis_manager.h"
+
 #include "../utils/common_utils.h"
+#include "../utils/param_utils.h"
 #include "../utils/log_utils.h"
 
 #include "../constant/my_constant.h"
@@ -32,7 +36,7 @@
 
 using namespace std;
 using namespace utils;
-using namespace db_utils;
+using namespace manager;
 using namespace my_model;
 using namespace constants;
 
@@ -135,6 +139,48 @@ private:
   
 };
 
+class LoginRedis {
+public:
+
+  /**
+  * 保存token
+  **/
+  bool updateRedisToken(int uid, string token, string refreshToken){
+    stringstream ssToken;
+    ssToken  << uid << "_token";
+    stringstream ssRToken;
+    ssRToken << uid << "_refresh_token";
+    return redis.setString(ssToken.str(), token) && redis.setString(ssRToken.str(), refreshToken);
+  }
+
+  bool isTokenRight(int uid, string token){
+    stringstream ssToken;
+    ssToken  << uid << "_token";
+    string redisToken;
+    redis.getString(ssToken.str(), redisToken);
+    return CommonUtils::isEqual(redisToken, token);
+  }
+
+  bool cleanRedisToken(int uid){
+    stringstream ssToken;
+    ssToken  << uid << "_token";
+    stringstream ssRToken;
+    ssRToken << uid << "_refresh_token";
+    return redis.setString(ssToken.str(), "") && redis.setString(ssRToken.str(), "");
+  }
+
+  string getUserToken(int uid){
+    stringstream ssToken;
+    ssToken  << uid << "_token";
+    string token;
+    redis.getString(ssToken.str(),token);
+    return token;
+  }
+
+private:
+  Redis redis = * Redis::getRedis();
+
+};
 
 class LoginCore{
 public:
@@ -142,6 +188,7 @@ public:
     HandleResult result;
     
     LoginDatabase login_db;
+    LoginRedis login_redis;
 
     UserAccount userAccount = login_db.getUserAccount(account);
 
@@ -162,7 +209,7 @@ public:
 
     //查询密码是否正确
     string db_password = userAccount.getPassword();
-    if(!isEqual(db_password, encrypt_password)) {
+    if(!CommonUtils::isEqual(db_password, encrypt_password)) {
       result.setCode(ResultCode::UserLogin_PasswordError);
       result.setMsg(MsgTip::UserLogin_PasswordError);
       return result;
@@ -170,11 +217,13 @@ public:
 
     //获取用户UID
     int uid = userAccount.getUid(); 
-    //生成Token
-    string token = CommonUtils::GenToken(uid,account);
 
-    //更新Token到数据库
-    if (!login_db.onlineUserSession(uid,token)) {
+    //生成Token、refreshToken
+    string token = CommonUtils::GenToken(uid,account);
+    string refreshToken = CommonUtils::GenToken(uid,account);
+
+    //更新Token到redis
+    if (!login_redis.updateRedisToken(uid,token,refreshToken)) {
       result.setCode(ResultCode::UserLogin_UpdateTokenFail);
       result.setMsg(MsgTip::UserLogin_UpdateTokenFail);
       return result;
@@ -182,7 +231,10 @@ public:
 
     //返回Token
     result.setCode(ResultCode::SUCCESS);
-    result.setData(token);
+    Json::Value root;
+    root["token"] = token;
+    root["refresh_token"] = refreshToken;
+    result.setData(root.get("encoding", "UTF-8" ).asString());
     return result;
   };
 
@@ -190,7 +242,8 @@ public:
     HandleResult result;
     
     LoginDatabase login_db;
-    
+    LoginRedis login_redis;
+
     //查询账号是否存在
     if(login_db.isHadSign(account)){
       result.setCode(ResultCode::UserSign_AccountHadExist);
@@ -223,12 +276,13 @@ public:
 
     //获得用户UID
     int uid = userAccount.getUid(); 
-    
-    //生成Token
-    string token = CommonUtils::GenToken(uid, account);
 
-    //新增账号Session
-    if (!login_db.createUserSession(uid,token)){
+    //生成Token、refreshToken
+    string token = CommonUtils::GenToken(uid,account);
+    string refreshToken = CommonUtils::GenToken(uid,account);
+
+    //更新Token到redis
+    if (!login_redis.updateRedisToken(uid,token,refreshToken)){
       result.setCode(ResultCode::UserSign_CreateSeesionFail);
       result.setMsg(MsgTip::UserSign_CreateSeesionFail);
       return result;
@@ -236,15 +290,18 @@ public:
 
     //返回Token
     result.setCode(ResultCode::SUCCESS);
-    result.setData(token);
-    
+    Json::Value root;
+    root["token"] = token;
+    root["refresh_token"] = refreshToken;
+    result.setData(root.get("encoding", "UTF-8" ).asString());
     return result;
   };
 
-
-   HandleResult handleUserLogout(string token){
+  HandleResult handleUserLogout(string token){
     HandleResult result;
-  
+
+    LoginRedis login_redis;
+
     //解密Token
     string decodeToken = CommonUtils::DecryptToken(token);
     if (decodeToken.empty()) {
@@ -263,17 +320,17 @@ public:
     }
 
     //获得账号UID
-    string str_uid = vToken[0];
-    stringstream ss;
-    ss<<str_uid;
-    int uid;
-    ss>>uid;
+    int uid = getIntByString(vToken[0]);
 
-    //获取数据库操作类
-    LoginDatabase login_db;
+    //token是否正确
+    if (!login_redis.isTokenRight(uid, token)) {
+      result.setCode(ResultCode::UserLogout_TokenNotExist);
+      result.setMsg(MsgTip::UserLogout_TokenNotExist);
+      return result;
+    }
 
-    //更新账号对应的Session信息
-    if (!login_db.offlineUserSession(uid, token)){
+    //清除token
+    if (!login_redis.cleanRedisToken(uid)){
       result.setCode(ResultCode::UserLogout_UpdateSessionFail);
       result.setMsg(MsgTip::UserLogout_UpdateSessionFail);
       return result;
@@ -283,7 +340,7 @@ public:
     return result;
   };
 
-HandleResult handleUserCheckConnect(std::string token){
+  HandleResult handleUserCheckConnect(string token){
     HandleResult result;
   
     //解密Token
@@ -317,17 +374,9 @@ HandleResult handleUserCheckConnect(std::string token){
     string str_uid = vToken[0];
     int uid = getIntByString(str_uid);
 
-    //获取数据库操作类
-    LoginDatabase login_db;
-
-    //检查账号是否在线
-    UserSession userSession = login_db.getUserSession(uid);
-    if (!userSession.isOnline()){
-      result.setCode(ResultCode::CheckConnect_AccountOffline);
-      result.setMsg(MsgTip::CheckConnect_AccountOffline);
-      return result;
-    }
-    if (!isEqual(token, userSession.getToken())){
+    //获取redis中用户Token
+    LoginRedis login_redis;
+    if (!CommonUtils::isEqual(token, login_redis.getUserToken(uid))){
       result.setCode(ResultCode::CheckConnect_AccountTokenNotEqual);
       result.setMsg(MsgTip::CheckConnect_AccountTokenNotEqual);
       return result;
@@ -338,23 +387,6 @@ HandleResult handleUserCheckConnect(std::string token){
   };
 
 private:
-
- /**
-  * 判断字符串是否相等
-  **/
-  bool isEqual(string origin,string target) {
-    const char* oChar = origin.data();
-    const char* tChar = target.data();
-    if (origin.size() != target.size()) {
-      return false;
-    }
-    for (unsigned int i = 0; i < origin.size(); i++) {
-      if (oChar[i] != tChar[i]) {
-        return false;
-      }
-    }
-    return true;
-  }
 
  /**
   * 将string转换成int
@@ -525,14 +557,6 @@ class AccountServiceImpl final : public Account::Service {
   }
 };
 
-void RunDb() {
-
-  if (!Database::database->init()) {
-     LOGE("database run fail !");
-  }
-
-}
-
 void RunServer() {
 
   std::string server_address("0.0.0.0:50051");
@@ -570,38 +594,10 @@ void RunServer() {
 
 void doTest()
 {
-	//redis默认监听端口为6387 可以再配置文件中修改
-	redisContext* redis = redisConnect("144.34.177.181", 6379);
-	if ( NULL == redis || redis->err)
-	{       // redis为NULL与redis->err是两种不同的错误，若redis->err为true，可使用redis->errstr查看错误信息
-		printf("Connect to redisServer faile %s \n",redis->errstr);
-		redisFree(redis);
-		return;
-	}
-	printf("Connect to redisServer Success\n");
-	const char* command1 = "set stest1 value1";
-	redisReply* reply = (redisReply*)redisCommand(redis, command1);    // 执行命令，结果强转成redisReply*类型
-	if( NULL == reply)
-	{
-		printf("Execut command1 failure\n");
-		redisFree(redis);     // 命令执行失败，释放内存
-		return;
-	}
-	if( !(reply->type == REDIS_REPLY_STATUS && strcasecmp(reply->str,"OK")==0))
-	{       // 判断命令执行的返回值
-		printf("Failed to execute command[%s]\n",command1);
-		freeReplyObject(reply);
-		redisFree(redis);
-		return;
-	}	
-	freeReplyObject(reply);
-	printf("Succeed to execute command[%s]\n", command1);
-	// 一切正常，则对返回值进行处理
+    Redis redis = * Redis::getRedis(); 
 }
 
 int main(int argc, char** argv) {
-   doTest();   
-   RunDb();
    RunServer();
    return 0;
 }

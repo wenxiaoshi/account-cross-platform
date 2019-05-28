@@ -28,14 +28,24 @@ unsigned char* CommonUtils::AES_KEY = (unsigned char *) "$L&^E*Usd9k!Ld4%"; // t
 
 AesEncryptor* CommonUtils::aesEncryptor = new AesEncryptor(CommonUtils::AES_KEY);
 
-const long CommonUtils::TOKEN_TIMEOUT = 3600L * 24 * 30; // token30天有效时间
-
-
-
+const long CommonUtils::TOKEN_TIMEOUT = 3600L * 24 * 7; // token7天有效时间
+const long CommonUtils::REFRESH_TOKEN_TIMEOUT = 3600L * 24 * 14; // refresh_token14天有效时间
 
 string CommonUtils::GenToken(const unsigned long uid, const string account){
     time_t startTime = time(NULL);
     time_t endTime = startTime + TOKEN_TIMEOUT;
+    string randomNumStr = GenRandomStr();
+
+    const int bufSize = 128;
+    char tokenChar[bufSize];
+    snprintf(tokenChar,bufSize,"%lu:%s:%s:%lu:%lu",uid,account.c_str(),randomNumStr.c_str(),startTime,endTime);
+    string tokenAes = aesEncryptor->EncryptString(tokenChar);
+    return tokenAes;
+}
+
+string CommonUtils::GenRefreshToken(const unsigned long uid, const string account){
+    time_t startTime = time(NULL);
+    time_t endTime = startTime + REFRESH_TOKEN_TIMEOUT;
     string randomNumStr = GenRandomStr();
 
     const int bufSize = 128;
@@ -117,44 +127,21 @@ string CommonUtils::EncryptPwd(string account, string password){
     }
 }
 
-bool ParamUtils::CheckAccountValid(string account,string & errorMsg){
-    if (account.empty()) {
-        errorMsg = MsgTip::ERROR_ACCOUNT_EMPTY;
-        return false;
+ /**
+  * 判断字符串是否相等
+  **/
+  bool CommonUtils::isEqual(string origin,string target) {
+    const char* oChar = origin.data();
+    const char* tChar = target.data();
+    if (origin.size() != target.size()) {
+      return false;
     }
-    string pattern = "^[1][3,4,5,6,7,8,9]\\d{9}$";
-    if (!PatternMatch(pattern, account)) {
-        errorMsg = MsgTip::ERROR_ACCOUNT_NOT_VALID_PHONE_NUM;
+    for (unsigned int i = 0; i < origin.size(); i++) {
+      if (oChar[i] != tChar[i]) {
         return false;
-    }
-    return true;
-}
-
-bool ParamUtils::CheckPasswordValid(string password,string & errorMsg){
-    if (password == ""){
-        errorMsg = MsgTip::ERROR_PASSWORD_EMPTY;
-        return false;
-    }
-    string pattern = "^[a-z0-9A-Z]{6,18}$";
-    if (!PatternMatch(pattern, password)) {
-        errorMsg = MsgTip::ERROR_PASSWORD_NOT_VALID;
-        return false;
+      }
     }
     return true;
-}
+  }
 
-bool ParamUtils::CheckTokenValid(string token,string & errorMsg){
-    if (token == ""){
-        errorMsg = MsgTip::ERROR_TOKEN_EMPTY;
-        return false;
-    }
-    return true;
-}
-
-bool ParamUtils::PatternMatch(string pattern, string source_str){
-    string strPattern(pattern);
-    regex r(strPattern);
-    smatch result;
-    return regex_search(source_str, result, r);
-}
 

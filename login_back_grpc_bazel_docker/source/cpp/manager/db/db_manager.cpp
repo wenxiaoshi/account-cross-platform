@@ -6,15 +6,15 @@
 #include <vector>
 #include <sstream>
 
-#include "db_utils.h"
-#include "log_utils.h"
+#include "db_manager.h"
+#include "source/cpp/utils/log_utils.h"
 
 #define LOGD(msg)  utils::LogUtil::LOGD(msg);
 #define LOGW(msg)  utils::LogUtil::LOGW(msg);
 #define LOGI(msg)  utils::LogUtil::LOGI(msg);
 #define LOGE(msg)  utils::LogUtil::LOGE(msg);
 
-using namespace db_utils;
+using namespace manager;
 using namespace std;
 using namespace my_model;
 
@@ -25,8 +25,6 @@ Database::Database(){
 }
 
 Database::~Database(){
-	delete sql;
-	sql = NULL;
 }
 
 /**
@@ -47,7 +45,7 @@ bool Database::init() {
     int result = sqlite3_open_v2(path, &sql, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_NOMUTEX | SQLITE_OPEN_SHAREDCACHE, NULL);
 
     if (result == SQLITE_OK) {
-        LOGD("open db success !");
+        LOGD("db open success !");
         //打开数据库成功，检查表是否存在
         checkAndCreateTable();
         return true;
@@ -82,30 +80,29 @@ void Database::checkAndCreateTable() {
         }
     }
     
-    if (!isTableExist(TABLE_USER_SESSION)) {
-        if (isTableExist(TABLE_USER_ACCOUNT)) {
-            string str_sql = "CREATE TABLE " + TABLE_USER_SESSION + "(           \
-            ID          INTEGER PRIMARY KEY AUTOINCREMENT   NOT NULL,   \
-            UID         INTEGER                             NOT NULL,   \
-            TOKEN       CHAR(120)                           NOT NULL,    \
-            IS_ONLINE   INTEGER                             NOT NULL,    \
-            FOREIGN KEY(UID) REFERENCES " + TABLE_USER_ACCOUNT + "(ID)        \
-            );";
-            const char* sqlSentence = str_sql.c_str();
+    // if (!isTableExist(TABLE_USER_SESSION)) {
+    //     if (isTableExist(TABLE_USER_ACCOUNT)) {
+    //         string str_sql = "CREATE TABLE " + TABLE_USER_SESSION + "(           \
+    //         ID          INTEGER PRIMARY KEY AUTOINCREMENT   NOT NULL,   \
+    //         UID         INTEGER                             NOT NULL,   \
+    //         NICKNAME    CHAR(120)                           NOT NULL,    \
+    //         FOREIGN KEY(UID) REFERENCES " + TABLE_USER_ACCOUNT + "(ID)        \
+    //         );";
+    //         const char* sqlSentence = str_sql.c_str();
 
-            // 创建用户表
-            ret = sqlite3_exec(sql, sqlSentence, NULL, NULL, &zErrMsg);
-            // 创建失败，打印信息
-            if( ret != SQLITE_OK ){
-                LOGE("create table USER_SESSION fail | " + string(zErrMsg));
-                sqlite3_free(zErrMsg);
-            } else {
-                LOGD("create table USER_SESSION success");
-            }
-        } else {
-            LOGE("create table TABLE_USER_SESSION fail | TABLE_USER_ACCOUNT is not exist");
-        }
-    }
+    //         // 创建用户表
+    //         ret = sqlite3_exec(sql, sqlSentence, NULL, NULL, &zErrMsg);
+    //         // 创建失败，打印信息
+    //         if( ret != SQLITE_OK ){
+    //             LOGE("create table USER_SESSION fail | " + string(zErrMsg));
+    //             sqlite3_free(zErrMsg);
+    //         } else {
+    //             LOGD("create table USER_SESSION success");
+    //         }
+    //     } else {
+    //         LOGE("create table TABLE_USER_SESSION fail | TABLE_USER_ACCOUNT is not exist");
+    //     }
+    // }
 }
 
 /**

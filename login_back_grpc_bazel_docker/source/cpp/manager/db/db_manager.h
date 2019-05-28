@@ -2,13 +2,13 @@
 #include <string>
 
 #include "source/libs/sqlite3/sqlite3.h"
-#include "../account/model/user_account.h"
-#include "../account/model/user_session.h"
+#include "source/cpp/account/model/user_account.h"
+#include "source/cpp/account/model/user_session.h"
 
 using namespace std;
 using namespace my_model;
 
-namespace db_utils{
+namespace manager{
 
 	class Database{
 	public:

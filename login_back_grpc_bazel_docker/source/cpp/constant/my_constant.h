@@ -27,6 +27,7 @@ namespace constants{
 
         const static int UserLogout_TokenNotValid;
         const static int UserLogout_UpdateSessionFail;
+        const static int UserLogout_TokenNotExist;
 
         const static int CheckConnect_TokenNotValid;
         const static int CheckConnect_TokenHadExpire;
@@ -59,6 +60,7 @@ namespace constants{
 
         const static string UserLogout_TokenNotValid;           //1003001
         const static string UserLogout_UpdateSessionFail;       //1003002
+        const static string UserLogout_TokenNotExist;           //1003003
 
         const static string CheckConnect_TokenNotValid;         //1004001
         const static string CheckConnect_TokenHadExpire;        //1004002

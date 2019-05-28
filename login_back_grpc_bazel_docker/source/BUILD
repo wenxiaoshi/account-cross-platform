@@ -26,7 +26,7 @@ grpc_proto_library(
 cc_binary(
     name = "account_server",
     srcs = ["cpp/account/account_server.cc"],
-    deps = [":account", "//:grpc++",":my_model",":my_constant",":common_utils",":log_utils",":db_utils",":hiredis"],
+    deps = [":account", "//:grpc++",":my_model",":my_constant",":common_utils",":log_utils",":param_utils",":db_manager",":redis_manager"],
     data = ["//source/pem:ca.crt","//source/pem:server.crt","//source/pem:server.key"],
 )
 
@@ -65,16 +65,40 @@ cc_library(
 )
 
 cc_library(
-    name = "db_utils",
-    srcs = ["cpp/utils/db_utils.cc"],
-    hdrs = ["cpp/utils/db_utils.h"],
-    deps = [":sqlite3",":my_model",":log_utils"],
-)
-
-cc_library(
     name = "file_utils",
     srcs = ["cpp/utils/file_utils.cpp"],
     hdrs = ["cpp/utils/file_utils.h"],
+)
+
+cc_library(
+    name = "param_utils",
+    srcs = ["cpp/utils/param_utils.cpp"],
+    hdrs = ["cpp/utils/param_utils.h"],
+    deps = [":common_utils"],
+)
+
+# project redis
+cc_library(
+    name = "redis_manager",
+    srcs = ["cpp/manager/redis/redis_manager.cpp"],
+    hdrs = ["cpp/manager/redis/redis_manager.h"],
+    deps = [":redis_conf",":hiredis",":log_utils"],
+)
+
+cc_library(
+    name = "redis_conf",
+    srcs = ["cpp/manager/redis/redis_conf.cpp"],
+    hdrs = ["cpp/manager/redis/redis_conf.h"],
+    deps = [":json",":log_utils"],
+    data = ["//source/conf:redis_conf.json"],
+)
+
+# project db
+cc_library(
+    name = "db_manager",
+    srcs = ["cpp/manager/db/db_manager.cpp"],
+    hdrs = ["cpp/manager/db/db_manager.h"],
+    deps = [":sqlite3",":my_model",":log_utils"],
 )
 
 # project deps
@@ -83,6 +107,13 @@ cc_library(
     name = "cipher",
     srcs = ["libs/cipher/aes_encryptor.cpp","libs/cipher/aes.cpp","libs/cipher/md5.cc","libs/cipher/sha256.cc"],
     hdrs = ["libs/cipher/aes_encryptor.h","libs/cipher/aes.h","libs/cipher/md5.h","libs/cipher/sha256.h"],
+)
+
+cc_library(
+    name = "json",
+    srcs = ["libs/json/json_reader.cpp","libs/json/json_value.cpp","libs/json/json_writer.cpp"],
+    # hdrs = ["libs/json/autolink.h","libs/json/config.h","libs/json/features.h","libs/json/forwards.h","libs/json/json.h","libs/json/reader.h","libs/json/value.h","libs/json/writer.h","libs/json/json_batchallocator.h"],
+    hdrs = glob(["libs/json/*.h","libs/json/*.inl"]),
 )
 
 cc_library(

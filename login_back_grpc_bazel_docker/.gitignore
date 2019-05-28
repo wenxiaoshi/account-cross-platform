@@ -6,3 +6,4 @@ bazel-testlogs
 .vscode
 tools
 third_party
+*.log

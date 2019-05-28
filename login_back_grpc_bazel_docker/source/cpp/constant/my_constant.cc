@@ -43,9 +43,11 @@ const string MsgTip::UserSign_CreateSeesionFail = "账号会话信息创建失�
 //1003zzz 用户退出登录接口
 const int ResultCode::UserLogout_TokenNotValid = 1003001;
 const int ResultCode::UserLogout_UpdateSessionFail = 1003002;
+const int ResultCode::UserLogout_TokenNotExist = 1003003;
 
 const string MsgTip::UserLogout_TokenNotValid = "Token格式错误";//1003001
 const string MsgTip::UserLogout_UpdateSessionFail = "账号会话信息更新失败";//1003002
+const string MsgTip::UserLogout_TokenNotExist = "Token已失效";//1003003
 
 //1004zzz 检查在线状态接口
 const int ResultCode::CheckConnect_TokenNotValid = 1004001;
