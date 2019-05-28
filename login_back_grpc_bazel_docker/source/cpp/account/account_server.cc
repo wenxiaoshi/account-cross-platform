@@ -234,6 +234,7 @@ public:
     Json::Value root;
     root["token"] = token;
     root["refresh_token"] = refreshToken;
+    LOGD(root.get("encoding", "UTF-8" ).asString());
     result.setData(root.get("encoding", "UTF-8" ).asString());
     return result;
   };
@@ -590,11 +591,6 @@ void RunServer() {
   // Wait for the server to shutdown. Note that some other thread must be
   // responsible for shutting down the server for this call to ever return.
   server->Wait();
-}
-
-void doTest()
-{
-    Redis redis = * Redis::getRedis(); 
 }
 
 int main(int argc, char** argv) {

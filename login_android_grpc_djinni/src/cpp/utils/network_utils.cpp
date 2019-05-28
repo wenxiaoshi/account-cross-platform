@@ -50,7 +50,7 @@ std::shared_ptr<grpc::Channel> utils::NetworkUtils::getNetworkChannel(){
 
     const std::string TOKEN = "wechat-login";
 
-    const std::string host("98.142.128.182");
+    const std::string host("144.34.177.181");
     const int port = 50051;
 
     const int host_port_buf_size = 1024;
