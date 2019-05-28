@@ -7,7 +7,7 @@ FROM gcc
 # This section for common define
 ENV WORK_DIR /account
 ENV LOG_DIR /data/log
-ENV CONFIG_DIR /config
+ENV CONFIG_DIR /account/conf
 ENV DB_DIR /account/source/db
 ENV PEM_DIR /account/source/pem
 
