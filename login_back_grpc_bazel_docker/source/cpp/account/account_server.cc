@@ -234,8 +234,8 @@ public:
     Json::Value root;
     root["token"] = token;
     root["refresh_token"] = refreshToken;
-    LOGD(root.get("encoding", "UTF-8" ).asString());
-    result.setData(root.get("encoding", "UTF-8" ).asString());
+    Json::FastWriter fw;
+    result.setData(fw.write(root));
     return result;
   };
 
