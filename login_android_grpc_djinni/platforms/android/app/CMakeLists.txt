@@ -77,6 +77,11 @@ target_link_libraries(helloworld_proto_lib
         log)
 
 include_directories(
+#        /usr/include/
+#        /usr/include/x86_64-linux-gnu/
+#        ../../../grpc/src/core/lib/json/
+
+        ../../../deps/json/
         ../../../deps/support-lib/
         ../../../deps/support-lib/jni/
         ../../../generated-src/cpp/
@@ -93,6 +98,16 @@ include_directories(
 )
 
 file(GLOB login_sources
+#        /usr/include/nl_types.h
+#        /usr/include/x86_64-linux-gnu/gnu/stubs.h
+#        /usr/include/x86_64-linux-gnu/gnu/stubs-32.h
+
+#        ../../../deps/json/*.inl
+        ../../../deps/json/json.hpp
+#        ../../../deps/json/*.cpp
+#        ../../../grpc/src/core/lib/json/*.cc
+#        ../../../grpc/src/core/lib/json/*.h
+
         ../../../deps/support-lib/jni/*.hpp
         ../../../deps/support-lib/jni/*.cpp
         ../../../generated-src/jni/*.hpp

@@ -28,6 +28,7 @@ namespace project_constants{
 
     const std::string Constants::USER_ACCOUNT = "user_account";
     const std::string Constants::TOKEN = "token";
+    const std::string Constants::REFRESH_TOKEN = "refresh_token";
     const std::string Constants::IS_CONNECT = "is_connect";
 
 

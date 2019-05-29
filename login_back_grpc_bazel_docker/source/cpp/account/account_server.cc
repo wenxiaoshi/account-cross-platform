@@ -280,7 +280,7 @@ public:
 
     //生成Token、refreshToken
     string token = CommonUtils::GenToken(uid,account);
-    string refreshToken = CommonUtils::GenToken(uid,account);
+    string refreshToken = CommonUtils::GenRefreshToken(uid,account);
 
     //更新Token到redis
     if (!login_redis.updateRedisToken(uid,token,refreshToken)){

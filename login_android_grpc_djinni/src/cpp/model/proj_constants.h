@@ -37,6 +37,7 @@ namespace project_constants{
     class Constants{
     public:
         const static std::string TOKEN;
+        const static std::string REFRESH_TOKEN;
         const static std::string IS_CONNECT;
         const static std::string USER_ACCOUNT;
     };

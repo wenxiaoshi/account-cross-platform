@@ -12,6 +12,7 @@
 #include "utils/check_param_utils.h"
 #include "network/network.h"
 #include "storage/share_preferences.h"
+#include "json.hpp"
 
 #include <iostream>
 #include <exception>
@@ -22,6 +23,7 @@
 using namespace demo;
 using namespace project_constants;
 using namespace utils;
+using json = nlohmann::json;
 
 namespace demo {
 
@@ -213,10 +215,19 @@ namespace demo {
     /**
      * 更新本地用户信息
      */
-    void LoginCoreImpl::updateUserInfo(std::string account,std::string token,std::string isConnect){
+    void LoginCoreImpl::updateUserInfo(std::string account,std::string data,std::string isConnect){
+        if(data != ""){
+            auto j = json::parse(data.c_str());
+            string token = j["token"];
+            string refresh_token = j["refresh_token"];
+            storage::SharePreferences::save(Constants::TOKEN,token);
+            storage::SharePreferences::save(Constants::REFRESH_TOKEN,refresh_token);
+        }else{
+            storage::SharePreferences::save(Constants::TOKEN,"");
+            storage::SharePreferences::save(Constants::REFRESH_TOKEN,"");
+        }
 
         //重置本地用户状态
-        storage::SharePreferences::save(Constants::TOKEN,token);
         storage::SharePreferences::save(Constants::USER_ACCOUNT,account);
         storage::SharePreferences::save(Constants::IS_CONNECT,isConnect);
 
