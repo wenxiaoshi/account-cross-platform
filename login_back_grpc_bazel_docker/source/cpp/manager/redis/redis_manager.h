@@ -1,7 +1,6 @@
+#include "../conf/server_conf.h"
 
 #include <string>
-
-#include "redis_conf.h"
 
 #include <hiredis/hiredis.h>
 
@@ -14,7 +13,7 @@ class Redis
     public:
         Redis();
 
-        void Connect();
+        void connect(ServerConfig conf);
         void disConnect();
 
         bool setString(const string & key, const string & value);
@@ -31,12 +30,12 @@ class Redis
         bool setString(const string & data);
         bool getString(const string & key);
         void freeReply();
-        bool isError();
 
-        RedisConf _conf;
+        static Redis * redis;
+
         redisContext * _context;
         redisReply * _reply;
 
-        static Redis * redis;
+        
 };
 }

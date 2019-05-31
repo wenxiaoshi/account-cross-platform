@@ -25,14 +25,12 @@ Redis * Redis::getRedis(){
 }
 
 Redis::Redis()
-: _conf()
 {
-    Connect();
 }
 
-void Redis::Connect()
+void Redis::connect(ServerConfig _conf)
 {
-    _context = ::redisConnect(_conf.getIP().c_str(), _conf.getPort());
+    _context = ::redisConnect(_conf.getRedisIP().c_str(), _conf.getRedisPort());
     
     if(_context && _context->err)
     {
@@ -54,7 +52,7 @@ bool Redis::setString(const string & data)
     try
     {
         _reply = (redisReply*)::redisCommand(_context, data.c_str());
-        if (isError() || !(_reply->type == REDIS_REPLY_STATUS && strcasecmp(_reply->str,"OK") == 0))
+        if (NULL == _reply || !(_reply->type == REDIS_REPLY_STATUS && strcasecmp(_reply->str,"OK") == 0))
         {
             LOGE("Failed to execute SET(string)");
             isSuccess = false;
@@ -104,7 +102,7 @@ bool Redis::getString(const string & key)
     try
     {
         _reply = (redisReply*)::redisCommand(_context, "GET %s", key.c_str());
-        if(!isError() && _reply->type == REDIS_REPLY_STRING)
+        if(NULL != _reply && _reply->type == REDIS_REPLY_STRING)
         {
             isSuccess = true;
         }
@@ -161,18 +159,6 @@ void Redis::freeReply()
         freeReplyObject(_reply);
         _reply = NULL;
     }
-}
-
-bool Redis::isError()
-{
-    if(NULL == _reply)
-    {
-        freeReply();
-        disConnect();
-        Connect();
-        return true;
-    }
-    return false;
 }
 
 }

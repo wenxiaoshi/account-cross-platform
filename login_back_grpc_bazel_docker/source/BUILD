@@ -26,8 +26,9 @@ grpc_proto_library(
 cc_binary(
     name = "account_server",
     srcs = ["cpp/account/account_server.cc"],
-    deps = [":account", "//:grpc++",":my_model",":my_constant",":common_utils",":log_utils",":param_utils",":db_manager",":redis_manager"],
+    deps = [":account", "//:grpc++",":my_model",":my_constant",":common_utils",":log_utils",":param_utils",":db_manager",":redis_manager",":conf"],
     data = ["//source/pem:ca.crt","//source/pem:server.crt","//source/pem:server.key"],
+    linkopts = ["-lmysqlclient"],
 )
 
 cc_library(
@@ -77,20 +78,21 @@ cc_library(
     deps = [":common_utils"],
 )
 
+# project conf
+cc_library(
+    name = "conf",
+    srcs = ["cpp/manager/conf/server_conf.cpp"],
+    hdrs = ["cpp/manager/conf/server_conf.h"],
+    deps = [":json",":log_utils"],
+    data = ["//source/conf:server_conf.json"],
+)
+
 # project redis
 cc_library(
     name = "redis_manager",
     srcs = ["cpp/manager/redis/redis_manager.cpp"],
     hdrs = ["cpp/manager/redis/redis_manager.h"],
-    deps = [":redis_conf",":hiredis",":log_utils"],
-)
-
-cc_library(
-    name = "redis_conf",
-    srcs = ["cpp/manager/redis/redis_conf.cpp"],
-    hdrs = ["cpp/manager/redis/redis_conf.h"],
-    deps = [":json",":log_utils"],
-    data = ["//source/conf:redis_conf.json"],
+    deps = [":conf",":hiredis",":log_utils"],
 )
 
 # project db
@@ -98,8 +100,17 @@ cc_library(
     name = "db_manager",
     srcs = ["cpp/manager/db/db_manager.cpp"],
     hdrs = ["cpp/manager/db/db_manager.h"],
-    deps = [":sqlite3",":my_model",":log_utils"],
+    deps = [":conf",":my_model",":log_utils",":db_base"],
 )
+
+cc_library(
+    name = "db_base",
+    srcs = ["cpp/manager/db/db_base.cpp"],
+    hdrs = ["cpp/manager/db/db_base.h"],
+    linkopts = ["-lmysqlclient"],
+    deps = [":log_utils"],
+)
+
 
 # project deps
 
@@ -114,13 +125,6 @@ cc_library(
     srcs = ["libs/json/json_reader.cpp","libs/json/json_value.cpp","libs/json/json_writer.cpp"],
     # hdrs = ["libs/json/autolink.h","libs/json/config.h","libs/json/features.h","libs/json/forwards.h","libs/json/json.h","libs/json/reader.h","libs/json/value.h","libs/json/writer.h","libs/json/json_batchallocator.h"],
     hdrs = glob(["libs/json/*.h","libs/json/*.inl"]),
-)
-
-cc_library(
-    name = "sqlite3",
-    srcs = ["libs/sqlite3/sqlite3.c","libs/sqlite3/shell.c"],
-    hdrs = ["libs/sqlite3/sqlite3.h","libs/sqlite3/sqlite3ext.h"],
-    linkopts = ["-ldl"],
 )
 
 cc_import(

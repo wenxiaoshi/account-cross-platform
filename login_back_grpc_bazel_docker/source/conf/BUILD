@@ -1,1 +1,1 @@
-exports_files(["redis_conf.json"])
+exports_files(["server_conf.json"])
