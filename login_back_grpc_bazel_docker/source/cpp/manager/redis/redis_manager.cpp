@@ -31,7 +31,6 @@ Redis::Redis()
 void Redis::connect(ServerConfig _conf)
 {
     _context = ::redisConnect(_conf.getRedisIP().c_str(), _conf.getRedisPort());
-    
     if(_context && _context->err)
     {
         LOGE("connect redis error");
