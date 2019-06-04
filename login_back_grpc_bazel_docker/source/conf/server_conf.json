@@ -1,10 +1,11 @@
 {
-	"REDIS_IP": "144.34.177.181",
+	"REDIS_IP": "47.92.146.40",
 	"REDIS_POST": 6379,
-	"MYSQL_HOST": "127.0.0.1",
-	"MYSQL_USER": "dw",
+	"MYSQL_HOST": "47.92.146.40",
+	"MYSQL_USER": "melon",
 	"MYSQL_POST": 3306,
-	"MYSQL_PASSWORD": "123456",
-	"MYSQL_DB_NAME": "test",
+	"MYSQL_PASSWORD": "an8Kx6wczS11",
+	"MYSQL_DB_NAME": "user_center",
 	"MYSQL_CHARSET": "UTF8"
 }
+

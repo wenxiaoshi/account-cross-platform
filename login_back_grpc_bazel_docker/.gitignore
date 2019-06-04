@@ -7,3 +7,5 @@ bazel-testlogs
 tools
 third_party
 *.log
+data
+conf
