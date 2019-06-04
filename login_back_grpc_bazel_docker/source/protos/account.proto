@@ -21,10 +21,11 @@ option objc_class_prefix = "ACC";
 package account;
 
 service Account {
-  rpc requestUserLogin (LoginRequest) returns (CodeReply) {}
-  rpc requestUserSign (SignRequest) returns (CodeReply) {}
-  rpc checkConnect (ConnectRequest) returns (CodeReply) {}
-  rpc requestLogout (LogoutRequest) returns (CodeReply) {}
+  rpc requestUserLogin  (LoginRequest)    returns (CodeReply) {}
+  rpc requestUserSign   (SignRequest)     returns (CodeReply) {}
+  rpc checkConnect      (ConnectRequest)  returns (CodeReply) {}
+  rpc requestLogout     (LogoutRequest)   returns (CodeReply) {}
+  rpc refreshToken      (RefreshRequest)   returns (CodeReply) {}
 }
 
 message LoginRequest {
@@ -43,6 +44,11 @@ message ConnectRequest {
 
 message LogoutRequest {
   string token = 1;
+}
+
+message RefreshRequest {
+  string token = 1;
+  string refresh_token = 2;
 }
 
 message CodeReply {

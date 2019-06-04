@@ -115,7 +115,7 @@ int DBBase::updateData(const char * SQL,string & Msg)
        return 0;
 }
 
-int DBBase::DeleteData(char * SQL,char * Msg)
+int DBBase::DeleteData(char * SQL,string & Msg)
 {
        char sql[2048];
     sprintf(sql,SQL);

@@ -32,9 +32,9 @@ bool ParamUtils::CheckPasswordValid(string password,string & errorMsg){
     return true;
 }
 
-bool ParamUtils::CheckTokenValid(string token,string & errorMsg){
-    if (token == ""){
-        errorMsg = MsgTip::ERROR_TOKEN_EMPTY;
+bool ParamUtils::CheckStringValid(string str,string & errorMsg){
+    if (str == ""){
+        errorMsg = MsgTip::ERROR_STRING_EMPTY;
         return false;
     }
     return true;

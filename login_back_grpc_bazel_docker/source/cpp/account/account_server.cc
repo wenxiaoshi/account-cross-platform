@@ -47,6 +47,7 @@ using account::ConnectRequest;
 using account::LoginRequest;
 using account::LogoutRequest;
 using account::SignRequest;
+using account::RefreshRequest;
 using grpc::Server;
 using grpc::ServerBuilder;
 using grpc::ServerContext;
@@ -230,6 +231,18 @@ private:
 class LoginCore
 {
 public:
+
+  /**
+  用户模块-手机号登录 
+  
+  入口参数
+  account： 	      用户账号（手机号）
+  password：        用户密码（明文）
+
+  出口参数：
+  token：           用户Token（用来接口请求）
+  refresh_token：   用户Token（用来刷新Token）
+  **/
   HandleResult handleUserLogin(string account, string password)
   {
     HandleResult result;
@@ -290,6 +303,17 @@ public:
     return result;
   };
 
+  /**
+  用户模块-手机号注册
+  
+  入口参数
+  account： 	      用户账号（手机号）
+  password：        用户密码（明文）
+  
+  出口参数：
+  token：           用户Token（用来接口请求）
+  refresh_token：   用户Token（用来刷新Token）
+  **/
   HandleResult handleUserSign(string account, string password)
   {
     HandleResult result;
@@ -356,6 +380,12 @@ public:
     return result;
   };
 
+  /**
+  用户模块-退出登录
+  
+  入口参数
+  token： 	        用户Token
+  **/
   HandleResult handleUserLogout(string token)
   {
     HandleResult result;
@@ -404,6 +434,12 @@ public:
     return result;
   };
 
+  /**
+  用户模块-检查连接状态
+  
+  入口参数
+  token： 	        用户Token
+  **/
   HandleResult handleUserCheckConnect(string token)
   {
     HandleResult result;
@@ -455,6 +491,99 @@ public:
     return result;
   };
 
+  /**
+  用户模块-刷新用户Token
+  
+  入口参数
+  token：           用户Token（旧）
+  refresh_token：   用户Token（旧）
+  
+  出口参数：
+  token：           用户Token（新）
+  refresh_token：   用户Token（新）
+  **/
+  HandleResult handleRefreshToken(string token, string refreshToken)
+  {
+    HandleResult result;
+
+    //解密Token
+    string decodeToken = CommonUtils::DecryptToken(token);
+    if (decodeToken.empty())
+    {
+      result.setCode(ResultCode::RefreshToken_TokenNotValid);
+      result.setMsg(MsgTip::RefreshToken_TokenNotValid);
+      return result;
+    }
+
+    std::vector<string> vToken;
+    CommonUtils::SplitString(decodeToken, vToken, ":");
+    if (vToken.size() != 5)
+    {
+      result.setCode(ResultCode::RefreshToken_TokenNotValid);
+      result.setMsg(MsgTip::RefreshToken_TokenNotValid);
+      return result;
+    }
+
+    //解密refreshToken
+    string decodeRefreshToken = CommonUtils::DecryptToken(refreshToken);
+    if (decodeRefreshToken.empty())
+    {
+      result.setCode(ResultCode::RefreshToken_RefreshTokenNotValid);
+      result.setMsg(MsgTip::RefreshToken_RefreshTokenNotValid);
+      return result;
+    }
+
+    std::vector<string> vRefreshToken;
+    CommonUtils::SplitString(decodeRefreshToken, vRefreshToken, ":");
+    if (vRefreshToken.size() != 5)
+    {
+      result.setCode(ResultCode::RefreshToken_RefreshTokenNotValid);
+      result.setMsg(MsgTip::RefreshToken_RefreshTokenNotValid);
+      return result;
+    }
+
+    //对比token与refreshToken是否来自同一用户
+    int uid = getIntByString(vToken[0]);
+    if(uid != getIntByString(vRefreshToken[0])){
+      result.setCode(ResultCode::RefreshToken_RefreshATokenNotEqual);
+      result.setMsg(MsgTip::RefreshToken_RefreshATokenNotEqual);
+      return result;
+    }
+
+    //判断refreshToken是否过期
+    string token_end_time = vRefreshToken[4];
+    int end_time = getIntByString(token_end_time);
+    if (isTimeExpired(end_time))
+    {
+      result.setCode(ResultCode::RefreshToken_RefreshTokenHadExpire);
+      result.setMsg(MsgTip::RefreshToken_RefreshTokenHadExpire);
+      return result;
+    }
+
+    //生成token、refreshToken
+    string account = vToken[1];
+    string new_token = CommonUtils::GenToken(uid, account);
+    string new_refreshToken = CommonUtils::GenRefreshToken(uid, account);
+
+    //更新token、refreshToken到redis
+    LoginRedis login_redis;
+    if (!login_redis.updateToken(uid, new_token, new_refreshToken))
+    {
+      result.setCode(ResultCode::RefreshToken_CreateSeesionFail);
+      result.setMsg(MsgTip::RefreshToken_CreateSeesionFail);
+      return result;
+    }
+
+    //返回token、refreshToken
+    result.setCode(ResultCode::SUCCESS);
+    Json::Value root;
+    root["token"] = new_token;
+    root["refresh_token"] = new_refreshToken;
+    Json::FastWriter fw;
+    result.setData(fw.write(root));
+    return result;
+
+  }
 private:
   /**
   * 将string转换成int
@@ -481,6 +610,9 @@ private:
 class AccountServiceImpl final : public Account::Service
 {
 
+  /**
+   * 用户模块-手机号登录 
+   **/
   Status requestUserLogin(ServerContext *context, const LoginRequest *request,
                           CodeReply *reply) override
   {
@@ -522,12 +654,16 @@ class AccountServiceImpl final : public Account::Service
     }
 
     //打印接口日志
+    log_bean.addParam("code", reply->code());
     log_bean.addParam("account", account);
     log_bean.addParam("password", password);
     LOGM(log_bean);
     return Status::OK;
   }
 
+  /**
+   * 用户模块-手机号注册
+   **/
   Status requestUserSign(ServerContext *context, const SignRequest *request,
                          CodeReply *reply) override
   {
@@ -569,6 +705,7 @@ class AccountServiceImpl final : public Account::Service
     }
 
     //打印接口日志
+    log_bean.addParam("code", reply->code());
     log_bean.addParam("account", account);
     log_bean.addParam("password", password);
     LOGM(log_bean);
@@ -576,6 +713,9 @@ class AccountServiceImpl final : public Account::Service
     return Status::OK;
   }
 
+  /**
+   * 用户模块-用户退出登录
+   **/
   Status requestLogout(ServerContext *context, const LogoutRequest *request,
                        CodeReply *reply) override
   {
@@ -593,12 +733,16 @@ class AccountServiceImpl final : public Account::Service
     reply->set_data(result.getData());
 
     //打印接口日志
+    log_bean.addParam("code", reply->code());
     log_bean.addParam("token", token);
     LOGM(log_bean);
 
     return Status::OK;
   }
 
+  /**
+   * 用户模块-检查用户连接状态
+   **/
   Status checkConnect(ServerContext *context, const ConnectRequest *request,
                       CodeReply *reply) override
   {
@@ -611,12 +755,12 @@ class AccountServiceImpl final : public Account::Service
     string error_msg;
 
     //校验用户token
-    if (!ParamUtils::CheckTokenValid(token, error_msg))
+    if (!ParamUtils::CheckStringValid(token, error_msg))
     {
       reply->set_code(ResultCode::ReqParamError);
       reply->set_msg(error_msg);
       isParamValid = false;
-      LOGW("token is not valid");
+      LOGW("token is empty");
     };
 
     //参数正确，执行请求
@@ -630,10 +774,63 @@ class AccountServiceImpl final : public Account::Service
     }
 
     //打印接口日志
+    log_bean.addParam("code", reply->code());
     log_bean.addParam("token", token);
     LOGM(log_bean);
 
     return Status::OK;
+  }
+
+  /**
+   * 用户模块-刷新用户Token，更新refreshToken
+   **/
+  Status refreshToken(ServerContext *context, const RefreshRequest *request,
+                      CodeReply *reply) override
+  {
+    LogMBean log_bean("refreshToken");
+
+    string token = request->token();
+    string refreshToken = request->refresh_token();
+
+    bool isParamValid = true;
+    string error_msg;
+
+    //校验用户token
+    if (!ParamUtils::CheckStringValid(token, error_msg))
+    {
+      reply->set_code(ResultCode::ReqParamError);
+      reply->set_msg(error_msg);
+      isParamValid = false;
+      LOGW("token is empty");
+    };
+
+    //校验用户refresh_token
+    if (!ParamUtils::CheckStringValid(refreshToken, error_msg))
+    {
+      reply->set_code(ResultCode::ReqParamError);
+      reply->set_msg(error_msg);
+      isParamValid = false;
+      LOGW("refresh_token is empty");
+    };
+
+    //参数正确，执行请求
+    if (isParamValid)
+    {
+      LoginCore loginCore;
+      HandleResult result = loginCore.handleRefreshToken(token,refreshToken);
+      reply->set_code(result.getCode());
+      reply->set_msg(result.getMsg());
+      reply->set_data(result.getData());
+    }
+
+    //打印接口日志
+    log_bean.addParam("code", reply->code());
+    log_bean.addParam("token", token);
+    log_bean.addParam("refresh_token", refreshToken);
+    LOGM(log_bean);
+
+    return Status::OK;
+    
   }
 };
 

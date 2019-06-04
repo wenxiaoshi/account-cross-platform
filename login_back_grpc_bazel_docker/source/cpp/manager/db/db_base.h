@@ -94,7 +94,7 @@ public:
        出口参数：
        int ：0表示成功；1表示失败
        */
-       int DeleteData(char * SQL,char * Msg);
+       int DeleteData(char * SQL,string & Msg);
       
 
        /*
