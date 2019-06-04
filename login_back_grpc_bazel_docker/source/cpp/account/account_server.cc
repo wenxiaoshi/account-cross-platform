@@ -466,14 +466,6 @@ public:
     string token_end_time = vToken[4];
     int end_time = getIntByString(token_end_time);
 
-    //判断Token是否过期
-    if (isTimeExpired(end_time))
-    {
-      result.setCode(ResultCode::CheckConnect_TokenHadExpire);
-      result.setMsg(MsgTip::CheckConnect_TokenHadExpire);
-      return result;
-    }
-
     //获得账号UID
     string str_uid = vToken[0];
     int uid = getIntByString(str_uid);
@@ -484,6 +476,14 @@ public:
     {
       result.setCode(ResultCode::CheckConnect_AccountTokenNotEqual);
       result.setMsg(MsgTip::CheckConnect_AccountTokenNotEqual);
+      return result;
+    }
+
+    //判断Token是否过期
+    if (isTimeExpired(end_time))
+    {
+      result.setCode(ResultCode::CheckConnect_TokenHadExpire);
+      result.setMsg(MsgTip::CheckConnect_TokenHadExpire);
       return result;
     }
 
