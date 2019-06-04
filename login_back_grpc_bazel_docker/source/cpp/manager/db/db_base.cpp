@@ -52,7 +52,7 @@ bool DBBase::createdbTable(const std::string& query)
 }
 
 //查询数据
-string DBBase::selectData(const char * SQL,int Cnum,string & Msg)
+Json::Value DBBase::selectData(const char * SQL,int Cnum,string tableName,string & Msg)
 {
        MYSQL_ROW m_row;
     MYSQL_RES *m_res;
@@ -62,6 +62,14 @@ string DBBase::selectData(const char * SQL,int Cnum,string & Msg)
        char rg = 0x06;//行隔开
        char cg = {0x05};//字段隔开
  
+       vector<string> columnsV = DBBase::findColumns(tableName, Msg);
+       if(columnsV.empty()){
+              Msg = "select columns Error";
+              return "";
+       }
+
+
+
        if(mysql_query(&mysql,sql) != 0)
        {
               Msg = "select ps_info Error";
@@ -74,21 +82,57 @@ string DBBase::selectData(const char * SQL,int Cnum,string & Msg)
               Msg = "select username Error";
               return "";
        }
-       string str("");
+       
+       Json::Value root;
        while(m_row = mysql_fetch_row(m_res))
        {
+              Json::Value data;
               for(int i = 0;i < Cnum;i++)
               {
-                     str += m_row[i];
-                     str += rg;
+                     data[columnsV[i]] = m_row[i];
               }
-              str += rg;             
-              rnum++;
+              root["data_array"].append(data);
        }
  
        mysql_free_result(m_res);
+
+       Json::FastWriter fw;
+       LOGD(fw.write(root));
+
+       return root;
+}
+
+vector<string> DBBase::findColumns(string tableName,string & Msg){
+       vector<string> columns;
+       MYSQL_ROW m_row;
+       MYSQL_RES *m_res;
+       string sql_columns_find = "show columns from tab_name;";
+       if(mysql_query(&mysql,sql_columns_find.c_str()) != 0)
+       {
+              Msg = "select columns Error";
+              return columns;
+       }
+
+       m_res = mysql_store_result(&mysql);
  
-       return str;
+       if(m_res==NULL)
+       {
+              Msg = "select columns Error";
+              return columns;
+       }
+
+       int numLine = mysql_num_rows(m_res);
+
+       string str("");
+       while(m_row = mysql_fetch_row(m_res))
+       {
+              for(int i = 0;i < numLine;i++)
+              {
+                     columns.push_back(m_row[i]);
+              }
+       }
+       mysql_free_result(m_res);
+       return columns;
 }
 
 int DBBase::insertData(char * SQL,string & Msg)
@@ -140,9 +184,9 @@ void DBBase::CloseMySQLConn()
        mysql_close(&mysql);
 }
 
-bool DBBase::isExist(string str_sql,int num)
+bool DBBase::isExist(string str_sql,int num,string tableName)
 {
     string msg;
-    string data = selectData(str_sql.c_str(), num, msg);
+    Json::Value data = selectData(str_sql.c_str(), num,tableName, msg);
     return data!="";
 }

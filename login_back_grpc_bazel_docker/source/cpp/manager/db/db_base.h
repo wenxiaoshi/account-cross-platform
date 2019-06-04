@@ -7,6 +7,8 @@
 #include <string>
 // #include <afxsock.h>
 #include "mysql/mysql.h"
+#include "source/libs/json/json.h"
+
 using   namespace   std;
 class DBBase 
 {
@@ -48,13 +50,14 @@ public:
        入口参数：
        SQL：查询的SQL语句
        Cnum:查询的列数
+       tableName:查询的表名
        Msg:返回的消息，包括错误消息
  
        出口参数：
-       string 准备放置返回的数据，多条记录则用0x06隔开,多个栏位用0x05隔开
+       Json::Value 准备放置返回的数据，JSON数组
        如果 返回的长度＝ 0，责表示舞结果
        */
-       string selectData(const char * SQL,int Cnum ,string & Msg);
+       Json::Value selectData(const char * SQL,int Cnum ,string tableName,string & Msg);
       
        /*
        主要功能：
@@ -107,7 +110,7 @@ public:
        主要功能：
        判断sql查询内容是否存在
        */
-       bool isExist(string str_sql, int num);
+       bool isExist(string str_sql, int num,string tableName);
 
        /*
        主要功能：
@@ -123,6 +126,6 @@ public:
        */
        void errorIntoMySQL();
 
-
+       vector<string> findColumns(string tableName,string & Msg);
 
 };

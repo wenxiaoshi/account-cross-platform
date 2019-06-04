@@ -107,8 +107,8 @@ bool Database::insertDbAccount(string tabls_name, std::vector<string> v_key, std
     }
 
     string msg;
-    bool isSuccess = db_base->insertData(c_sql,msg);
-    if(!isSuccess){
+    int isSuccess = db_base->insertData(c_sql,msg);
+    if(isSuccess != 0){
         LOGE(msg);
     }
 
@@ -182,7 +182,7 @@ void Database::checkAndCreateTable(string tableName)
 {
 
     string str_sql_table = "SELECT table_name FROM information_schema.TABLES WHERE table_name ='"+tableName+"';";
-    if (!db_base->isExist(str_sql_table, 1))
+    if (!db_base->isExist(str_sql_table, 3,tableName))
     {
         string str_sql = "CREATE TABLE " + tableName + "(           \
             ID          INT PRIMARY KEY AUTO_INCREMENT   NOT NULL,   \
@@ -229,7 +229,7 @@ bool Database::isUserExist(string account)
     }
 
     string str_sql = "select * from " + TABLE_USER_ACCOUNT + " where ACCOUNT = '" + account + "';";
-    return Database::db_base->isExist(str_sql,1);
+    return Database::db_base->isExist(str_sql,3,TABLE_USER_ACCOUNT);
 }
 
 UserAccount Database::queryUserAccountByAccount(string o_account)
@@ -248,11 +248,12 @@ UserAccount Database::queryUserAccountByAccount(string o_account)
     string str_sql = "SELECT ID , ACCOUNT , PASSWORD FROM " + TABLE_USER_ACCOUNT + "  WHERE ACCOUNT = '" + o_account + "' ;";
     
     string msg;
-    string data = db_base->selectData(str_sql.c_str(),1,msg);
+    Json::Value data = db_base->selectData(str_sql.c_str(),3,TABLE_USER_ACCOUNT,msg);
     if(data.empty()){
         LOGE("select user_account fail | account = " + o_account);
     }else{
-        LOGD(data);
+        Json::FastWriter fw;
+        LOGD(fw.write(data));
     }
 
     return UserAccount(uid, account, password);

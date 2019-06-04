@@ -100,7 +100,7 @@ cc_library(
     name = "db_manager",
     srcs = ["cpp/manager/db/db_manager.cpp"],
     hdrs = ["cpp/manager/db/db_manager.h"],
-    deps = [":conf",":my_model",":log_utils",":db_base"],
+    deps = [":conf",":my_model",":log_utils",":db_base",":json"],
 )
 
 cc_library(
@@ -108,7 +108,7 @@ cc_library(
     srcs = ["cpp/manager/db/db_base.cpp"],
     hdrs = ["cpp/manager/db/db_base.h"],
     linkopts = ["-lmysqlclient"],
-    deps = [":log_utils"],
+    deps = [":log_utils",":json"],
 )
 
 
