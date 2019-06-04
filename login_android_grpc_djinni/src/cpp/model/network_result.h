@@ -2,6 +2,9 @@
 // Created by melon on 2019/2/3.
 //
 
+#ifndef ANDROID_REQ_RESULT
+#define ANDROID_REQ_RESULT
+
 #include <string>
 
 namespace demo{
@@ -15,8 +18,10 @@ namespace demo{
             std::string getData();
             void setData(std::string data);
         private:
-            int code = 0;
+            int code = -1;
             std::string msg = "";
             std::string data = "";
         };
 }
+
+#endif //ANDROID_REQ_RESULT

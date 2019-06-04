@@ -25,6 +25,7 @@ using account::LoginRequest;
 using account::SignRequest;
 using account::LogoutRequest;
 using account::ConnectRequest;
+using account::RefreshRequest;
 using account::CodeReply;
 
 using namespace demo;
@@ -59,7 +60,7 @@ namespace network{
             } else {
                 //todo 网络错误吗转换
                 reply.set_code(-1);
-                reply.set_msg(MsgTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
+                reply.set_msg(ToastTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
                 LOGD(status.error_message());
                 return reply;
             }
@@ -85,7 +86,7 @@ namespace network{
             } else {
                 //todo 网络错误吗转换
                 reply.set_code(-1);
-                reply.set_msg(MsgTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
+                reply.set_msg(ToastTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
                 LOGD(status.error_message());
                 return reply;
             }
@@ -110,7 +111,7 @@ namespace network{
             } else {
                 //todo 网络错误吗转换
                 reply.set_code(-1);
-                reply.set_msg(MsgTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
+                reply.set_msg(ToastTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
                 LOGD(status.error_message());
                 return reply;
             }
@@ -135,7 +136,32 @@ namespace network{
             } else {
                 //todo 网络错误吗转换
                 reply.set_code(-1);
-                reply.set_msg(MsgTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
+                reply.set_msg(ToastTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
+                LOGD(status.error_message());
+                return reply;
+            }
+        }
+
+        CodeReply refreshToken(const std::string& token, const std::string& refreshToken) {
+            // Data we are sending to the server.
+            RefreshRequest request;
+            request.set_token(token);
+            request.set_refresh_token(refreshToken);
+            // Container for the data we expect from the server.
+            CodeReply reply;
+
+            // Context for the client. It could be used to convey extra information to
+            // the server and/or tweak certain RPC behaviors.
+            ClientContext context;
+            // The actual RPC.
+            Status status = stub_->refreshToken(&context, request, &reply);
+
+            if (status.ok()) {
+                return reply;
+            } else {
+                //todo 网络错误吗转换
+                reply.set_code(-1);
+                reply.set_msg(ToastTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
                 LOGD(status.error_message());
                 return reply;
             }
@@ -202,5 +228,17 @@ namespace network{
         return result;
     }
 
+    ReqResult NetworkCore::refreshToken(const std::string token,const std::string refreshToken){
+        AccountClient client(utils::NetworkUtils::getNetworkChannel());
+
+        CodeReply reply = client.refreshToken(token, refreshToken);
+
+        ReqResult result;
+        result.setCode(reply.code());
+        result.setMsg(reply.msg());
+        result.setData(reply.data());
+
+        return result;
+    }
 
 }
