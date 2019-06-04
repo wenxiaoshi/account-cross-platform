@@ -17,6 +17,7 @@ namespace network{
         ReqResult reqSign(const std::string account,const std::string password);
         ReqResult checkConnect(const std::string token);
         ReqResult reqLogout(const std::string token);
+        ReqResult refreshToken(const std::string token,const std::string refreshToken);
     private:
 
     };

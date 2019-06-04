@@ -13,6 +13,7 @@ const string MsgTip::ERROR_ACCOUNT_NOT_VALID_PHONE_NUM = "账号格式错误，�
 const string MsgTip::ERROR_PASSWORD_EMPTY = "密码不能为空，请重新输入";//1
 const string MsgTip::ERROR_PASSWORD_NOT_VALID = "密码格式错误，请输入6-18位的数字或字母";//1
 const string MsgTip::ERROR_TOKEN_EMPTY = "Token不能为空";//1
+const string MsgTip::ERROR_STRING_EMPTY = "string can not be null or empty";//1
 
 //业务逻辑错误（1xxxzzz 账号模块，2xxxzzz 卡包模块, ......）
 
@@ -59,3 +60,16 @@ const string MsgTip::CheckConnect_TokenNotValid = "Token格式错误";//1004001
 const string MsgTip::CheckConnect_TokenHadExpire = "Token已经失效";//1004002
 const string MsgTip::CheckConnect_AccountOffline = "账号已离线";//1004003
 const string MsgTip::CheckConnect_AccountTokenNotEqual = "Token校验失败";//1004004
+
+//1005zzz 刷新用户Token接口
+const int ResultCode::RefreshToken_TokenNotValid = 1005001;
+const int ResultCode::RefreshToken_RefreshTokenNotValid = 1005002;
+const int ResultCode::RefreshToken_RefreshATokenNotEqual = 1005003;
+const int ResultCode::RefreshToken_RefreshTokenHadExpire = 1005004;
+const int ResultCode::RefreshToken_CreateSeesionFail = 1005005;
+
+const string MsgTip::RefreshToken_TokenNotValid = "Token格式错误";//1005001
+const string MsgTip::RefreshToken_RefreshTokenNotValid = "RefreshToken格式错误";//1005002
+const string MsgTip::RefreshToken_RefreshATokenNotEqual = "Token与RefreshToken不对应";//1005003
+const string MsgTip::RefreshToken_RefreshTokenHadExpire = "RefreshToken已经失效";//1005004
+const string MsgTip::RefreshToken_CreateSeesionFail = "账号会话信息创建失败";//1005005

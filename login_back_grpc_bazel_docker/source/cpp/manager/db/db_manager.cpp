@@ -107,12 +107,12 @@ bool Database::insertDbAccount(string tabls_name, std::vector<string> v_key, std
     }
 
     string msg;
-    bool isSuccess = db_base->insertData(c_sql,msg);
-    if(!isSuccess){
+    int result = db_base->insertData(c_sql,msg);
+    if(result != 0){
         LOGE(msg);
     }
 
-    return isSuccess;
+    return result == 0;
 }
 
 /**
@@ -248,7 +248,7 @@ UserAccount Database::queryUserAccountByAccount(string o_account)
     string str_sql = "SELECT ID , ACCOUNT , PASSWORD FROM " + TABLE_USER_ACCOUNT + "  WHERE ACCOUNT = '" + o_account + "' ;";
     
     string msg;
-    string data = db_base->selectData(str_sql.c_str(),1,msg);
+    string data = db_base->selectData(str_sql.c_str(),3,msg);
     if(data.empty()){
         LOGE("select user_account fail | account = " + o_account);
     }else{

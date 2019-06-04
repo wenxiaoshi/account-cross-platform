@@ -34,6 +34,12 @@ namespace constants{
         const static int CheckConnect_AccountOffline;
         const static int CheckConnect_AccountTokenNotEqual;
 
+        const static int RefreshToken_TokenNotValid;
+        const static int RefreshToken_RefreshTokenNotValid;
+        const static int RefreshToken_RefreshATokenNotEqual;
+        const static int RefreshToken_RefreshTokenHadExpire;
+        const static int RefreshToken_CreateSeesionFail;
+
     };
 
     /**
@@ -46,6 +52,7 @@ namespace constants{
         const static string ERROR_PASSWORD_EMPTY;               //1
         const static string ERROR_PASSWORD_NOT_VALID;           //1
         const static string ERROR_TOKEN_EMPTY;                  //1
+        const static string ERROR_STRING_EMPTY;                 //1
 
         const static string UserLogin_AccountNotExist;          //1001001
         const static string UserLogin_PasswordInitFail;         //1001002
@@ -66,6 +73,13 @@ namespace constants{
         const static string CheckConnect_TokenHadExpire;        //1004002
         const static string CheckConnect_AccountOffline;        //1004003
         const static string CheckConnect_AccountTokenNotEqual;  //1004004
+
+        const static string RefreshToken_TokenNotValid;         //1005001
+        const static string RefreshToken_RefreshTokenNotValid;  //1005002
+        const static string RefreshToken_RefreshATokenNotEqual; //1005003
+        const static string RefreshToken_RefreshTokenHadExpire; //1005004
+        const static string RefreshToken_CreateSeesionFail;     //1005005
+
     };
 
     class Constants{

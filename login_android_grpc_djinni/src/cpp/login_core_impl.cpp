@@ -42,14 +42,14 @@ namespace demo {
         //检查账号是否正确
         std::string accountErrorMsg;
         if(!ParamUtils::checkAccountValid(account,accountErrorMsg)){
-            this->m_listener->on_login_finish(ActionResult(ResultCode::LOGIN_FAIL_ACCOUNT_INVALID,accountErrorMsg,""));
+            this->m_listener->on_login_finish(ActionResult(ClientCode::LOGIN_FAIL_ACCOUNT_INVALID,accountErrorMsg,""));
             return;
         }
 
         //检查密码是否正确
         std::string pwdErrorMsg;
         if(!ParamUtils::checkPasswordValid(password,pwdErrorMsg)){
-            this->m_listener->on_login_finish(ActionResult(ResultCode::LOGIN_FAIL_PASSWORD_INVALID,pwdErrorMsg,""));
+            this->m_listener->on_login_finish(ActionResult(ClientCode::LOGIN_FAIL_PASSWORD_INVALID,pwdErrorMsg,""));
             return;
         }
 
@@ -61,7 +61,10 @@ namespace demo {
         //处理接口返回数据
         if (result.getCode() == ResultCode::SUCCESS){
             LoginCoreImpl::isLogin = true;
-            LoginCoreImpl::updateUserInfo(account,result.getData(),"1");
+            auto j = json::parse(result.getData());
+            string token = j[Constants::TOKEN];
+            string refresh_token = j[Constants::REFRESH_TOKEN];
+            LoginCoreImpl::updateUserInfo(account,token,refresh_token,"1");
         }
 
         //回调上层Java接口
@@ -73,14 +76,14 @@ namespace demo {
         //检查账号是否正确
         std::string accountErrorMsg;
         if(!ParamUtils::checkAccountValid(account,accountErrorMsg)){
-            this->m_listener->on_login_finish(ActionResult(ResultCode::LOGIN_FAIL_ACCOUNT_INVALID,accountErrorMsg,""));
+            this->m_listener->on_login_finish(ActionResult(ClientCode::LOGIN_FAIL_ACCOUNT_INVALID,accountErrorMsg,""));
             return;
         }
 
         //检查密码是否正确
         std::string pwdErrorMsg;
         if(!ParamUtils::checkPasswordValid(password,pwdErrorMsg)){
-            this->m_listener->on_login_finish(ActionResult(ResultCode::LOGIN_FAIL_PASSWORD_INVALID,pwdErrorMsg,""));
+            this->m_listener->on_login_finish(ActionResult(ClientCode::LOGIN_FAIL_PASSWORD_INVALID,pwdErrorMsg,""));
             return;
         }
 
@@ -92,7 +95,10 @@ namespace demo {
         //处理接口返回
         if (result.getCode() == ResultCode::SUCCESS){
             LoginCoreImpl::isLogin = true;
-            LoginCoreImpl::updateUserInfo(account,result.getData(),"1");
+            auto j = json::parse(result.getData());
+            string token = j[Constants::TOKEN];
+            string refresh_token = j[Constants::REFRESH_TOKEN];
+            LoginCoreImpl::updateUserInfo(account,token,refresh_token,"1");
         }
 
         //回调原生接口
@@ -111,7 +117,7 @@ namespace demo {
             //清除本地用户状态
             cleanUserInfo();
 
-            this->m_listener->on_disconnect(ActionResult(ResultCode::DEVICE_OFFLINE,MsgTip::TOAST_ACCOUNT_OUT_OFF_LINE,""));
+            this->m_listener->on_disconnect(ActionResult(ClientCode::USER_ACCOUNT_FO_EMPTY,ToastTip::TOAST_ACCOUNT_INFO_EMPTY,""));
             return;
         }
 
@@ -127,20 +133,36 @@ namespace demo {
                 //获取返回数据的对象
                 ReqResult result = mNW.checkConnect(token);
 
-                if (result.getCode() != ResultCode::SUCCESS){
-
-                    //如果处于登录状态，则踢下登录
-                    if(LoginCoreImpl::isLogin){
-                        if (result.getCode() == ResultCode::DEVICE_OFFLINE) {
-                            this->m_listener->on_disconnect(ActionResult(ResultCode::DEVICE_OFFLINE,MsgTip::TOAST_ACCOUNT_OUT_OFF_LINE,""));
-                        } else {
+                if (result.getCode() == ResultCode::CheckConnect_TokenHadExpire){
+                    //token失效，调用刷新token接口
+                    ReqResult refreshResult = LoginCoreImpl::refresh_token();
+                    if(refreshResult.getCode() != ResultCode::SUCCESS){
+                        //如果处于登录状态，则踢下登录
+                        if(LoginCoreImpl::isLogin){
                             this->m_listener->on_disconnect(ActionResult(result.getCode(),result.getMsg(),""));
                         }
+                        //清除本地用户状态
+                        cleanUserInfo();
+                        break;
+                    }else{
+                        token = storage::SharePreferences::get(Constants::TOKEN);
                     }
-
+                } else if (result.getCode() != ResultCode::CheckConnect_AccountTokenNotEqual){
+                    //token与服务器段token不匹配，判断用户被挤下线
+                    //如果处于登录状态，则踢下登录
+                    if(LoginCoreImpl::isLogin){
+                        this->m_listener->on_disconnect(ActionResult(ClientCode::USER_IS_OUT_OF_LINE,ToastTip::TOAST_ACCOUNT_OUT_OFF_LINE,""));
+                    }
                     //清除本地用户状态
                     cleanUserInfo();
-
+                    break;
+                }else if(result.getCode() != ResultCode::SUCCESS){
+                    //如果处于登录状态，则踢下登录
+                    if(LoginCoreImpl::isLogin){
+                        this->m_listener->on_disconnect(ActionResult(result.getCode(),result.getMsg(),""));
+                    }
+                    //清除本地用户状态
+                    cleanUserInfo();
                     break;
                 }
                 lastTime = nowTime;
@@ -157,7 +179,7 @@ namespace demo {
         std::string token = storage::SharePreferences::get(Constants::TOKEN);
         if (token == ""){
             LoginCoreImpl::cleanUserInfo();
-            this->m_listener->on_logout_finish(ActionResult(ResultCode::SUCCESS,"",""));
+            this->m_listener->on_logout_finish(ActionResult(ClientCode::SUCCESS,"",""));
             return;
         }
 
@@ -165,7 +187,7 @@ namespace demo {
         cleanUserInfo();
 
         //回调通知UI层
-        this->m_listener->on_logout_finish(ActionResult(ResultCode::SUCCESS,"",""));
+        this->m_listener->on_logout_finish(ActionResult(ClientCode::SUCCESS,"",""));
 
         //执行退出登录接口，结果不处理
         network::NetworkCore mNW;
@@ -177,13 +199,14 @@ namespace demo {
      * 判断当前是否在线
      */
     void LoginCoreImpl::check_login_status(){
-        std::string token = storage::SharePreferences::get(Constants::TOKEN);
-        std::string account = storage::SharePreferences::get(Constants::USER_ACCOUNT);
+        const std::string token = storage::SharePreferences::get(Constants::TOKEN);
+        const std::string refreshToken = storage::SharePreferences::get(Constants::REFRESH_TOKEN);
+        const std::string account = storage::SharePreferences::get(Constants::USER_ACCOUNT);
 
         //用户未登录，清除登录状态
         if(token == "" || account == ""){
             cleanUserInfo();
-            this->m_listener->on_check_status_finish(ActionResult(ResultCode::USER_IS_NOT_ONLINE,"",""));
+            this->m_listener->on_check_status_finish(ActionResult(ClientCode::USER_IS_NOT_ONLINE,"",""));
             return;
         }
 
@@ -192,16 +215,43 @@ namespace demo {
         network::NetworkCore mNW;
         ReqResult result = mNW.checkConnect(token);
 
-        if (result.getCode() == ResultCode::SUCCESS){
+        if (result.getCode() == ClientCode::SUCCESS){
             //用户在线，更新本地用户状态
             LoginCoreImpl::isLogin = true;
-            LoginCoreImpl::updateUserInfo(account,token,"1");
-            this->m_listener->on_check_status_finish(ActionResult(ResultCode::SUCCESS,"",account));
+            LoginCoreImpl::updateUserInfo(account,token,refreshToken,"1");
+            this->m_listener->on_check_status_finish(ActionResult(ClientCode::SUCCESS,"",account));
         } else {
             //用户不在线，清除本地用户状态
             LoginCoreImpl::cleanUserInfo();
-            this->m_listener->on_check_status_finish(ActionResult(ResultCode::USER_IS_NOT_ONLINE,"",""));
+            this->m_listener->on_check_status_finish(ActionResult(ClientCode::USER_IS_NOT_ONLINE,"",""));
         }
+    }
+
+    /**
+     * 请求服务端刷新本地Token
+     */
+    ReqResult LoginCoreImpl::refresh_token(){
+        std::string token = storage::SharePreferences::get(Constants::TOKEN);
+        std::string refreshToken = storage::SharePreferences::get(Constants::REFRESH_TOKEN);
+        std::string account = storage::SharePreferences::get(Constants::USER_ACCOUNT);
+        //用户未登录，清除登录状态
+        if(token == "" || refreshToken == ""){
+            return ReqResult();
+        }
+
+        //执行刷新用户Token接口
+        //获取返回数据的对象
+        network::NetworkCore mNW;
+        ReqResult result = mNW.refreshToken(token, refreshToken);
+        if (result.getCode() == ResultCode::SUCCESS){
+            LoginCoreImpl::isLogin = true;
+            auto j = json::parse(result.getData());
+            string token = j[Constants::TOKEN];
+            string refresh_token = j[Constants::REFRESH_TOKEN];
+            LoginCoreImpl::updateUserInfo(account,token,refresh_token,"1");
+        }
+
+        return result;
     }
 
     /**
@@ -209,25 +259,17 @@ namespace demo {
      */
     void LoginCoreImpl::cleanUserInfo(){
         LoginCoreImpl::isLogin = false;
-        LoginCoreImpl::updateUserInfo("","","0");
+        LoginCoreImpl::updateUserInfo("","","","0");
     }
 
     /**
      * 更新本地用户信息
      */
-    void LoginCoreImpl::updateUserInfo(std::string account,std::string data,std::string isConnect){
-        if(data != ""){
-            auto j = json::parse(data.c_str());
-            string token = j["token"];
-            string refresh_token = j["refresh_token"];
-            storage::SharePreferences::save(Constants::TOKEN,token);
-            storage::SharePreferences::save(Constants::REFRESH_TOKEN,refresh_token);
-        }else{
-            storage::SharePreferences::save(Constants::TOKEN,"");
-            storage::SharePreferences::save(Constants::REFRESH_TOKEN,"");
-        }
+    void LoginCoreImpl::updateUserInfo(std::string account,std::string token,std::string refreshToken,std::string isConnect){
 
         //重置本地用户状态
+        storage::SharePreferences::save(Constants::TOKEN,"");
+        storage::SharePreferences::save(Constants::REFRESH_TOKEN,"");
         storage::SharePreferences::save(Constants::USER_ACCOUNT,account);
         storage::SharePreferences::save(Constants::IS_CONNECT,isConnect);
 

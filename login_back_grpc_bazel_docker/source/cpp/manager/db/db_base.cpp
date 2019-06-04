@@ -80,9 +80,12 @@ string DBBase::selectData(const char * SQL,int Cnum,string & Msg)
               for(int i = 0;i < Cnum;i++)
               {
                      str += m_row[i];
-                     str += rg;
+                     LOGD(m_row[i]);
+		     if(i < Cnum - 1){
+		       str += " ";
+		     }
               }
-              str += rg;             
+              str += "|";             
               rnum++;
        }
  
@@ -93,9 +96,9 @@ string DBBase::selectData(const char * SQL,int Cnum,string & Msg)
 
 int DBBase::insertData(char * SQL,string & Msg)
 {
-       char sql[2048];
-    sprintf(sql,SQL);
-       if(mysql_query(&mysql,sql) != 0)
+//       char sql[2048];
+//    sprintf(sql,SQL);
+       if(mysql_query(&mysql,SQL) != 0)
        {
               Msg = "Insert Data Error";
               return 1;
@@ -115,7 +118,7 @@ int DBBase::updateData(const char * SQL,string & Msg)
        return 0;
 }
 
-int DBBase::DeleteData(char * SQL,char * Msg)
+int DBBase::DeleteData(char * SQL,string & Msg)
 {
        char sql[2048];
     sprintf(sql,SQL);

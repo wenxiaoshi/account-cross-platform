@@ -25,6 +25,13 @@ namespace utils{
     		v_value.push_back(value);
     	};
 
+    	void addParam(string key, int value){
+    		v_key.push_back(key);
+			stringstream ss;
+    		ss << value;
+    		v_value.push_back(ss.str());
+    	};
+
     	string toString(){
     		string msg = "Request method: " + method + ", Args [{";
     		if (v_key.size() > 0) {
