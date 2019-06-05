@@ -24,6 +24,8 @@ class Redis
         bool getString(const string & key, int & value);
         bool getString(const string & key, float & value);
 
+        bool delByKey(const string & key);
+      
         static Redis * getRedis();
 
     private:

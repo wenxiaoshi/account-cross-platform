@@ -152,6 +152,28 @@ bool Redis::getString(const string & key, float & value)
     return isSuccess;
 }
 
+bool Redis::delByKey(const string & key){
+    bool isSuccess;
+    try
+    {
+        _reply = (redisReply*)::redisCommand(_context, "DEL %s", key.c_str());
+        if(NULL != _reply && _reply->type == REDIS_REPLY_INTEGER)
+        {
+            isSuccess = true;
+        }
+        else
+        {
+            isSuccess = false;
+        }
+    }
+    catch(const std::exception& e)
+    {
+        LOGD(e.what());
+        isSuccess = false;
+    }
+    return isSuccess;
+}
+
 void Redis::freeReply()
 {
     if(_reply)
