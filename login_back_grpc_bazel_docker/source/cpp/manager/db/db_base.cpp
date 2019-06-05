@@ -52,29 +52,25 @@ bool DBBase::createdbTable(const std::string& query)
 }
 
 //查询数据
-Json::Value DBBase::selectData(const char * SQL,int Cnum,string tableName,string & Msg)
+Json::Value DBBase::selectData(const char * SQL,string tableName,string & Msg){
+       vector<string> columnsV = DBBase::findColumns(tableName, Msg);
+       if(columnsV.empty()){
+              Msg = "select columns Error";
+              return "";
+       }
+       return DBBase::selectData(SQL,columnsV,Msg);
+}
+
+//查询数据
+Json::Value DBBase::selectData(const char * SQL,vector<string> columnsV,string & Msg)
 {
 
-//	       vector<string> columnsV = DBBase::findColumns(tableName, Msg);
-       //if(columnsV.empty()){
-       //       Msg = "select columns Error";
-  //            return "";
-    //   }
 	LOGD(SQL);
-	vector<string> columnsV;
-	columnsV.push_back("q");
-	columnsV.push_back("w");
-	columnsV.push_back("e");
 
        MYSQL_ROW m_row;
-    MYSQL_RES *m_res;
-    char sql[2048];
-    sprintf(sql,SQL);
-       int rnum = 0;
-       char rg = 0x06;//行隔开
-       char cg = {0x05};//字段隔开
-
-
+       MYSQL_RES *m_res;
+       char sql[2048];
+       sprintf(sql,SQL);
 
        if(mysql_query(&mysql,sql) != 0)
        {
@@ -93,10 +89,10 @@ Json::Value DBBase::selectData(const char * SQL,int Cnum,string tableName,string
        while(m_row = mysql_fetch_row(m_res))
        {
               Json::Value data;
-              for(int i = 0;i < Cnum;i++)
+              for(int i = 0;i < columnsV.size();i++)
               {
-                 LOGD(columnsV[i]);
-		 LOGD(m_row[i]);
+                     LOGD(columnsV[i]);
+                     LOGD(m_row[i]);
 		      data[columnsV[i]] = m_row[i];
               }
               root["data_array"].append(data);
@@ -191,9 +187,15 @@ void DBBase::CloseMySQLConn()
        mysql_close(&mysql);
 }
 
-bool DBBase::isExist(string str_sql,int num,string tableName)
+bool DBBase::isExist(string str_sql,string tableName){
+    string msg;
+    Json::Value data = selectData(str_sql.c_str(), tableName, msg);
+    return data!="";
+}
+
+bool DBBase::isExist(string str_sql,vector<string> columnsV)
 {
     string msg;
-    Json::Value data = selectData(str_sql.c_str(), num,tableName, msg);
+    Json::Value data = selectData(str_sql.c_str(), columnsV, msg);
     return data!="";
 }

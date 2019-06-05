@@ -182,7 +182,9 @@ void Database::checkAndCreateTable(string tableName)
 {
 
     string str_sql_table = "SELECT table_name FROM information_schema.TABLES WHERE table_name ='"+tableName+"';";
-    if (!db_base->isExist(str_sql_table, 3,tableName))
+    vector<string> coloumnsV;
+    coloumnsV.push_back("table_name");
+    if (!db_base->isExist(str_sql_table, coloumnsV))
     {
         string str_sql = "CREATE TABLE " + tableName + "(           \
             ID          INT PRIMARY KEY AUTO_INCREMENT   NOT NULL,   \
@@ -229,7 +231,7 @@ bool Database::isUserExist(string account)
     }
 
     string str_sql = "select * from " + TABLE_USER_ACCOUNT + " where ACCOUNT = '" + account + "';";
-    return Database::db_base->isExist(str_sql,3,TABLE_USER_ACCOUNT);
+    return Database::db_base->isExist(str_sql,TABLE_USER_ACCOUNT);
 }
 
 UserAccount Database::queryUserAccountByAccount(string o_account)
@@ -248,7 +250,7 @@ UserAccount Database::queryUserAccountByAccount(string o_account)
     string str_sql = "SELECT ID , ACCOUNT , PASSWORD FROM " + TABLE_USER_ACCOUNT + "  WHERE ACCOUNT = '" + o_account + "' ;";
     
     string msg;
-    Json::Value data = db_base->selectData(str_sql.c_str(),3,TABLE_USER_ACCOUNT,msg);
+    Json::Value data = db_base->selectData(str_sql.c_str(),TABLE_USER_ACCOUNT,msg);
     if(data.empty()){
         LOGE("select user_account fail | account = " + o_account);
     }else{
