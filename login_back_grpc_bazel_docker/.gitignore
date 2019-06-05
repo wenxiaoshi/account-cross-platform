@@ -5,5 +5,5 @@ bazel-out
 bazel-testlogs
 .vscode
 *.log
-data/
+data
 conf
