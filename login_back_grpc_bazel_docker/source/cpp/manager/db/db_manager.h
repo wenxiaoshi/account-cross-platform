@@ -9,6 +9,8 @@
 #include "source/cpp/account/model/user_account.h"
 #include "source/cpp/account/model/user_session.h"
 
+#include "source/libs/json/json.h"
+
 using namespace std;
 using namespace my_model;
 
