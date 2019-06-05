@@ -33,7 +33,10 @@ namespace utils{
     	};
 
     	string toString(){
-    		string msg = "Request method: " + method + ", Args [{";
+	    	time_t now_time = time(NULL);
+			stringstream ss;
+    		ss << now_time;
+    		string msg = "Request method: " + method + " "+ ss.str() +" Args [{";
     		if (v_key.size() > 0) {
     			msg += v_key[0] + ":" + v_value[0];
     		}
