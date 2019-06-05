@@ -147,7 +147,7 @@ namespace demo {
                     }else{
                         token = storage::SharePreferences::get(Constants::TOKEN);
                     }
-                } else if (result.getCode() != ResultCode::CheckConnect_AccountTokenNotEqual){
+                } else if (result.getCode() == ResultCode::CheckConnect_AccountTokenNotEqual){
                     //token与服务器段token不匹配，判断用户被挤下线
                     //如果处于登录状态，则踢下登录
                     if(LoginCoreImpl::isLogin){
@@ -268,8 +268,8 @@ namespace demo {
     void LoginCoreImpl::updateUserInfo(std::string account,std::string token,std::string refreshToken,std::string isConnect){
 
         //重置本地用户状态
-        storage::SharePreferences::save(Constants::TOKEN,"");
-        storage::SharePreferences::save(Constants::REFRESH_TOKEN,"");
+        storage::SharePreferences::save(Constants::TOKEN,token);
+        storage::SharePreferences::save(Constants::REFRESH_TOKEN,refreshToken);
         storage::SharePreferences::save(Constants::USER_ACCOUNT,account);
         storage::SharePreferences::save(Constants::IS_CONNECT,isConnect);
 
