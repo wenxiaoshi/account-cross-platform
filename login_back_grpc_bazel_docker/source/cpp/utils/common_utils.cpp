@@ -145,3 +145,14 @@ string CommonUtils::EncryptPwd(string account, string password){
   }
 
 
+  /**
+  * 将string转换成int
+  **/
+  int CommonUtils::getIntByString(string str)
+  {
+    stringstream ss;
+    ss << str;
+    int i_data;
+    ss >> i_data;
+    return i_data;
+  }

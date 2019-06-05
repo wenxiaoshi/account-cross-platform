@@ -100,7 +100,7 @@ cc_library(
     name = "db_manager",
     srcs = ["cpp/manager/db/db_manager.cpp"],
     hdrs = ["cpp/manager/db/db_manager.h"],
-    deps = [":conf",":my_model",":log_utils",":db_base",":json"],
+    deps = [":conf",":my_model",":log_utils",":db_base",":json",":common_utils"],
 )
 
 cc_library(

@@ -256,12 +256,10 @@ UserAccount Database::queryUserAccountByAccount(string o_account)
     if(data.empty()){
         LOGE("select user_account fail | account = " + o_account);
     }else{
-                Json::Value info = data["data_array"][(uint)0];
-        Json::FastWriter fw;
-        LOGD(fw.write(info));
-	uid = CommonUtils::getIntByString(info["ID"]);
-	account = info["ACCOUNT"];
-	password = info["PASSWORD"];
+        Json::Value info = data["data_array"][(uint)0];
+	uid = CommonUtils::getIntByString(info["ID"].asString());
+	account = info["ACCOUNT"].asString();
+	password = info["PASSWORD"].asString();
     }
 
     return UserAccount(uid, account, password);

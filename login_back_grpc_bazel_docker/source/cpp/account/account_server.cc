@@ -412,7 +412,7 @@ public:
     }
 
     //获得账号UID
-    int uid = getIntByString(vToken[0]);
+    int uid = CommonUtils::getIntByString(vToken[0]);
 
     //token是否正确
     if (!login_redis.isTokenRight(uid, token))
@@ -464,11 +464,11 @@ public:
 
     //获取Token过期时间
     string token_end_time = vToken[4];
-    int end_time = getIntByString(token_end_time);
+    int end_time = CommonUtils::getIntByString(token_end_time);
 
     //获得账号UID
     string str_uid = vToken[0];
-    int uid = getIntByString(str_uid);
+    int uid = CommonUtils::getIntByString(str_uid);
 
     //获取redis中用户Token
     LoginRedis login_redis;
@@ -543,8 +543,8 @@ public:
     }
 
     //对比token与refreshToken是否来自同一用户
-    int uid = getIntByString(vToken[0]);
-    if(uid != getIntByString(vRefreshToken[0])){
+    int uid = CommonUtils::getIntByString(vToken[0]);
+    if(uid != CommonUtils::getIntByString(vRefreshToken[0])){
       result.setCode(ResultCode::RefreshToken_RefreshATokenNotEqual);
       result.setMsg(MsgTip::RefreshToken_RefreshATokenNotEqual);
       return result;
@@ -552,7 +552,7 @@ public:
 
     //判断refreshToken是否过期
     string token_end_time = vRefreshToken[4];
-    int end_time = getIntByString(token_end_time);
+    int end_time = CommonUtils::getIntByString(token_end_time);
     if (isTimeExpired(end_time))
     {
       result.setCode(ResultCode::RefreshToken_RefreshTokenHadExpire);
@@ -585,17 +585,7 @@ public:
 
   }
 private:
-  /**
-  * 将string转换成int
-  **/
-  int getIntByString(string str)
-  {
-    stringstream ss;
-    ss << str;
-    int i_data;
-    ss >> i_data;
-    return i_data;
-  }
+
 
   /**
   * 判断时间是否过期
