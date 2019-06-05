@@ -28,7 +28,8 @@ unsigned char* CommonUtils::AES_KEY = (unsigned char *) "$L&^E*Usd9k!Ld4%"; // t
 
 AesEncryptor* CommonUtils::aesEncryptor = new AesEncryptor(CommonUtils::AES_KEY);
 
-const long CommonUtils::TOKEN_TIMEOUT = 3600L * 24 * 7; // token7天有效时间
+//const long CommonUtils::TOKEN_TIMEOUT = 3600L * 24 * 7; // token7天有效时间
+const long CommonUtils::TOKEN_TIMEOUT = 30L;
 const long CommonUtils::REFRESH_TOKEN_TIMEOUT = 3600L * 24 * 14; // refresh_token14天有效时间
 
 string CommonUtils::GenToken(const unsigned long uid, const string account){

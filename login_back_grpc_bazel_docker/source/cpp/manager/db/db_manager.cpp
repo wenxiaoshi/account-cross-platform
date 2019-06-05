@@ -10,6 +10,7 @@
 
 #include "db_manager.h"
 #include "source/cpp/utils/log_utils.h"
+#include "source/cpp/utils/common_utils.h"
 
 #define LOGD(msg) utils::LogUtil::LOGD(msg);
 #define LOGW(msg) utils::LogUtil::LOGW(msg);
@@ -19,6 +20,7 @@
 using namespace manager;
 using namespace std;
 using namespace my_model;
+using namespace utils;
 
 Database *Database::database = new Database();
 
@@ -254,8 +256,10 @@ UserAccount Database::queryUserAccountByAccount(string o_account)
     if(data.empty()){
         LOGE("select user_account fail | account = " + o_account);
     }else{
-        Json::FastWriter fw;
-        LOGD(fw.write(data));
+        Json::Value info = data["data_array"][(uint)0];
+	uid = CommonUtils::getIntByString(info["ID"].asString());
+	account = info["ACCOUNT"].asString();
+	password = info["PASSWORD"].asString();
     }
 
     return UserAccount(uid, account, password);

@@ -91,8 +91,6 @@ Json::Value DBBase::selectData(const char * SQL,vector<string> columnsV,string &
               Json::Value data;
               for(int i = 0;i < columnsV.size();i++)
               {
-                     LOGD(columnsV[i]);
-                     LOGD(m_row[i]);
 		      data[columnsV[i]] = m_row[i];
               }
               root["data_array"].append(data);
@@ -125,14 +123,10 @@ vector<string> DBBase::findColumns(string tableName,string & Msg){
               return columns;
        }
 
-       int numLine = mysql_num_rows(m_res);
        string str("");
        while(m_row = mysql_fetch_row(m_res))
        {
-              //for(int i = 0;i < numLine;i++)
-              //{
-                     columns.push_back(m_row[0]);
-              //}
+              columns.push_back(m_row[0]);
        }
        mysql_free_result(m_res);
        return columns;
@@ -152,9 +146,9 @@ int DBBase::insertData(char * SQL,string & Msg)
 
 int DBBase::updateData(const char * SQL,string & Msg)
 {
-       char sql[2048];
-    sprintf(sql,SQL);
-       if(mysql_query(&mysql,sql) != 0)
+       //char sql[2048];
+       //sprintf(sql,SQL);
+       if(mysql_query(&mysql,SQL) != 0)
        {
               Msg = "Update Data Error";
               return 1;
@@ -164,9 +158,9 @@ int DBBase::updateData(const char * SQL,string & Msg)
 
 int DBBase::DeleteData(char * SQL,string & Msg)
 {
-       char sql[2048];
-    sprintf(sql,SQL);
-       if(mysql_query(&mysql,sql) != 0)
+       //char sql[2048];
+       //sprintf(sql,SQL);
+       if(mysql_query(&mysql,SQL) != 0)
        {
               Msg = "Delete Data error";
               return 1;
