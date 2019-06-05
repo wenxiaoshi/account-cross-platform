@@ -6,4 +6,3 @@ bazel-testlogs
 .vscode
 *.log
 data
-conf
