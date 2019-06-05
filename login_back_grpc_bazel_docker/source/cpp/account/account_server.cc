@@ -412,7 +412,7 @@ public:
     }
 
     //获得账号UID
-    int uid = getIntByString(vToken[0]);
+    int uid = CommonUtils::getIntByString(vToken[0]);
 
     //token是否正确
     if (!login_redis.isTokenRight(uid, token))
@@ -585,17 +585,7 @@ public:
 
   }
 private:
-  /**
-  * 将string转换成int
-  **/
-  int getIntByString(string str)
-  {
-    stringstream ss;
-    ss << str;
-    int i_data;
-    ss >> i_data;
-    return i_data;
-  }
+
 
   /**
   * 判断时间是否过期

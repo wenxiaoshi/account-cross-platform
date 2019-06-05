@@ -30,6 +30,7 @@ namespace utils{
 
         static string EncryptPwd(string account, string password);
 
+        static int getIntByString(string str);
         static void SplitString(const std::string& s, std::vector<std::string>& v, const std::string& c);
         static bool isEqual(string origin,string target);
     private:
