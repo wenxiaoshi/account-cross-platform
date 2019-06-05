@@ -202,7 +202,7 @@ public:
     ssToken << uid << "_token";
     stringstream ssRToken;
     ssRToken << uid << "_refresh_token";
-    return redis.setString(ssToken.str(), "") && redis.setString(ssRToken.str(), "");
+    return redis.delByKey(ssToken.str()) && redis.delByKey(ssRToken.str());
   }
 
   /**
