@@ -26,9 +26,6 @@ A Project Of How To Use gRPC/Bazel/Djinni/Docker/Sqlite.
 	* [数据库说明](#数据库说明)
 	* [版本说明](#版本说明)
 	* [常用后端命令](#常用后端命令)
-* [更新日志](#更新日志)
-	* [2019-3-4](#2019-3-4)
-	* [2019-2-10](#2019-2-10)
 
 
 ## 项目介绍
@@ -322,7 +319,7 @@ refreshToken
 
 ### 数据库说明
 
-使用SQLite3作为数据库
+使用MySQL作为数据库
 
 | 表名 | 字段  | 类型  | 备注 |
 |:--|----|------|------|
@@ -330,11 +327,6 @@ refreshToken
 |  | ID | INTEGER PRIMARY KEY | 用户UID |
 |  | ACCOUNT | CHAR | 用户账号 |
 |  | PASSWORD | CHAR | 用户密码 |
-| user_session |  |  ||
-|  | ID | INTEGER PRIMARY KEY | |
-|  | UID | INTEGER | 用户UID，外键关联 user_account（ID）|
-|  | TOKEN | CHAR | 用户Token |
-|  | IS_ONLINE | INTEGER | 是否在线（1.在线 0.离线） |
 
 ### 版本说明
 
@@ -362,43 +354,3 @@ refreshToken
 | cp ./bazel-bin/source/account_server docker-src/ | 将构建成功的执行文件复制到本地docker目录 |
 | docker build -t grpcserver:1.0 . | 在根目录，根据Dockerfile编写的规则，生成服务镜像 |
 | docker-compose up grpcserver | 在根目录，根据docker-compose.yml编写的规则，启动并管理容器 |
-
-
-## 更新日志
-### 2019-3-4
-
-##### 客户端
-
-1. 补充参数校验
-2. 将网络实现改为 GRPC-C++
-3. 将数据存储改为C++实现（key-value，采用读写文件的方式）
-
-##### 服务器端
-
-1. 补充参数校验
-2. DB采用Sqlite进行数据存储
-3. 用户密码初始化，加密处理
-
-	3-1. 将用户账号进行Sha256消息摘要计算
-	
-		salt = Sha256 (account)
-		
-	3-2. 将salt与密码合并，获得字符数组，进行MD5计算
-	
-	    encrypt_password = MD5 (salt + password)
-4. 登录后返回Token
-
-	4-1. 获得加密前Token
-	
-		Info = [UID]:[Account]:[随机6位数字]:[生成Token时间（秒）]:[Token过期时间（秒）]
-		
-	4-2. 用AES对称算法进行加密处理
-	
-		Toekn = AES ("Info"）
-5. 根据Token判断登录状态是否过期
-6. 根据Token判断用户是否在线
-7. 补充代码日志和接口日志，信息保存到文件中（文件按日期分）
-
-### 2019-2-10
-
-提交可运行版本1.0，详情可看TAG-1.0.0的README.md
