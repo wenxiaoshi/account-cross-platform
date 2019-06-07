@@ -89,7 +89,7 @@ Json::Value DBBase::selectData(const char * SQL,vector<string> columnsV,string &
        while(m_row = mysql_fetch_row(m_res))
        {
               Json::Value data;
-              for(int i = 0;i < columnsV.size();i++)
+              for(uint i = 0;i < columnsV.size();i++)
               {
 		      data[columnsV[i]] = m_row[i];
               }
@@ -171,7 +171,7 @@ int DBBase::DeleteData(char * SQL,string & Msg)
 
  void DBBase::errorIntoMySQL()
 {
-    int errorNum = mysql_errno(&mysql);
+    //int errorNum = mysql_errno(&mysql);
     string errorInfo = mysql_error(&mysql);
     LOGE(errorInfo);
 }
