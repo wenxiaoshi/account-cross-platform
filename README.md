@@ -1,7 +1,7 @@
 # 单终端登录系统
 
 
-A Project Of How To Use gRPC/Bazel/Djinni/Docker/Sqlite. 
+A Project Of How To Use gRPC/Bazel/Djinni/Docker/MySQL. 
 
 
 ## 目录
