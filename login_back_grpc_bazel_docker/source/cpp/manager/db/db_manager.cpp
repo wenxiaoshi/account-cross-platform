@@ -189,7 +189,7 @@ void Database::checkAndCreateTable(string tableName)
     if (!db_base->isExist(str_sql_table, coloumnsV))
     {
         string str_sql = "CREATE TABLE " + tableName + "(           \
-            ID          INT PRIMARY KEY AUTO_INCREMENT   NOT NULL,   \
+            ID          INT PRIMARY KEY AUTO_INCREMENT      NOT NULL,   \
             ACCOUNT     CHAR(50)                            NOT NULL,   \
             PASSWORD    CHAR(50)                            NOT NULL    \
             );";

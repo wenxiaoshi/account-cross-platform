@@ -1,11 +1,5 @@
-/****************************MYSQL IN C*******************************/
-/*************************2007 -03 -07 *******************************/
-/*************************李克喜**************************************/
- 
- 
 #include <stdio.h>
 #include <string>
-// #include <afxsock.h>
 #include "mysql/mysql.h"
 #include "source/libs/json/json.h"
 
@@ -123,20 +117,40 @@ public:
        /*
        主要功能：
        判断sql查询内容是否存在
+
+       入口参数
+       SQL：查询的SQL语句
+       columnsV:select语句的键数组
+ 
+       出口参数：
+       bool ：true表示存在；false表示不存在
        */
-       bool isExist(string str_sql,vector<string> columnsV);
+       bool isExist(string SQL,vector<string> columnsV);
 
        /*
        主要功能：
        判断sql查询内容是否存在
+
+       入口参数
+       SQL：查询的SQL语句
+       tableName:select语句的表名
+ 
+       出口参数：
+       bool ：true表示存在；false表示不存在
        */
-       bool isExist(string str_sql,string tableName);
+       bool isExist(string SQL,string tableName);
 
        /*
        主要功能：
        创建表
+
+       入口参数
+       SQL：创建的SQL语句
+ 
+       出口参数：
+       bool ：true表示存在；false表示不存在
        */
-       bool createdbTable(const std::string& query);
+       bool createdbTable(const std::string& SQL);
 
        private:
 
@@ -146,6 +160,17 @@ public:
        */
        void errorIntoMySQL();
 
+       /*
+       主要功能：
+       查询对应表的所有键
+
+       入口参数
+       tableName：数据库表名
+       Msg:返回的消息，包括错误消息
+
+       出口参数：
+       vector<string> ：表的键数组
+       */
        vector<string> findColumns(string tableName,string & Msg);
 
 };

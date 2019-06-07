@@ -12,6 +12,11 @@ namespace manager{
         public:
             ServerConfig();
             
+            string getServerIpAndPort();
+
+            string getSSLPathKey();
+            string getSSLPathCert();
+
             string getRedisIP();
             int getRedisPort();
 
@@ -23,6 +28,12 @@ namespace manager{
             string getMySqlCharset();
 
         private:
+
+            string SERVER_IP_POST;
+
+            string SSL_PATH_KEY;
+            string SSL_PATH_CERT;
+
             string REDIS_IP;
             int REDIS_POST;
 

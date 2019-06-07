@@ -64,8 +64,11 @@ Json::Value DBBase::selectData(const char * SQL,string tableName,string & Msg){
 //查询数据
 Json::Value DBBase::selectData(const char * SQL,vector<string> columnsV,string & Msg)
 {
-
-	LOGD(SQL);
+       if(SQL == NULL){
+              Msg = "sql is NULL";
+              return "";
+       }
+	LOGD("sql : " + (string)SQL);
 
        MYSQL_ROW m_row;
        MYSQL_RES *m_res;
@@ -98,12 +101,13 @@ Json::Value DBBase::selectData(const char * SQL,vector<string> columnsV,string &
  
        mysql_free_result(m_res);
 
-       Json::FastWriter fw;
-       LOGD(fw.write(root));
+       // Json::FastWriter fw;
+       // LOGD(fw.write(root));
 
        return root;
 }
 
+//查询表的键
 vector<string> DBBase::findColumns(string tableName,string & Msg){
        vector<string> columns;
        MYSQL_ROW m_row;
@@ -132,10 +136,14 @@ vector<string> DBBase::findColumns(string tableName,string & Msg){
        return columns;
 }
 
+//插入数据
 int DBBase::insertData(char * SQL,string & Msg)
 {
-//       char sql[2048];
-//    sprintf(sql,SQL);
+       if(SQL == NULL){
+              Msg = "sql is NULL";
+              return 1;
+       }
+
        if(mysql_query(&mysql,SQL) != 0)
        {
               Msg = "Insert Data Error";
@@ -144,10 +152,14 @@ int DBBase::insertData(char * SQL,string & Msg)
        return 0;
 }
 
+//更新数据
 int DBBase::updateData(const char * SQL,string & Msg)
 {
-       //char sql[2048];
-       //sprintf(sql,SQL);
+       if(SQL == NULL){
+              Msg = "sql is NULL";
+              return 1;
+       }
+
        if(mysql_query(&mysql,SQL) != 0)
        {
               Msg = "Update Data Error";
@@ -156,10 +168,14 @@ int DBBase::updateData(const char * SQL,string & Msg)
        return 0;
 }
 
+//删除数据
 int DBBase::DeleteData(char * SQL,string & Msg)
 {
-       //char sql[2048];
-       //sprintf(sql,SQL);
+       if(SQL == NULL){
+              Msg = "sql is NULL";
+              return 1;
+       }
+
        if(mysql_query(&mysql,SQL) != 0)
        {
               Msg = "Delete Data error";
@@ -168,7 +184,7 @@ int DBBase::DeleteData(char * SQL,string & Msg)
        return 0;
 }
 
-
+//错误信息打印
  void DBBase::errorIntoMySQL()
 {
     //int errorNum = mysql_errno(&mysql);
@@ -176,17 +192,21 @@ int DBBase::DeleteData(char * SQL,string & Msg)
     LOGE(errorInfo);
 }
 
+//关闭数据库连接
 void DBBase::CloseMySQLConn()
 {
        mysql_close(&mysql);
 }
 
-bool DBBase::isExist(string str_sql,string tableName){
+//判断SQL查询结果是否存在
+bool DBBase::isExist(string str_sql,string tableName)
+{
     string msg;
     Json::Value data = selectData(str_sql.c_str(), tableName, msg);
     return data!="";
 }
 
+//判断SQL查询结果是否存在
 bool DBBase::isExist(string str_sql,vector<string> columnsV)
 {
     string msg;

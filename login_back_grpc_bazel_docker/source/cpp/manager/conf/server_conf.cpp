@@ -50,8 +50,14 @@ void ServerConfig::getConf()
     Json::FastWriter fw;
     LOGD("server_conf.json | " + fw.write(root));
     
+    ServerConfig::SERVER_IP_POST = root["SERVER_IP_PORT"].asString();
+
+    ServerConfig::SSL_PATH_KEY = root["SSL_PATH_KEY"].asString();
+    ServerConfig::SSL_PATH_CERT = root["SSL_PATH_CERT"].asString();
+
     ServerConfig::REDIS_IP = root["REDIS_IP"].asString();
     ServerConfig::REDIS_POST = root["REDIS_POST"].asInt();
+
     ServerConfig::MYSQL_HOST = root["MYSQL_HOST"].asString();
     ServerConfig::MYSQL_USER = root["MYSQL_USER"].asString();
     ServerConfig::MYSQL_POST = root["MYSQL_POST"].asInt();
@@ -60,6 +66,21 @@ void ServerConfig::getConf()
     ServerConfig::MYSQL_CHARSET = root["MYSQL_CHARSET"].asString();
 
     ifs.close();
+}
+
+string ServerConfig::getServerIpAndPort()
+{
+    return ServerConfig::SERVER_IP_POST;
+}
+
+string ServerConfig::getSSLPathKey()
+{
+    return ServerConfig::SSL_PATH_KEY;
+}
+
+string ServerConfig::getSSLPathCert()
+{
+    return ServerConfig::SSL_PATH_CERT;
 }
 
 string ServerConfig::getRedisIP()

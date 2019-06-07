@@ -6,6 +6,9 @@
 	"MYSQL_POST": 3306,
 	"MYSQL_PASSWORD": "an8Kx6wczS11",
 	"MYSQL_DB_NAME": "user_center",
-	"MYSQL_CHARSET": "UTF8"
+	"MYSQL_CHARSET": "UTF8",
+	"SERVER_IP_PORT": "0.0.0.0:50051",
+	"SSL_PATH_KEY": "source/pem/server.key",
+	"SSL_PATH_CERT": "source/pem/server.crt"
 }
 

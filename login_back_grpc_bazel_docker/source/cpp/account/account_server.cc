@@ -17,6 +17,8 @@
 #include <hiredis/hiredis.h>
 #include "source/libs/json/json.h"
 
+#include "./model/reply_model.h"
+
 #include "source/cpp/manager/conf/server_conf.h"
 #include "source/cpp/manager/db/db_manager.h"
 #include "source/cpp/manager/redis/redis_manager.h"
@@ -53,40 +55,6 @@ using grpc::ServerBuilder;
 using grpc::ServerContext;
 using grpc::Status;
 using utils::LogMBean;
-
-class HandleResult
-{
-private:
-  int code = 0;
-  std::string msg = "";
-  std::string data = "";
-
-public:
-  int getCode()
-  {
-    return code;
-  };
-  void setCode(int co)
-  {
-    code = co;
-  };
-  std::string getMsg()
-  {
-    return msg;
-  };
-  void setMsg(std::string message)
-  {
-    msg = message;
-  };
-  std::string getData()
-  {
-    return data;
-  };
-  void setData(std::string da)
-  {
-    data = da;
-  };
-};
 
 class LoginDatabase
 {
@@ -243,9 +211,9 @@ public:
   token：           用户Token（用来接口请求）
   refresh_token：   用户Token（用来刷新Token）
   **/
-  HandleResult handleUserLogin(string account, string password)
+  ReplyModel handleUserLogin(string account, string password)
   {
-    HandleResult result;
+    ReplyModel result;
 
     LoginDatabase login_db;
     LoginRedis login_redis;
@@ -314,9 +282,9 @@ public:
   token：           用户Token（用来接口请求）
   refresh_token：   用户Token（用来刷新Token）
   **/
-  HandleResult handleUserSign(string account, string password)
+  ReplyModel handleUserSign(string account, string password)
   {
-    HandleResult result;
+    ReplyModel result;
 
     LoginDatabase login_db;
     LoginRedis login_redis;
@@ -386,9 +354,9 @@ public:
   入口参数
   token： 	        用户Token
   **/
-  HandleResult handleUserLogout(string token)
+  ReplyModel handleUserLogout(string token)
   {
-    HandleResult result;
+    ReplyModel result;
 
     LoginRedis login_redis;
 
@@ -440,9 +408,9 @@ public:
   入口参数
   token： 	        用户Token
   **/
-  HandleResult handleUserCheckConnect(string token)
+  ReplyModel handleUserCheckConnect(string token)
   {
-    HandleResult result;
+    ReplyModel result;
 
     //解密Token
     string decodeToken = CommonUtils::DecryptToken(token);
@@ -502,9 +470,9 @@ public:
   token：           用户Token（新）
   refresh_token：   用户Token（新）
   **/
-  HandleResult handleRefreshToken(string token, string refreshToken)
+  ReplyModel handleRefreshToken(string token, string refreshToken)
   {
-    HandleResult result;
+    ReplyModel result;
 
     //解密Token
     string decodeToken = CommonUtils::DecryptToken(token);
@@ -637,7 +605,7 @@ class AccountServiceImpl final : public Account::Service
     if (isParamValid)
     {
       LoginCore loginCore;
-      HandleResult result = loginCore.handleUserLogin(account, password);
+      ReplyModel result = loginCore.handleUserLogin(account, password);
       reply->set_code(result.getCode());
       reply->set_msg(result.getMsg());
       reply->set_data(result.getData());
@@ -688,7 +656,7 @@ class AccountServiceImpl final : public Account::Service
     if (isParamValid)
     {
       LoginCore loginCore;
-      HandleResult result = loginCore.handleUserSign(account, password);
+      ReplyModel result = loginCore.handleUserSign(account, password);
       reply->set_code(result.getCode());
       reply->set_msg(result.getMsg());
       reply->set_data(result.getData());
@@ -716,7 +684,7 @@ class AccountServiceImpl final : public Account::Service
 
     //执行请求
     LoginCore loginCore;
-    HandleResult result = loginCore.handleUserLogout(token);
+    ReplyModel result = loginCore.handleUserLogout(token);
 
     reply->set_code(result.getCode());
     reply->set_msg(result.getMsg());
@@ -757,7 +725,7 @@ class AccountServiceImpl final : public Account::Service
     if (isParamValid)
     {
       LoginCore loginCore;
-      HandleResult result = loginCore.handleUserCheckConnect(token);
+      ReplyModel result = loginCore.handleUserCheckConnect(token);
       reply->set_code(result.getCode());
       reply->set_msg(result.getMsg());
       reply->set_data(result.getData());
@@ -807,7 +775,7 @@ class AccountServiceImpl final : public Account::Service
     if (isParamValid)
     {
       LoginCore loginCore;
-      HandleResult result = loginCore.handleRefreshToken(token,refreshToken);
+      ReplyModel result = loginCore.handleRefreshToken(token,refreshToken);
       reply->set_code(result.getCode());
       reply->set_msg(result.getMsg());
       reply->set_data(result.getData());
@@ -824,18 +792,19 @@ class AccountServiceImpl final : public Account::Service
   }
 };
 
-void RunServer()
+void RunServer(manager::ServerConfig conf)
 {
 
-  std::string server_address("0.0.0.0:50051");
+  std::string server_address(conf.getServerIpAndPort());
   AccountServiceImpl service;
 
   ServerBuilder builder;
 
-  std::ifstream skey("source/pem/server.key");
+  LOGD("begin load ssl key info");
+  std::ifstream skey(conf.getSSLPathKey());
   std::string strServerKey((std::istreambuf_iterator<char>(skey)), std::istreambuf_iterator<char>());
   //std::cout << "key: " <<strServerKey << std::endl;
-  std::ifstream sCrt("source/pem/server.crt");
+  std::ifstream sCrt(conf.getSSLPathCert());
   std::string strServerCert((std::istreambuf_iterator<char>(sCrt)), std::istreambuf_iterator<char>());
   //std::cout << "crt: " << strServerCert << std::endl;
 
@@ -845,7 +814,7 @@ void RunServer()
   ssl_opts.pem_root_certs = "";
   ssl_opts.pem_key_cert_pairs.push_back(pkcp);
   std::shared_ptr<grpc::ServerCredentials> creds = grpc::SslServerCredentials(ssl_opts);
-
+  LOGD("finish load ssl key info");
   // Listen on the given address without any authentication mechanism.
   builder.AddListeningPort(server_address, creds);
   // Register "service" as the instance through which we'll communicate with
@@ -865,6 +834,6 @@ int main(int argc, char **argv)
   manager::ServerConfig conf;
   Redis::getRedis()->connect(conf);
   Database::getDatabase()->connect(conf);
-  RunServer();
+  RunServer(conf);
   return 0;
 }

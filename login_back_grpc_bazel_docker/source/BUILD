@@ -33,8 +33,8 @@ cc_binary(
 
 cc_library(
     name = "my_model",
-    srcs = ["cpp/account/model/user_account.cc","cpp/account/model/user_session.cc"],
-    hdrs = ["cpp/account/model/user_account.h","cpp/account/model/user_session.h"],
+    srcs = ["cpp/account/model/user_account.cc","cpp/account/model/user_session.cc","cpp/account/model/reply_model.cc"],
+    hdrs = ["cpp/account/model/user_account.h","cpp/account/model/user_session.h","cpp/account/model/reply_model.h"],
 )
 
 cc_library(
