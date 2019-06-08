@@ -192,6 +192,24 @@ public:
     return token;
   }
 
+  /**
+  主要功能：
+  获取用户RefreshToken
+
+  入口参数
+  uid： 	          用户UID
+
+  出口参数：
+  string ：         用户RefreshToken
+  **/
+  string getUserRefreshToken(int uid)
+  {
+    stringstream ssToken;
+    ssToken << uid << "_refresh_token";
+    string token;
+    redis.getString(ssToken.str(), token);
+    return token;
+  }
 private:
   Redis redis = *Redis::getRedis();
 };
@@ -510,9 +528,11 @@ public:
       return result;
     }
 
-    //对比token与refreshToken是否来自同一用户
-    int uid = CommonUtils::getIntByString(vToken[0]);
-    if(uid != CommonUtils::getIntByString(vRefreshToken[0])){
+    //对比refreshToken是否与redis中的一致
+    int uid = CommonUtils::getIntByString(vRefreshToken[0]);
+    LoginRedis login_redis;
+    string redis_refresh_token = login_redis.getUserRefreshToken(uid);
+    if(!CommonUtils::isEqual(refreshToken, redis_refresh_token)){
       result.setCode(ResultCode::RefreshToken_RefreshATokenNotEqual);
       result.setMsg(MsgTip::RefreshToken_RefreshATokenNotEqual);
       return result;
@@ -534,7 +554,6 @@ public:
     string new_refreshToken = CommonUtils::GenRefreshToken(uid, account);
 
     //更新token、refreshToken到redis
-    LoginRedis login_redis;
     if (!login_redis.updateToken(uid, new_token, new_refreshToken))
     {
       result.setCode(ResultCode::RefreshToken_CreateSeesionFail);
