@@ -89,6 +89,7 @@ Json::Value DBBase::selectData(const char * SQL,vector<string> columnsV,string &
        }
        
        Json::Value root;
+       root["is_empty"] = true;
        while(m_row = mysql_fetch_row(m_res))
        {
               Json::Value data;
@@ -97,6 +98,7 @@ Json::Value DBBase::selectData(const char * SQL,vector<string> columnsV,string &
 		      data[columnsV[i]] = m_row[i];
               }
               root["data_array"].append(data);
+	      root["is_empty"] = false;
        }
  
        mysql_free_result(m_res);
@@ -203,7 +205,11 @@ bool DBBase::isExist(string str_sql,string tableName)
 {
     string msg;
     Json::Value data = selectData(str_sql.c_str(), tableName, msg);
-    return data!="";
+
+       Json::FastWriter fw;
+       LOGD(fw.write(data));
+
+    return !data["is_empty"].asBool();
 }
 
 //判断SQL查询结果是否存在
@@ -211,5 +217,9 @@ bool DBBase::isExist(string str_sql,vector<string> columnsV)
 {
     string msg;
     Json::Value data = selectData(str_sql.c_str(), columnsV, msg);
-    return data!="";
+
+	Json::FastWriter fw;
+       LOGD(fw.write(data));
+
+    return !data["is_empty"].asBool();
 }
