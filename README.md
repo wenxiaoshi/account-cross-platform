@@ -40,7 +40,7 @@ A Project Of How To Use gRPC/Bazel/Djinni/Docker/MySQL.
 
 ### 技术简介
 
-- 客户端用Android实现，采用Djinni实现跨平台开发，业务逻辑在C层实现
+- 客户端用Android实现，采用Djinni实现跨平台开发，业务逻辑在C++层实现
 - 服务端用C++实现，缓存使用Redis,数据库使用MySQL
 - 使用GPRC进行远程通信，生成非对称密钥，使用SSL进行数据传输加密
 - 使用Bazel构建后台项目，以及依赖管理
@@ -259,7 +259,7 @@ refreshToken
 | 1005xxx | | | 刷新用户Token接口 |
 | 1005001 | Token格式错误 | 接口传来的Token格式不正确，属于非法Token |
 | 1005002 | RefreshToken格式错误 | 接口传来的RefreshToken格式不正确 |
-| 1005003 | Token与RefreshToken不对应 | 将二者解析后的信息进行比对，不属于同一用户 |
+| 1005003 | RefreshToken不对应 | 根据UID从Redis取出RefreshToken进行比对不相等 |
 | 1005004 | RefreshToken已失效 | 用户RefreshToken失效（过期），需要重新登录 |
 | 1005005 | 账号会话信息创建失败 | 根据账号与UID生成的Token，更新到Redis失败 |
 
