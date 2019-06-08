@@ -24,13 +24,13 @@ using namespace utils;
 using namespace std;
 using namespace constants;
 
-unsigned char* CommonUtils::AES_KEY = (unsigned char *) "$L&^E*Usd9k!Ld4%"; // token30天有效时间
+unsigned char* CommonUtils::AES_KEY = (unsigned char *) "$L&^E*Usd9k!Ld4%";
 
 AesEncryptor* CommonUtils::aesEncryptor = new AesEncryptor(CommonUtils::AES_KEY);
 
-//const long CommonUtils::TOKEN_TIMEOUT = 3600L * 24 * 7; // token7天有效时间
-const long CommonUtils::TOKEN_TIMEOUT = 30L;
-const long CommonUtils::REFRESH_TOKEN_TIMEOUT = 3600L * 24 * 14; // refresh_token14天有效时间
+//const long CommonUtils::TOKEN_TIMEOUT = 3600L * 24 * 7; // token 7天有效时间
+const long CommonUtils::TOKEN_TIMEOUT = 30L; // token 30秒有效时间
+const long CommonUtils::REFRESH_TOKEN_TIMEOUT = 3600L * 24 * 14; // refresh_token 14天有效时间
 
 string CommonUtils::GenToken(const unsigned long uid, const string account){
     time_t startTime = time(NULL);
