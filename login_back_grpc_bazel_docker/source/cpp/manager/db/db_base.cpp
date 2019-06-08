@@ -203,6 +203,10 @@ bool DBBase::isExist(string str_sql,string tableName)
 {
     string msg;
     Json::Value data = selectData(str_sql.c_str(), tableName, msg);
+
+       Json::FastWriter fw;
+       LOGD(fw.write(data));
+
     return data!="";
 }
 
