@@ -65,7 +65,7 @@ A Project Of How To Use gRPC/Bazel/Djinni/Docker/MySQL.
 
 ### 流程图
 
-![](http://melon-personal.oss-cn-shenzhen.aliyuncs.com/login-design.png)
+![](https://melon-personal.oss-cn-shenzhen.aliyuncs.com/wechat/pic_project_flow.png)
 
 ## 项目实现
 
