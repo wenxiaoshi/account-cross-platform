@@ -82,7 +82,6 @@ namespace project_constants{
 
         const static int CheckConnect_TokenNotValid;
         const static int CheckConnect_TokenHadExpire;
-        const static int CheckConnect_AccountOffline;
         const static int CheckConnect_AccountTokenNotEqual;
 
         const static int RefreshToken_TokenNotValid;

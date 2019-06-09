@@ -88,13 +88,11 @@ namespace project_constants{
     //1004zzz 检查在线状态接口
     const int ResultCode::CheckConnect_TokenNotValid = 1004001;
     const int ResultCode::CheckConnect_TokenHadExpire = 1004002;
-    const int ResultCode::CheckConnect_AccountOffline = 1004003;
-    const int ResultCode::CheckConnect_AccountTokenNotEqual = 1004004;
+    const int ResultCode::CheckConnect_AccountTokenNotEqual = 1004003;
 
     const string MsgTip::CheckConnect_TokenNotValid = "Token格式错误";//1004001
     const string MsgTip::CheckConnect_TokenHadExpire = "Token已经失效";//1004002
-    const string MsgTip::CheckConnect_AccountOffline = "账号已离线";//1004003
-    const string MsgTip::CheckConnect_AccountTokenNotEqual = "Token校验失败";//1004004
+    const string MsgTip::CheckConnect_AccountTokenNotEqual = "Token校验失败";//1004003
 
     //1005zzz 刷新用户Token接口
     const int ResultCode::RefreshToken_TokenNotValid = 1005001;
