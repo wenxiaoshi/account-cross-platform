@@ -100,6 +100,17 @@ namespace utils{
 
         /*
         主要功能：
+        分解字符串成数组
+
+        入口参数
+        str：           需要进行替换的字符串
+        old：           替换的旧字符
+        reg：           替换的新字符
+        */
+        static void replaceAll(std::string& str,const std::string old,const std::string reg);
+
+        /*
+        主要功能：
         比较两个字符串是否相等
 
         入口参数

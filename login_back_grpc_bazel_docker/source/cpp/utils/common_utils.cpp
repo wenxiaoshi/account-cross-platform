@@ -33,25 +33,37 @@ const long CommonUtils::TOKEN_TIMEOUT = 30L; // token 30秒有效时间
 const long CommonUtils::REFRESH_TOKEN_TIMEOUT = 3600L * 24 * 14; // refresh_token 14天有效时间
 
 string CommonUtils::GenToken(const unsigned long uid, const string account){
+    //获取时间变量
     time_t startTime = time(NULL);
     time_t endTime = startTime + TOKEN_TIMEOUT;
+    
+    //获取随机数
     string randomNumStr = GenRandomStr();
 
+    //构建Token
     const int bufSize = 128;
     char tokenChar[bufSize];
     snprintf(tokenChar,bufSize,"%lu:%s:%s:%lu:%lu",uid,account.c_str(),randomNumStr.c_str(),startTime,endTime);
+    
+    //进行对称加密
     string tokenAes = aesEncryptor->EncryptString(tokenChar);
     return tokenAes;
 }
 
 string CommonUtils::GenRefreshToken(const unsigned long uid, const string account){
+    //获取时间变量
     time_t startTime = time(NULL);
     time_t endTime = startTime + REFRESH_TOKEN_TIMEOUT;
+
+    //获取随机数
     string randomNumStr = GenRandomStr();
 
+    //构建Token
     const int bufSize = 128;
     char tokenChar[bufSize];
     snprintf(tokenChar,bufSize,"%lu:%s:%s:%lu:%lu",uid,account.c_str(),randomNumStr.c_str(),startTime,endTime);
+
+    //进行对称加密
     string tokenAes = aesEncryptor->EncryptString(tokenChar);
     return tokenAes;
 }
@@ -84,18 +96,37 @@ string CommonUtils::GenRandomStr(){
 }
 
 void CommonUtils::SplitString(const std::string& s, std::vector<std::string>& v, const std::string& c) {
-            std::string::size_type pos1, pos2;
-            pos2 = s.find(c);
-            pos1 = 0;
-            while(std::string::npos != pos2)
-            {
-                v.push_back(s.substr(pos1, pos2-pos1));
+    std::string::size_type pos1, pos2;
+    pos2 = s.find(c);
+    pos1 = 0;
+    while(std::string::npos != pos2)
+    {
 
-                pos1 = pos2 + c.size();
-                pos2 = s.find(c, pos1);
-            }
-            if(pos1 != s.length())
-                v.push_back(s.substr(pos1));
+        v.push_back(s.substr(pos1, pos2-pos1));
+
+        pos1 = pos2 + c.size();
+        pos2 = s.find(c, pos1);
+    }
+    if(pos1 != s.length())
+        v.push_back(s.substr(pos1));
+}
+
+void CommonUtils::replaceAll(std::string& str,const std::string old,const std::string reg){
+    vector<string>  delimVec;
+    CommonUtils::SplitString(str, delimVec,old); 
+    if (delimVec.size() <= 0) 
+    { 
+        return; 
+    } 
+    string target(delimVec[0]); 
+    vector<string>::iterator it = delimVec.begin(); 
+    ++it;
+    for (; it != delimVec.end(); ++it) 
+    { 
+        target = target + reg + (*it); 
+    }
+    str = target;
+    return; 
 }
 
 string CommonUtils::EncryptPwd(string account, string password){
