@@ -108,7 +108,7 @@ cc_library(
     srcs = ["cpp/manager/db/db_base.cpp"],
     hdrs = ["cpp/manager/db/db_base.h"],
     linkopts = ["-lmysqlclient"],
-    deps = [":log_utils",":json"],
+    deps = [":log_utils",":json",":common_utils",":rwlock"],
 )
 
 
@@ -125,6 +125,12 @@ cc_library(
     srcs = ["libs/json/json_reader.cpp","libs/json/json_value.cpp","libs/json/json_writer.cpp"],
     # hdrs = ["libs/json/autolink.h","libs/json/config.h","libs/json/features.h","libs/json/forwards.h","libs/json/json.h","libs/json/reader.h","libs/json/value.h","libs/json/writer.h","libs/json/json_batchallocator.h"],
     hdrs = glob(["libs/json/*.h","libs/json/*.inl"]),
+)
+
+cc_library(
+    name = "rwlock",
+    srcs = ["cpp/struct/read_write_lock.cpp"],
+    hdrs = ["cpp/struct/read_write_lock.h"],
 )
 
 cc_import(

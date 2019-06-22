@@ -26,6 +26,7 @@ namespace utils{
         /*
         主要功能：
         检查用户密码是否合法
+        按复杂度分成三种（低中高）
 
         入口参数
         password：      用户密码
@@ -34,7 +35,9 @@ namespace utils{
        	出口参数：
        	bool： 			true表示合法；false表示非法
         */
-        static bool CheckPasswordValid(string password,string & errorMsg);
+        static bool CheckPassLwordValid(string password,string & errorMsg);
+        static bool CheckPassMwordValid(string password,string & errorMsg);
+        static bool CheckPassHwordValid(string password,string & errorMsg);
 
         /*
         主要功能：

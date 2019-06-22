@@ -91,33 +91,13 @@ namespace manager{
 
 		/*
 		主要功能：
-		新增数据到数据库
+		过滤参数的非法字符
+		防止SQL注入
 
 		入口参数
-       	tabls_name： 	数据库表名
-		v_key： 		插入数据的键数据
-		v_value： 		插入数据的值数据
-
-       	出口参数：
-       	bool ： 		true表示成功；false表示失败
+		source_word： 	源参数
 		*/
-		bool insertDbAccount(string tabls_name, std::vector<string> v_key, std::vector<string> v_value);
-
-		/*
-		主要功能：
-		更新数据到数据库
-
-		入口参数
-       	tabls_name： 	数据库表名
-		v_key： 		插入数据的键数组
-		v_value： 		插入数据的值数组
-		where_key： 	执行sql条件的键数组
-		where_value： 	执行sql条件的值数组
-
-       	出口参数：
-       	bool ： 		true表示成功；false表示失败
-		*/
-		bool updateDbAccount(string tabls_name, std::vector<string> v_key, std::vector<string> v_value, std::vector<string> where_key, std::vector<string> where_value);
+		void filterIllegalKeyword(string & source_word);
 
 		/*
 		主要功能：
