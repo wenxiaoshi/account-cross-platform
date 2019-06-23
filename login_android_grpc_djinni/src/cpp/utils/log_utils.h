@@ -15,6 +15,14 @@ namespace utils{
 
     class LogUtil{
     public:
+        
+        /*
+         主要功能：
+         写信息到控制台
+         
+         出口参数
+         msg：               打印信息
+         */
         static void LOGD(string msg);
         static void LOGE(string msg);
         static void LOGI(string msg);

@@ -33,6 +33,9 @@
 #include <grpcpp/impl/codegen/slice.h>
 #include <grpcpp/impl/codegen/status.h>
 
+#include <grpcpp/impl/codegen/config.h>
+#include <grpcpp/impl/codegen/core_codegen.h>
+
 /// This header provides serialization and deserialization between gRPC
 /// messages serialized using protobuf and the C++ objects they represent.
 
@@ -51,6 +54,12 @@ Status GenericSerialize(const grpc::protobuf::Message& msg, ByteBuffer* bb,
   *own_buffer = true;
   int byte_size = msg.ByteSize();
   if ((size_t)byte_size <= GRPC_SLICE_INLINED_SIZE) {
+      
+//      if (grpc::g_core_codegen_interface == nullptr) {
+//          static auto* const g_core_codegen = new CoreCodegen();
+//          grpc::g_core_codegen_interface = new CoreCodegen();
+//      }
+      
     Slice slice(byte_size);
     // We serialize directly into the allocated slices memory
     GPR_CODEGEN_ASSERT(slice.end() == msg.SerializeWithCachedSizesToArray(
