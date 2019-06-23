@@ -612,7 +612,7 @@ class AccountServiceImpl final : public Account::Service
     };
 
     //校验用户密码
-    if (isParamValid && !ParamUtils::CheckPasswordValid(password, error_msg))
+    if (isParamValid && !ParamUtils::CheckPassLwordValid(password, error_msg))
     {
       reply->set_code(ResultCode::ReqParamError);
       reply->set_msg(error_msg);
@@ -663,7 +663,7 @@ class AccountServiceImpl final : public Account::Service
     };
 
     //校验用户密码
-    if (isParamValid && !ParamUtils::CheckPasswordValid(password, error_msg))
+    if (isParamValid && !ParamUtils::CheckPassMwordValid(password, error_msg))
     {
       reply->set_code(ResultCode::ReqParamError);
       reply->set_msg(error_msg);
@@ -853,6 +853,11 @@ int main(int argc, char **argv)
   manager::ServerConfig conf;
   Redis::getRedis()->connect(conf);
   Database::getDatabase()->connect(conf);
+
+  //debug
+  // Database::getDatabase()->queryUserAccountByAccount("13533332222");
+  Database::getDatabase()->addUserAccount("13533332222test","123123");
+
   RunServer(conf);
   return 0;
 }

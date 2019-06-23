@@ -36,12 +36,13 @@ Database::Database()
 
 /**
  * 数据库初始化
+ * 私有方法，不对业务层开放
 **/
 void Database::connect(ServerConfig _conf)
 {
     if (isHadInit)
     {
-        LOGW("database had init !");
+        LOGW("[db_manager.connect] database had init !");
         return;
     }
     isHadInit = true;
@@ -64,125 +65,18 @@ void Database::connect(ServerConfig _conf)
     }
     else
     {
-        LOGE("db connect fail");
+        LOGE("[db_manager.connect] db connect fail");
         LOGD(msg);
     }
 }
 
 /**
- * 插入数据
-**/
-bool Database::insertDbAccount(string tabls_name, std::vector<string> v_key, std::vector<string> v_value)
-{
-
-    //检查数据是否正确
-    if (tabls_name.empty() || v_key.size() == 0 || v_value.size() == 0)
-    {
-        LOGW("db insert , param is invalid !");
-        return false;
-    }
-
-    //封装数据
-    string str_key = v_key[0];
-    for (unsigned int i = 1; i < v_key.size(); i++)
-    {
-        str_key += "," + v_key[i];
-    }
-
-    string str_value = v_value[0];
-    for (unsigned int i = 1; i < v_value.size(); i++)
-    {
-        str_value += "," + v_value[i];
-    }
-
-    //获得插入SQL语句
-    const int bufSize = 1024;
-    char c_sql[bufSize];
-    try
-    {
-        snprintf(c_sql, bufSize, "INSERT INTO %s(%s) VALUES(%s);", tabls_name.c_str(), str_key.c_str(), str_value.c_str());
-    }
-    catch (exception &e)
-    {
-        LOGW("db insert , sqlSentence create fail");
-        return false;
-    }
-
-    string msg;
-    int result = db_base->insertData(c_sql,msg);
-    if(result != 0){
-        LOGE(msg);
-    }
-
-    return result == 0;
-}
-
-/**
- * 更新数据
-**/
-bool Database::updateDbAccount(string tabls_name, std::vector<string> v_key, std::vector<string> v_value, std::vector<string> where_key, std::vector<string> where_value)
-{
-    //检查数据是否正确
-    if (tabls_name.empty() || v_key.size() == 0 || v_value.size() == 0)
-    {
-        LOGW("db update fail, param is invalid !");
-        return false;
-    }
-
-    if (v_key.size() != v_value.size() || where_key.size() != where_value.size())
-    {
-        LOGW("db update fail, param is invalid !");
-        return false;
-    }
-
-    //封装数据
-    string str_key = v_key[0];
-    for (unsigned int i = 1; i < v_key.size(); i++)
-    {
-        str_key += "," + v_key[i];
-    }
-
-    string str_value = v_value[0];
-    for (unsigned int i = 1; i < v_value.size(); i++)
-    {
-        str_value += "," + v_value[i];
-    }
-
-    //获得更新SQL语句
-    string str_sql = "UPDATE " + tabls_name + " SET ";
-
-    //set值组装
-    str_sql += v_key[0] + " = " + v_value[0];
-    for (unsigned int i = 1; i < v_key.size(); i++)
-    {
-        str_sql += ", " + v_key[i] + " = " + v_value[i];
-    }
-
-    //where条件组装
-    if (where_key.size() != 0)
-    {
-        str_sql += " WHERE " + where_key[0] + " = " + where_value[0];
-    }
-    for (unsigned int i = 1; i < where_key.size(); i++)
-    {
-        str_sql += "and " + where_key[i] + " = " + where_value[i];
-    }
-
-    str_sql += ";";
-
-    string msg;
-    bool isSuccess = db_base->updateData(str_sql.c_str(),msg);
-    if(!isSuccess){
-        LOGE(msg);
-    }else{
-        LOGD("update sql success");
-    }
-    return isSuccess;
-}
-
+ * 检查表是否存在
+ * 私有方法，不对业务层开放
+ **/
 void Database::checkAndCreateTable(string tableName)
 {
-
+    //构建查询语句
     string str_sql_table = "SELECT table_name FROM information_schema.TABLES WHERE table_name ='"+tableName+"';";
     vector<string> coloumnsV;
     coloumnsV.push_back("table_name");
@@ -195,72 +89,112 @@ void Database::checkAndCreateTable(string tableName)
             );";
         
         if(db_base->createdbTable(str_sql)){
-            LOGD("create tables success");
+            LOGD("[db_manager.checkAndCreateTable] create tables success");
         }else{
-            LOGE("create tables fail");
+            LOGE("[db_manager.checkAndCreateTable] create tables fail");
         }
     }
 }
 
 /***************************以下是对外的接口**************************/
 
-
+/**
+ * 添加用户数据到数据库
+ **/ 
 bool Database::addUserAccount(string account, string password)
 {
+    //参数判空
     if (account.empty() || password.empty())
     {
-        LOGW("db | addUserAccount | param is empty");
+        LOGW("[db_manager.addUserAccount] param is empty");
         return false;
     }
 
-    vector<string> v_key;
-    v_key.push_back("ACCOUNT");
-    v_key.push_back("PASSWORD");
+    //参数非法字符过滤
+    filterIllegalKeyword(account);
 
-    vector<string> v_value;
-    v_value.push_back("'" + account + "'");
-    v_value.push_back("'" + password + "'");
+    //这里保险再判断一层，判断账号是否已经存在
+    if(Database::isUserExist(account)){
+        LOGE("[db_manager.addUserAccount] account is exist");
+        return false;
+    }
 
-    return insertDbAccount(TABLE_USER_ACCOUNT, v_key, v_value);
+    //执行插入数据操作
+    string msg;
+    Json::Value data = db_base->insertUserAccount(account,password,msg);
+    if(data["is_empty"].asBool() || CommonUtils::getIntByString(data["ID"].asString()) <= 0)
+    {
+        LOGE("[db_manager.addUserAccount] " + msg);
+        return false;
+    }
+    return true;
 }
 
+/**
+ * 判断用户是否存在
+ **/ 
 bool Database::isUserExist(string account)
 {
+    //参数判空
     if (account.empty())
     {
-        LOGW("db | isUserExist | param is empty");
+        LOGW("[db_manager.isUserExist] param is empty");
         return false;
     }
 
-    string str_sql = "select * from " + TABLE_USER_ACCOUNT + " where ACCOUNT = '" + account + "';";
-    return Database::db_base->isExist(str_sql,TABLE_USER_ACCOUNT);
+    //参数非法字符过滤
+    filterIllegalKeyword(account);
+
+    //执行查询数据操作
+    UserAccount userAccount = queryUserAccountByAccount(account);
+    return userAccount.getUid() > 0;
 }
 
+/**
+ * 根据用户账号查询用户数据
+ **/ 
 UserAccount Database::queryUserAccountByAccount(string o_account)
 {
+    //参数判空
     if (o_account.empty())
     {
-        LOGW("db | queryUserAccountByAccount | param is empty");
+        LOGW("[db_manager.queryUserAccountByAccount] param is empty");
         return UserAccount(-1, "", "");
     }
 
+    //参数非法字符过滤
+    filterIllegalKeyword(o_account);
+
+    //执行查询数据操作
     int uid = -1;
     string account;
     string password;
-
-    //获得SQL语句
-    string str_sql = "SELECT ID , ACCOUNT , PASSWORD FROM " + TABLE_USER_ACCOUNT + "  WHERE ACCOUNT = '" + o_account + "' ;";
-    
     string msg;
-    Json::Value data = db_base->selectData(str_sql.c_str(),TABLE_USER_ACCOUNT,msg);
-    if(data.empty()){
-        LOGE("select user_account fail | account = " + o_account);
+    Json::Value data = db_base->selectUserAccountByAccount(o_account,msg);
+    if(data["is_empty"].asBool()){
+        LOGE("[db_manager.queryUserAccountByAccount] data is empty");
+        return UserAccount(-1, "", "");
     }else{
-        Json::Value info = data["data_array"][(uint)0];
-	uid = CommonUtils::getIntByString(info["ID"].asString());
-	account = info["ACCOUNT"].asString();
-	password = info["PASSWORD"].asString();
+        uid = CommonUtils::getIntByString(data["ID"].asString());
+        account = data["ACCOUNT"].asString();
+        password = data["PASSWORD"].asString();
+        if(uid < 0){
+            LOGE("[db_manager.queryUserAccountByAccount] can not find user = " + o_account);
+            return UserAccount(-1, "", "");
+        }
     }
 
     return UserAccount(uid, account, password);
 }
+
+/**
+ * 非法字符过滤
+ **/ 
+ void Database::filterIllegalKeyword(string & source_word){
+       // such as : select * from user_table where username='admin' and password='admin123'
+
+       //select * from user_table where username='xxx' and password='xxx' or '1'='1'
+       utils::CommonUtils::replaceAll(source_word,"'","’");
+       //select * from user_table where username='1\' and password='or 1=1;#'; 
+       utils::CommonUtils::replaceAll(source_word,"\\","");
+ }
