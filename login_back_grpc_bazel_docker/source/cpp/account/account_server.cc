@@ -856,7 +856,7 @@ int main(int argc, char **argv)
 
   //debug
   // Database::getDatabase()->queryUserAccountByAccount("13533332222");
-  Database::getDatabase()->addUserAccount("13533332222test","123123");
+  Database::getDatabase()->addUserAccount("13533332221test","123123");
 
   RunServer(conf);
   return 0;
