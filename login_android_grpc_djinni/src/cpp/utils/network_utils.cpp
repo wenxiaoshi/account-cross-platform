@@ -6,6 +6,12 @@
 
 #include <string>
 
+using namespace grpc;
+
+using grpc::Status;
+
+
+
 // TokenAuthenticator 用来支持令牌认证
 // https://grpc.io/docs/guides/auth.html
 class TokenAuthenticator : public grpc::MetadataCredentialsPlugin {
@@ -14,7 +20,7 @@ public:
 
     grpc::Status GetMetadata(grpc::string_ref service_url, grpc::string_ref method_name, const grpc::AuthContext& channel_auth_context, std::multimap<grpc::string, grpc::string>* metadata) override {
         metadata->insert(std::make_pair("authorization-token", token_));
-        return grpc::Status::OK;
+        return Status::OK;
     }
 
 private:

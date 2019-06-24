@@ -11,10 +11,52 @@ namespace utils{
 
     class File{
     public:
+        
+        /*
+         主要功能：
+         判断文件是否存在
+         
+         入口参数
+         dir：           文件路径
+         */
         static bool isFileExist(const char *dir);
+        
+        /*
+         主要功能：
+         创建文件
+         
+         入口参数
+         file_pathL：            文件路径
+         file_name：             文件名称
+         */
         static bool createFile(const char *file_path, const char *file_name);
+        
+        /*
+         主要功能：
+         删除文件
+         
+         入口参数
+         file_path：             文件路径
+         */
         static bool deleteFile(const char* file_path);
+        
+        /*
+         主要功能：
+         往文件写数据
+         
+         入口参数
+         fileName：              文件路径
+         content：               写入内容
+         */
         static bool writeFile(const char *fileName,const char *content);
+        
+        /*
+         主要功能：
+         从文件读数据
+         
+         入口参数
+         fileName：              文件路径
+         */
         static char* readFile(const char *fileName);
 
     private:

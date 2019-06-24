@@ -3,7 +3,7 @@
 //
 
 #include <string>
-#include <jni.h>
+//#include <jni.h>
 
 #include <grpc++/grpc++.h>
 
@@ -15,6 +15,7 @@
 #include "../model/proj_constants.h"
 
 #define LOGD(msg)  utils::LogUtil::LOGD(msg);
+#define LOGE(msg)  utils::LogUtil::LOGE(msg);
 
 using grpc::Channel;
 using grpc::ClientContext;
@@ -52,18 +53,27 @@ namespace network{
             // Context for the client. It could be used to convey extra information to
             // the server and/or tweak certain RPC behaviors.
             ClientContext context;
-            // The actual RPC.
-            Status status = stub_->requestUserLogin(&context, request, &reply);
-
-            if (status.ok()) {
-                return reply;
-            } else {
-                //todo 网络错误吗转换
-                reply.set_code(-1);
+            
+            try{
+                // The actual RPC.
+                Status status = stub_->requestUserLogin(&context, request, &reply);
+                
+                if (status.ok()) {
+                    return reply;
+                } else {
+                    //todo 网络错误吗转换
+                    reply.set_code(-1);
+                    reply.set_msg(ToastTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
+                    LOGD(status.error_message());
+                    return reply;
+                }
+            }catch(...){
+                reply.set_code(-2);
                 reply.set_msg(ToastTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
-                LOGD(status.error_message());
+                LOGE("catch requestUserLogin network error");
                 return reply;
             }
+            
         }
 
         CodeReply requestUserSign(const std::string& account, const std::string& password) {
@@ -78,18 +88,27 @@ namespace network{
             // Context for the client. It could be used to convey extra information to
             // the server and/or tweak certain RPC behaviors.
             ClientContext context;
-            // The actual RPC.
-            Status status = stub_->requestUserSign(&context, request, &reply);
-
-            if (status.ok()) {
-                return reply;
-            } else {
-                //todo 网络错误吗转换
-                reply.set_code(-1);
+            
+            try{
+                // The actual RPC.
+                Status status = stub_->requestUserSign(&context, request, &reply);
+                
+                if (status.ok()) {
+                    return reply;
+                } else {
+                    //todo 网络错误吗转换
+                    reply.set_code(-1);
+                    reply.set_msg(ToastTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
+                    LOGD(status.error_message());
+                    return reply;
+                }
+            }catch(...){
+                reply.set_code(-2);
                 reply.set_msg(ToastTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
-                LOGD(status.error_message());
+                LOGE("catch requestUserSign network error");
                 return reply;
             }
+            
         }
 
         CodeReply requestLogout(const std::string& token) {
@@ -103,18 +122,27 @@ namespace network{
             // Context for the client. It could be used to convey extra information to
             // the server and/or tweak certain RPC behaviors.
             ClientContext context;
-            // The actual RPC.
-            Status status = stub_->requestLogout(&context, request, &reply);
-
-            if (status.ok()) {
-                return reply;
-            } else {
-                //todo 网络错误吗转换
-                reply.set_code(-1);
+            
+            try{
+                // The actual RPC.
+                Status status = stub_->requestLogout(&context, request, &reply);
+                
+                if (status.ok()) {
+                    return reply;
+                } else {
+                    //todo 网络错误吗转换
+                    reply.set_code(-1);
+                    reply.set_msg(ToastTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
+                    LOGD(status.error_message());
+                    return reply;
+                }
+            }catch(...){
+                reply.set_code(-2);
                 reply.set_msg(ToastTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
-                LOGD(status.error_message());
+                LOGE("catch requestLogout network error");
                 return reply;
             }
+            
         }
 
         CodeReply checkConnect(const std::string& token) {
@@ -128,18 +156,27 @@ namespace network{
             // Context for the client. It could be used to convey extra information to
             // the server and/or tweak certain RPC behaviors.
             ClientContext context;
-            // The actual RPC.
-            Status status = stub_->checkConnect(&context, request, &reply);
-
-            if (status.ok()) {
-                return reply;
-            } else {
-                //todo 网络错误吗转换
-                reply.set_code(-1);
+            
+            try{
+                // The actual RPC.
+                Status status = stub_->checkConnect(&context, request, &reply);
+                
+                if (status.ok()) {
+                    return reply;
+                } else {
+                    //todo 网络错误吗转换
+                    reply.set_code(-1);
+                    reply.set_msg(ToastTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
+                    LOGD(status.error_message());
+                    return reply;
+                }
+            }catch(...){
+                reply.set_code(-2);
                 reply.set_msg(ToastTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
-                LOGD(status.error_message());
+                LOGE("catch checkConnect network error");
                 return reply;
             }
+            
         }
 
         CodeReply refreshToken(const std::string& token, const std::string& refreshToken) {
@@ -153,24 +190,37 @@ namespace network{
             // Context for the client. It could be used to convey extra information to
             // the server and/or tweak certain RPC behaviors.
             ClientContext context;
-            // The actual RPC.
-            Status status = stub_->refreshToken(&context, request, &reply);
-
-            if (status.ok()) {
-                return reply;
-            } else {
-                //todo 网络错误吗转换
-                reply.set_code(-1);
+            
+            try{
+                // The actual RPC.
+                Status status = stub_->refreshToken(&context, request, &reply);
+                
+                if (status.ok()) {
+                    return reply;
+                } else {
+                    //todo 网络错误吗转换
+                    reply.set_code(-1);
+                    reply.set_msg(ToastTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
+                    LOGD(status.error_message());
+                    return reply;
+                }
+            }catch(...){
+                reply.set_code(-2);
                 reply.set_msg(ToastTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
-                LOGD(status.error_message());
+                LOGE("catch refreshToken network error");
                 return reply;
             }
+            
         }
 
     private:
         std::unique_ptr<Account::Stub> stub_;
     };
 
+    
+    /*
+     请求登录操作
+     */
     ReqResult NetworkCore::reqLogin(const std::string account,const std::string password){
 
         AccountClient client(utils::NetworkUtils::getNetworkChannel());
@@ -185,6 +235,9 @@ namespace network{
         return result;
     }
 
+    /*
+     请求注册操作
+     */
     ReqResult NetworkCore::reqSign(const std::string account,const std::string password){
 
         AccountClient client(utils::NetworkUtils::getNetworkChannel());
@@ -200,6 +253,9 @@ namespace network{
         return result;
     }
 
+    /*
+     退出登录操作
+     */
     ReqResult NetworkCore::reqLogout(const std::string token){
 
         AccountClient client(utils::NetworkUtils::getNetworkChannel());
@@ -214,6 +270,9 @@ namespace network{
         return result;
     }
 
+    /*
+     检查连接状态操作
+     */
     ReqResult NetworkCore::checkConnect(const std::string token){
 
         AccountClient client(utils::NetworkUtils::getNetworkChannel());
@@ -228,7 +287,11 @@ namespace network{
         return result;
     }
 
+    /*
+     刷新用户凭证Token操作
+     */
     ReqResult NetworkCore::refreshToken(const std::string token,const std::string refreshToken){
+        
         AccountClient client(utils::NetworkUtils::getNetworkChannel());
 
         CodeReply reply = client.refreshToken(token, refreshToken);

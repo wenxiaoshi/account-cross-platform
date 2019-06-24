@@ -3,9 +3,9 @@
 //
 
 #include <stdio.h>
-#include <model/network_result.h>
+#include "network_result.h"
 #include <sstream>
-#include <android/log.h>
+//#include <android/log.h>
 
 namespace demo{
 

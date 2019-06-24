@@ -3,7 +3,10 @@
 #include <ctime>
 #include <vector>
 
+# define APP_PLATFORM ANDROID
+
 #include "NativeLoginListener.hpp"
+//#include "SCLoginListener.h"
 
 #include "action_result.hpp"
 #include "login_core_impl.hpp"
@@ -14,6 +17,7 @@
 #include "storage/share_preferences.h"
 #include "json.hpp"
 #include "./utils/log_utils.h"
+
 
 #include <iostream>
 #include <exception>
@@ -218,9 +222,9 @@ namespace demo {
      * 判断当前是否在线
      */
     void LoginCoreImpl::check_login_status(){
-        const std::string token = storage::SharePreferences::get(Constants::TOKEN);
+        std::string token = storage::SharePreferences::get(Constants::TOKEN);
         const std::string refreshToken = storage::SharePreferences::get(Constants::REFRESH_TOKEN);
-        const std::string account = storage::SharePreferences::get(Constants::USER_ACCOUNT);
+        std::string account = storage::SharePreferences::get(Constants::USER_ACCOUNT);
 
         //用户未登录，清除登录状态
         if(token == "" || account == ""){
