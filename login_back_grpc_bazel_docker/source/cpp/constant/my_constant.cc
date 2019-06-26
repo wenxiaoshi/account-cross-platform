@@ -7,6 +7,7 @@ using namespace std;
 // 公共错误码（0 ~ 99）
 const int ResultCode::SUCCESS = 0;
 const int ResultCode::ReqParamError = 1;
+const int ResultCode::RetrunDataInvalid = 2;
 
 const string MsgTip::ERROR_ACCOUNT_EMPTY = "账号不能为空，请重新输入";//1
 const string MsgTip::ERROR_ACCOUNT_NOT_VALID_PHONE_NUM = "账号格式错误，请输入正确的手机号码";//1
@@ -14,6 +15,7 @@ const string MsgTip::ERROR_PASSWORD_EMPTY = "密码不能为空，请重新输�
 const string MsgTip::ERROR_PASSWORD_NOT_VALID = "密码格式错误，请输入6-18位的数字或字母";//1
 const string MsgTip::ERROR_TOKEN_EMPTY = "Token不能为空";//1
 const string MsgTip::ERROR_STRING_EMPTY = "string can not be null or empty";//1
+const string MsgTip::ERROR_BACK_DATA_INVALID = "返回的数据中存在敏感字符";//2
 
 //业务逻辑错误（1xxxzzz 账号模块，2xxxzzz 卡包模块, ......）
 

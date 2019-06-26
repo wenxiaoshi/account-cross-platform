@@ -630,6 +630,14 @@ class AccountServiceImpl final : public Account::Service
       reply->set_data(result.getData());
     }
 
+    //校验返回数据的合法性
+    string msg;
+    if(!ParamUtils::CheckBackDataValid(reply->data(),msg)){
+      reply->set_code(ResultCode::RetrunDataInvalid);
+      reply->set_msg(msg);
+      reply->set_data("");
+    }
+
     //打印接口日志
     log_bean.addParam("code", reply->code());
     log_bean.addParam("account", account);
@@ -681,6 +689,14 @@ class AccountServiceImpl final : public Account::Service
       reply->set_data(result.getData());
     }
 
+    //校验返回数据的合法性
+    string msg;
+    if(!ParamUtils::CheckBackDataValid(reply->data(),msg)){
+      reply->set_code(ResultCode::RetrunDataInvalid);
+      reply->set_msg(msg);
+      reply->set_data("");
+    }
+
     //打印接口日志
     log_bean.addParam("code", reply->code());
     log_bean.addParam("account", account);
@@ -708,6 +724,14 @@ class AccountServiceImpl final : public Account::Service
     reply->set_code(result.getCode());
     reply->set_msg(result.getMsg());
     reply->set_data(result.getData());
+
+    //校验返回数据的合法性
+    string msg;
+    if(!ParamUtils::CheckBackDataValid(reply->data(),msg)){
+      reply->set_code(ResultCode::RetrunDataInvalid);
+      reply->set_msg(msg);
+      reply->set_data("");
+    }
 
     //打印接口日志
     log_bean.addParam("code", reply->code());
@@ -748,6 +772,14 @@ class AccountServiceImpl final : public Account::Service
       reply->set_code(result.getCode());
       reply->set_msg(result.getMsg());
       reply->set_data(result.getData());
+    }
+
+    //校验返回数据的合法性
+    string msg;
+    if(!ParamUtils::CheckBackDataValid(reply->data(),msg)){
+      reply->set_code(ResultCode::RetrunDataInvalid);
+      reply->set_msg(msg);
+      reply->set_data("");
     }
 
     //打印接口日志
@@ -800,6 +832,14 @@ class AccountServiceImpl final : public Account::Service
       reply->set_data(result.getData());
     }
 
+    //校验返回数据的合法性
+    string msg;
+    if(!ParamUtils::CheckBackDataValid(reply->data(),msg)){
+      reply->set_code(ResultCode::RetrunDataInvalid);
+      reply->set_msg(msg);
+      reply->set_data("");
+    }
+    
     //打印接口日志
     log_bean.addParam("code", reply->code());
     log_bean.addParam("token", token);

@@ -84,7 +84,17 @@ bool ParamUtils::CheckPassHwordValid(string password,string & errorMsg){
     return true;
 }
 
-
+bool ParamUtils::CheckBackDataValid(string data,string & errorMsg){
+    if (data == ""){
+        return true;
+    }
+    string pattern = "^[<,>,?]$";//待补充
+    if (PatternMatch(pattern, data)) {
+        errorMsg = MsgTip::ERROR_BACK_DATA_INVALID;
+        return false;
+    }
+    return true;
+}
 
 /**
  * 字符串规则：

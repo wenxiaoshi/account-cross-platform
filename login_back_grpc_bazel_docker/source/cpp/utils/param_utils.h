@@ -51,6 +51,20 @@ namespace utils{
        	bool： 			true表示合法；false表示非法
         */
         static bool CheckStringValid(string str,string & errorMsg);
+
+        /*
+        主要功能：
+        检查返回数据是否合法
+        （是否存在非法字符，避免XSS攻击）
+
+        入口参数
+        data            请求接口返回的数据
+
+       	出口参数：
+       	bool： 		    true表示合法；false表示非法
+        */
+        static bool CheckBackDataValid(string data,string & errorMsg);
+
     private:
 
         /*

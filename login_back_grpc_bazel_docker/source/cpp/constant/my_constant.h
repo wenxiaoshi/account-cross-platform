@@ -13,6 +13,7 @@ namespace constants{
         const static int SUCCESS;
     
         const static int ReqParamError;
+        const static int RetrunDataInvalid;
 
         const static int UserLogin_AccountNotExist;
         const static int UserLogin_PasswordInitFail;
@@ -52,6 +53,8 @@ namespace constants{
         const static string ERROR_PASSWORD_NOT_VALID;           //1
         const static string ERROR_TOKEN_EMPTY;                  //1
         const static string ERROR_STRING_EMPTY;                 //1
+
+        const static string ERROR_BACK_DATA_INVALID;            //2
 
         const static string UserLogin_AccountNotExist;          //1001001
         const static string UserLogin_PasswordInitFail;         //1001002
