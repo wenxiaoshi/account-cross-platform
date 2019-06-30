@@ -612,7 +612,7 @@ class AccountServiceImpl final : public Account::Service
     };
 
     //校验用户密码
-    if (isParamValid && !ParamUtils::CheckPassLwordValid(password, error_msg))
+    if (isParamValid && !ParamUtils::CheckPassMwordValid(password, error_msg))
     {
       reply->set_code(ResultCode::ReqParamError);
       reply->set_msg(error_msg);
