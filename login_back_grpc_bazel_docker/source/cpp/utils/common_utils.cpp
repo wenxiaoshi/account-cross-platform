@@ -25,6 +25,7 @@ using namespace std;
 using namespace constants;
 
 unsigned char* CommonUtils::AES_KEY = (unsigned char *) "$L&^E*Usd9k!Ld4%";
+string CommonUtils::PASSWORD_SALT = "";
 
 AesEncryptor* CommonUtils::aesEncryptor = new AesEncryptor(CommonUtils::AES_KEY);
 
@@ -141,7 +142,7 @@ string CommonUtils::EncryptPwd(string account, string password){
         const char* c_account = sha256_account.c_str();
 
         //取出系统盐值
-        const char* c_salt = pwdSalt.c_str();
+        const char* c_salt = PASSWORD_SALT.c_str();
 
         //获取加密前password字符数组
         const char* c_password = password.c_str();

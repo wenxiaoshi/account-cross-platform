@@ -123,8 +123,8 @@ namespace utils{
         static bool isEqual(string origin,string target);
 
         //参与密码初始化的盐值
-        static string pwdSalt;
-        
+        static string PASSWORD_SALT;
+
     private:
 
         /*
