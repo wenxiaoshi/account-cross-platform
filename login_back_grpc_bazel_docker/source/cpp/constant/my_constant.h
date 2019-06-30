@@ -50,7 +50,9 @@ namespace constants{
         const static string ERROR_ACCOUNT_EMPTY;                //1
         const static string ERROR_ACCOUNT_NOT_VALID_PHONE_NUM;  //1
         const static string ERROR_PASSWORD_EMPTY;               //1
-        const static string ERROR_PASSWORD_NOT_VALID;           //1
+        const static string ERROR_PASSWORD_NOT_VALID_1;         //1
+        const static string ERROR_PASSWORD_NOT_VALID_2;         //1
+        const static string ERROR_PASSWORD_NOT_VALID_3;         //1
         const static string ERROR_TOKEN_EMPTY;                  //1
         const static string ERROR_STRING_EMPTY;                 //1
 

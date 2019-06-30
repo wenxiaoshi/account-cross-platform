@@ -35,7 +35,7 @@ bool ParamUtils::CheckPassLwordValid(string password,string & errorMsg){
     }
     string pattern = "^[a-z0-9A-Z]{6,18}$";
     if (!PatternMatch(pattern, password)) {
-        errorMsg = MsgTip::ERROR_PASSWORD_NOT_VALID;
+        errorMsg = MsgTip::ERROR_PASSWORD_NOT_VALID_1;
         return false;
     }
     return true;
@@ -57,7 +57,7 @@ bool ParamUtils::CheckPassMwordValid(string password,string & errorMsg){
     string pattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[^]{6,18}$";
 
     if (!PatternMatch(pattern, password)) {
-        errorMsg = MsgTip::ERROR_PASSWORD_NOT_VALID;
+        errorMsg = MsgTip::ERROR_PASSWORD_NOT_VALID_2;
         return false;
     }
     return true;
@@ -78,7 +78,7 @@ bool ParamUtils::CheckPassHwordValid(string password,string & errorMsg){
     }
     string pattern = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^\\w\\s]).{6,18}$";
     if (!PatternMatch(pattern, password)) {
-        errorMsg = MsgTip::ERROR_PASSWORD_NOT_VALID;
+        errorMsg = MsgTip::ERROR_PASSWORD_NOT_VALID_3;
         return false;
     }
     return true;
