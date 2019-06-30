@@ -9,6 +9,7 @@
 	"MYSQL_CHARSET": "UTF8",
 	"SERVER_IP_PORT": "0.0.0.0:50051",
 	"SSL_PATH_KEY": "source/pem/server.key",
-	"SSL_PATH_CERT": "source/pem/server.crt"
+	"SSL_PATH_CERT": "source/pem/server.crt",
+	"PASSWORD_SALT": "cwfgx6wczS11"
 }
 
