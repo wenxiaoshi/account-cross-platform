@@ -65,6 +65,8 @@ void ServerConfig::getConf()
     ServerConfig::MYSQL_DB_NAME = root["MYSQL_DB_NAME"].asString();
     ServerConfig::MYSQL_CHARSET = root["MYSQL_CHARSET"].asString();
 
+    ServerConfig::PASSWORD_SALT = root["PASSWORD_SALT"].asString();
+
     ifs.close();
 }
 
@@ -116,6 +118,11 @@ string ServerConfig::getMySqlDBName()
 string ServerConfig::getMySqlCharset()
 {
     return ServerConfig::MYSQL_CHARSET;
+}
+
+string ServerConfig::getPasswordSalt()
+{
+    return ServerConfig::PASSWORD_SALT;
 }
 
 } // namespace manager

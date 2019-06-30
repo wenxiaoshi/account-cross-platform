@@ -121,6 +121,10 @@ namespace utils{
        	bool： 			true表示相等；false表示不相等
         */
         static bool isEqual(string origin,string target);
+
+        //参与密码初始化的盐值
+        static string pwdSalt;
+        
     private:
 
         /*
@@ -143,6 +147,7 @@ namespace utils{
 
         //AES加密工具类
         static AesEncryptor* aesEncryptor;
+
     };
 
 }

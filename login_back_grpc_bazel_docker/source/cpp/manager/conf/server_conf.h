@@ -12,20 +12,33 @@ namespace manager{
         public:
             ServerConfig();
             
+            //获取服务的IP和端口
             string getServerIpAndPort();
 
+            //获取SSL的Key和Cert
             string getSSLPathKey();
             string getSSLPathCert();
 
+            //获取Redis的IP和端口
             string getRedisIP();
             int getRedisPort();
 
+            //获取MySQL的IP
             string getMySqlHost();
-            string getMySqlUser();
+            //获取MySQL的端口
             int getMySqlPort();
+
+            //获取登入MySQL的用户名
+            string getMySqlUser();
+            //获取登入MySQL的密码
             string getMySqlPassword();
+            //获取登入MySQL的DB名称
             string getMySqlDBName();
+            //获取登入MySQL的字符集
             string getMySqlCharset();
+
+            //获取参与密码初始化的盐值
+            string getPasswordSalt();
 
         private:
 
@@ -43,6 +56,8 @@ namespace manager{
             string MYSQL_PASSWORD;
             string MYSQL_DB_NAME; 
             string MYSQL_CHARSET;
+
+            string PASSWORD_SALT;
 
             void getConf();
     };

@@ -140,13 +140,16 @@ string CommonUtils::EncryptPwd(string account, string password){
         hash256_hex_string(account, sha256_account);
         const char* c_account = sha256_account.c_str();
 
+        //取出系统盐值
+        const char* c_salt = pwdSalt.c_str();
+
         //获取加密前password字符数组
         const char* c_password = password.c_str();
 
         //合并salt到password字符数组
-        size_t length = strlen(c_account) + strlen(c_password);
+        size_t length = strlen(c_account) + strlen(c_salt) + strlen(c_password);
         char c_source[length+1];
-        snprintf(c_source, length+1, "%s%s", c_account, c_password);
+        snprintf(c_source, length+1, "%s%s%s", c_account, c_salt ,c_password);
 
         //对字符数组进行MD5计算
         MD5 md5(c_source, length);

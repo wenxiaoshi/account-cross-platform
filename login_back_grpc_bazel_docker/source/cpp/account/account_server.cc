@@ -893,10 +893,11 @@ int main(int argc, char **argv)
   manager::ServerConfig conf;
   Redis::getRedis()->connect(conf);
   Database::getDatabase()->connect(conf);
+  CommonUtils::pwdSalt = conf.getPasswordSalt();
 
   //debug
   // Database::getDatabase()->queryUserAccountByAccount("13533332222");
-  Database::getDatabase()->addUserAccount("13533332221test","123123");
+  // Database::getDatabase()->addUserAccount("13533332221test","123123");
 
   RunServer(conf);
   return 0;
