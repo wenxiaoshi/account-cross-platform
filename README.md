@@ -277,13 +277,14 @@ refreshToken
 
 #### 密码初始化
 
-<img src="http://melon-personal.oss-cn-shenzhen.aliyuncs.com/login_pwd.png" width = 442 height = 410 />
+<img src="http://melon-personal.oss-cn-shenzhen.aliyuncs.com/login_pwd.png" width = 609 height = 410 />
 
 ##### 用户注册流程，后台接收到用户的账号和密码
 
 1. 通过SHA256消息摘要算法对账号进行计算，获得摘要信息
-2. 将1中获得的摘要信息作为盐，与密码拼接，获得加密前信息
-3. 将2中获得的信息，进行MD5消息摘要计算，获得加密后的128位，用16进制表示的密码字符串
+2. 取出从配置文件中获取的盐值
+3. 将1中获得的摘要信息作为盐，与系统盐值、密码拼接，获得加密前信息
+4. 将3中获得的信息，进行MD5消息摘要计算，获得加密后的128位，用16进制表示的密码字符串
 
 ##### 用户登录流程，后台接收到用户的账号和密码
 
