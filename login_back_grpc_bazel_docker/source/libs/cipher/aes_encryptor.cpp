@@ -5,11 +5,18 @@
 #include "aes.h"
 #include "aes_encryptor.h"
 
+#include "../../cpp/utils/log_utils.h"
+
+#include <sstream>
 #include <fstream>
 #include <cstring>
+#include <iostream>
+#include <time.h>
 
 using namespace std;
 using namespace cipher_center;
+
+#define LOGD(msg)  utils::LogUtil::LOGD(msg);
 
 AesEncryptor::AesEncryptor(unsigned char* key)
 {
@@ -49,6 +56,8 @@ int AesEncryptor::Char2Int(char c) {
 }
 
 string AesEncryptor::EncryptString(string strInfor) {
+    double diff_seconds = (double)(clock());
+
     int nLength = strInfor.length();
     int spaceLength = 16 - (nLength % 16);
     unsigned char* pBuffer = new unsigned char[nLength + spaceLength];
@@ -61,6 +70,10 @@ string AesEncryptor::EncryptString(string strInfor) {
     memset(pOut, '\0', 2 * (nLength + spaceLength));
     Byte2Hex(pBuffer, nLength + spaceLength, pOut);
 
+	stringstream ss;
+	ss << diff_seconds - clock();
+    LOGD("Encrypt Time : " + ss.str());
+
     string retValue(pOut);
     delete[] pBuffer;
     delete[] pOut;
@@ -68,12 +81,19 @@ string AesEncryptor::EncryptString(string strInfor) {
 }
 
 string AesEncryptor::DecryptString(string strMessage) {
+    double diff_seconds = (double)(clock());
+
     int nLength = strMessage.length() / 2;
     unsigned char* pBuffer = new unsigned char[nLength];
     memset(pBuffer, '\0', nLength);
     Hex2Byte(strMessage.c_str(), strMessage.length(), pBuffer);
 
     m_pEncryptor->InvCipher(pBuffer, nLength);
+
+    stringstream ss;
+	ss << diff_seconds - clock();
+    LOGD("Decrypt Time : " + ss.str());
+
     string retValue((char*)pBuffer);
     delete[] pBuffer;
     return retValue;
