@@ -1,7 +1,7 @@
 # 单终端登录系统
 
 
-A Project Of How To Use gRPC/Bazel/Djinni/Docker/MySQL. 
+A Project Of How To Use gRPC/Bazel/Djinni/Docker/MySQL/Redis. 
 
 
 ## 目录
@@ -29,6 +29,7 @@ A Project Of How To Use gRPC/Bazel/Djinni/Docker/MySQL.
         * [敏感词过滤](#敏感词过滤)
         * [参数化查询](#参数化查询)
 	* [数据库说明](#数据库说明)
+	* [配置文件说明](#配置文件说明)
 	* [版本说明](#版本说明)
 	* [常用后端命令](#常用后端命令)
 
@@ -277,13 +278,14 @@ refreshToken
 
 #### 密码初始化
 
-<img src="http://melon-personal.oss-cn-shenzhen.aliyuncs.com/login_pwd.png" width = 442 height = 410 />
+<img src="http://melon-personal.oss-cn-shenzhen.aliyuncs.com/login_pwd2.png" width = 609 height = 410 />
 
 ##### 用户注册流程，后台接收到用户的账号和密码
 
 1. 通过SHA256消息摘要算法对账号进行计算，获得摘要信息
-2. 将1中获得的摘要信息作为盐，与密码拼接，获得加密前信息
-3. 将2中获得的信息，进行MD5消息摘要计算，获得加密后的128位，用16进制表示的密码字符串
+2. 取出从配置文件中获取的盐值
+3. 将1中获得的摘要信息作为盐，与系统盐值、密码拼接，获得加密前信息
+4. 将3中获得的信息，进行MD5消息摘要计算，获得加密后的128位，用16进制表示的密码字符串
 
 ##### 用户登录流程，后台接收到用户的账号和密码
 
@@ -377,6 +379,33 @@ refreshToken
 |  | ID | INTEGER PRIMARY KEY | 用户UID |
 |  | ACCOUNT | CHAR | 用户账号 |
 |  | PASSWORD | CHAR | 用户密码 |
+
+使用存储过程封装常用数据库操作
+
+| 名称 | 入参  | 反参  | 用途 |
+|:--|----|------|------|
+| queryaccount | 用户账号 | [用户UID,用户账号,用户密码] | 根据用户账号（手机号），获取用户信息，不存在则UID返回-1 |
+| insertaccount | [用户账号,用户密码] | 用户UID | 插入一条用户账号信息到数据库，失败则UID返回-1，成功则返回用户UID数据的主键ID |
+
+### 配置文件说明
+
+```
+{
+        "SERVER_IP_PORT": "0.0.0.0:50051",          //服务-IP:端口
+	"REDIS_IP": "47.92.xxx.xx",                 //Redis-IP
+	"REDIS_POST": 6379,                         //Redis-端口
+	"MYSQL_HOST": "47.92.xxx.xx",               //MySQL-IP
+	"MYSQL_POST": 3306,                         //MySQL-端口
+        "MYSQL_CHARSET": "UTF8",                    //MySQL-编码
+        "MYSQL_USER": "melon",                      //MySQL-登入用户名
+	"MYSQL_PASSWORD": "xxxxxxxxxx",             //MySQL-登入密码
+	"MYSQL_DB_NAME": "user_center",             //MySQL-登入库名
+	"SSL_PATH_KEY": "source/pem/server.key",    //SSL-KEY
+	"SSL_PATH_CERT": "source/pem/server.crt",   //SSL-密钥
+	"PASSWORD_SALT": "xxxxxxxxxx"               //参与密码初始化的盐值
+}
+
+```
 
 ### 版本说明
 
