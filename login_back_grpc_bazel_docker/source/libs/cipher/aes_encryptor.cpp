@@ -71,8 +71,8 @@ string AesEncryptor::EncryptString(string strInfor) {
     Byte2Hex(pBuffer, nLength + spaceLength, pOut);
 
 	stringstream ss;
-	ss << diff_seconds - clock();
-    LOGD("Encrypt Time : " + ss.str());
+	ss << ((double)(clock() - diff_seconds) / CLOCKS_PER_SEC  * 1000);
+    LOGD("Encrypt Time : " + ss.str() + "ms");
 
     string retValue(pOut);
     delete[] pBuffer;
@@ -91,8 +91,8 @@ string AesEncryptor::DecryptString(string strMessage) {
     m_pEncryptor->InvCipher(pBuffer, nLength);
 
     stringstream ss;
-	ss << diff_seconds - clock();
-    LOGD("Decrypt Time : " + ss.str());
+	ss << ((double)(clock() - diff_seconds) / CLOCKS_PER_SEC  * 1000);
+    LOGD("Decrypt Time : " + ss.str() + "ms");
 
     string retValue((char*)pBuffer);
     delete[] pBuffer;
