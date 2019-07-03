@@ -208,7 +208,10 @@ refreshToken
 
 ##### 返回参数
 
-无
+| 参数名  | 类型 | 说明 |
+|:------|------|------|
+| token | string | 用户Token |
+| refresh_token | string | 用来刷新TOken |
 
 ##### 返回结果
 ```
