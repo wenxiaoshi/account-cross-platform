@@ -65,7 +65,7 @@ A Project Of How To Use gRPC/Bazel/Djinni/Docker/MySQL/Redis.
     </tr>
     <tr>
         <td><center><img src="https://melon-personal.oss-cn-shenzhen.aliyuncs.com/login-android.png"></center></td>
-        <td><center><img src="https://melon-personal.oss-cn-shenzhen.aliyuncs.com/login-back.png"></center></td>
+        <td><center><img src="https://melon-personal.oss-cn-shenzhen.aliyuncs.com/wechat/login-back2.png"></center></td>
     </tr>
 </table>
 
