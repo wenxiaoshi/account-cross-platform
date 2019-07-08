@@ -1,9 +1,5 @@
 # 单终端登录系统
 
-
-A Project Of How To Use gRPC/Bazel/Djinni/Docker/MySQL/Redis. 
-
-
 ## 目录
 
 * [项目介绍](#项目介绍)
