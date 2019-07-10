@@ -66,12 +66,14 @@ const string MsgTip::CheckConnect_AccountTokenNotEqual = "Token校验失败";//1
 //1005zzz 刷新用户Token接口
 const int ResultCode::RefreshToken_TokenNotValid = 1005001;
 const int ResultCode::RefreshToken_RefreshTokenNotValid = 1005002;
-const int ResultCode::RefreshToken_RefreshATokenNotEqual = 1005003;
+const int ResultCode::RefreshToken_RefreshTokenCacheNotEqual = 1005003;
 const int ResultCode::RefreshToken_RefreshTokenHadExpire = 1005004;
 const int ResultCode::RefreshToken_CreateSeesionFail = 1005005;
+const int ResultCode::RefreshToken_TUidARTUidNotEqual = 1005006;
 
 const string MsgTip::RefreshToken_TokenNotValid = "Token格式错误";//1005001
 const string MsgTip::RefreshToken_RefreshTokenNotValid = "RefreshToken格式错误";//1005002
-const string MsgTip::RefreshToken_RefreshATokenNotEqual = "Token与RefreshToken不对应";//1005003
+const string MsgTip::RefreshToken_RefreshTokenCacheNotEqual = "RefreshToken与缓存RT不对应";//1005003
 const string MsgTip::RefreshToken_RefreshTokenHadExpire = "RefreshToken已经失效";//1005004
 const string MsgTip::RefreshToken_CreateSeesionFail = "账号会话信息创建失败";//1005005
+const string MsgTip::RefreshToken_TUidARTUidNotEqual = "Token与RefreshToken的UID不对应";    //1005006

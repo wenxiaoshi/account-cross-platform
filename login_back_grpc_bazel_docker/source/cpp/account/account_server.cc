@@ -151,7 +151,7 @@ public:
     ssToken << uid << "_token";
     string redisToken;
     redis.getString(ssToken.str(), redisToken);
-    return CommonUtils::isEqual(redisToken, token);
+    return redisToken == token;
   }
 
   /**
@@ -257,7 +257,7 @@ public:
 
     //查询密码是否正确
     string db_password = userAccount.getPassword();
-    if (!CommonUtils::isEqual(db_password, encrypt_password))
+    if (db_password != encrypt_password)
     {
       result.setCode(ResultCode::UserLogin_PasswordError);
       result.setMsg(MsgTip::UserLogin_PasswordError);
@@ -458,7 +458,7 @@ public:
 
     //获取redis中用户Token
     LoginRedis login_redis;
-    if (!CommonUtils::isEqual(token, login_redis.getUserToken(uid)))
+    if (token != login_redis.getUserToken(uid))
     {
       result.setCode(ResultCode::CheckConnect_AccountTokenNotEqual);
       result.setMsg(MsgTip::CheckConnect_AccountTokenNotEqual);
@@ -528,13 +528,20 @@ public:
       return result;
     }
 
+    //对比token与refreshToken中的UID是否一致
+    if(vToken[0] != vRefreshToken[0]){
+      result.setCode(ResultCode::RefreshToken_TUidARTUidNotEqual);
+      result.setMsg(MsgTip::RefreshToken_TUidARTUidNotEqual);
+      return result;
+    }
+
     //对比refreshToken是否与redis中的一致
     int uid = CommonUtils::getIntByString(vRefreshToken[0]);
     LoginRedis login_redis;
     string redis_refresh_token = login_redis.getUserRefreshToken(uid);
-    if(!CommonUtils::isEqual(refreshToken, redis_refresh_token)){
-      result.setCode(ResultCode::RefreshToken_RefreshATokenNotEqual);
-      result.setMsg(MsgTip::RefreshToken_RefreshATokenNotEqual);
+    if(refreshToken != redis_refresh_token){
+      result.setCode(ResultCode::RefreshToken_RefreshTokenCacheNotEqual);
+      result.setMsg(MsgTip::RefreshToken_RefreshTokenCacheNotEqual);
       return result;
     }
 
