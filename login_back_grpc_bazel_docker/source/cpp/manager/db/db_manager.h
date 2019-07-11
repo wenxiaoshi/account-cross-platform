@@ -2,13 +2,8 @@
 #include <string>
 
 #include "../conf/server_conf.h"
-
 #include "source/cpp/manager/db/db_base.h"
-
-// #include "source/libs/sqlite3/sqlite3.h"
 #include "source/cpp/account/model/user_account.h"
-#include "source/cpp/account/model/user_session.h"
-
 #include "source/libs/json/json.h"
 
 using namespace std;
