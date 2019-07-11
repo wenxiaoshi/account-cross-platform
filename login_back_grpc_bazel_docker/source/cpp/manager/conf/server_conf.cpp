@@ -67,6 +67,8 @@ void ServerConfig::getConf()
 
     ServerConfig::TOKEN_AES_KEY = root["TOKEN_AES_KEY"].asString();
 
+    ServerConfig::IS_CONSOLE_DEBUG_INFO = root["IS_CONSOLE_DEBUG_INFO"].asBool();
+
     ifs.close();
 }
 
@@ -123,6 +125,11 @@ string ServerConfig::getMySqlCharset()
 string ServerConfig::getTokenAesKey()
 {
     return ServerConfig::TOKEN_AES_KEY;
+}
+
+bool ServerConfig::isConsoleDebugInfo()
+{
+    return ServerConfig::IS_CONSOLE_DEBUG_INFO;
 }
 
 } // namespace manager

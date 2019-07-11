@@ -122,7 +122,7 @@ bool Database::addUserAccount(string account, string password, string pwdSalt)
 
     //执行插入数据操作
     string msg;
-    Json::Value data = db_base->insertUserAccount(account,password,msg);
+    Json::Value data = db_base->insertUserAccount(account,password,pwdSalt,msg);
     if(data["is_empty"].asBool() || CommonUtils::getIntByString(data["ID"].asString()) <= 0)
     {
         LOGE("[db_manager.addUserAccount] " + msg);

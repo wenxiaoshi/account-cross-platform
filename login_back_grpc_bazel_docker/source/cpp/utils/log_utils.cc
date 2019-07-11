@@ -9,9 +9,18 @@
 
 using namespace utils;
 
+bool LogUtil::isConsoleDebugInfo = false;
+
+void LogUtil::setConsoleDebugInfo(bool value){
+	isConsoleDebugInfo = value;
+}
+
 void LogUtil::LOGD(string msg)
 {
-	SimpleWrite("[ DEBUG ] ", msg);
+	if (isConsoleDebugInfo)
+	{
+		SimpleWrite("[ DEBUG ] ", msg);
+	}
 }
 
 void LogUtil::LOGE(string msg)
