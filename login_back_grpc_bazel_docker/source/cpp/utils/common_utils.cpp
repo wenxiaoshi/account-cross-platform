@@ -154,7 +154,7 @@ string CommonUtils::EncryptPwd(string account, string password){
 
         //对字符数组进行MD5计算
         string sha256_enc_password;
-        hash256_hex_string(sha256_enc_password,(string)c_source);
+        hash256_hex_string((string)c_source,sha256_enc_password);
         LOGD("sha256 | " + sha256_enc_password);
     	return sha256_enc_password;
     } catch (exception& e) {  
