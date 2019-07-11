@@ -1,9 +1,5 @@
 # 单终端登录系统
 
-
-A Project Of How To Use gRPC/Bazel/Djinni/Docker/MySQL/Redis. 
-
-
 ## 目录
 
 * [项目介绍](#项目介绍)
@@ -65,7 +61,7 @@ A Project Of How To Use gRPC/Bazel/Djinni/Docker/MySQL/Redis.
     </tr>
     <tr>
         <td><center><img src="https://melon-personal.oss-cn-shenzhen.aliyuncs.com/login-android.png"></center></td>
-        <td><center><img src="https://melon-personal.oss-cn-shenzhen.aliyuncs.com/login-back.png"></center></td>
+        <td><center><img src="https://melon-personal.oss-cn-shenzhen.aliyuncs.com/wechat/login-back6.png"></center></td>
     </tr>
 </table>
 
@@ -208,7 +204,10 @@ refreshToken
 
 ##### 返回参数
 
-无
+| 参数名  | 类型 | 说明 |
+|:------|------|------|
+| token | string | 用户Token |
+| refresh_token | string | 用来刷新TOken |
 
 ##### 返回结果
 ```
