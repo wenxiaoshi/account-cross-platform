@@ -302,6 +302,7 @@ public:
   {
     CodeReply * result = new CodeReply();
 
+    LOGD("[account_server.handleUserSign] user sign in:" + account);
     LoginDatabase login_db;
     LoginRedis login_redis;
 
