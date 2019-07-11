@@ -279,6 +279,7 @@ bool DBBase::isExist(string str_sql, vector<string> columnsV)
 
 Json::Value DBBase::selectUserAccountByAccount(string account, string &Msg)
 {
+       LOGD("[db_base.selectUserAccountByAccount] handle account db query:" + account);
 
        //返参初始化
        Json::Value root;
@@ -300,6 +301,8 @@ Json::Value DBBase::selectUserAccountByAccount(string account, string &Msg)
        //执行存储过程执行语句
        int ret = mysql_real_query(&mysql, query.c_str(), (unsigned int)strlen(query.c_str()));
        mysql_query(&mysql, "SELECT @out_id,@out_account,@out_password,@out_pwd_salt");
+
+       LOGD("[db_base.selectUserAccountByAccount] handle account db mysql_query finish");
 
        //判断查询是否成功
        if (ret)
