@@ -118,7 +118,7 @@ cc_library(
     name = "cipher",
     srcs = ["libs/cipher/aes_encryptor.cpp","libs/cipher/aes.cpp","libs/cipher/md5.cc","libs/cipher/sha256.cc"],
     hdrs = ["libs/cipher/aes_encryptor.h","libs/cipher/aes.h","libs/cipher/md5.h","libs/cipher/sha256.h"],
-    deps = [":log_utils",":openssl"],
+    deps = [":log_utils"],
 )
 
 cc_library(
@@ -140,8 +140,8 @@ cc_import(
     static_library = "//source/libs/redis:libhiredis.a"
 )
 
-cc_import(
-    name = "openssl",
-    hdrs = ["//source/libs/openssl:aes.h","//source/libs/openssl:opensslconf.h"],
-    static_library = "//source/libs/openssl:libcrypto.a"
-)
+# cc_import(
+#     name = "openssl",
+#     hdrs = ["//source/libs/openssl:aes.h","//source/libs/openssl:opensslconf.h"],
+#     static_library = "//source/libs/openssl:libcrypto.a"
+# )
