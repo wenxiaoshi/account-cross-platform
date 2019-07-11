@@ -140,3 +140,8 @@ cc_import(
     static_library = "//source/libs/redis:libhiredis.a"
 )
 
+# cc_import(
+#     name = "openssl",
+#     hdrs = ["//source/libs/openssl:aes.h","//source/libs/openssl:opensslconf.h"],
+#     static_library = "//source/libs/openssl:libcrypto.a"
+# )
