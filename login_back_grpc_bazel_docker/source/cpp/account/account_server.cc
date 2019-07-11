@@ -229,7 +229,7 @@ public:
   **/
   CodeReply * handleUserLogin(string account, string password)
   {
-    CodeReply * result;
+    CodeReply * result = new CodeReply();
 
     LoginDatabase login_db;
     LoginRedis login_redis;
@@ -300,7 +300,7 @@ public:
   **/
   CodeReply * handleUserSign(string account, string password)
   {
-    CodeReply * result;
+    CodeReply * result = new CodeReply();
 
     LoginDatabase login_db;
     LoginRedis login_redis;
@@ -372,7 +372,7 @@ public:
   **/
   CodeReply * handleUserLogout(string token)
   {
-    CodeReply * result;
+    CodeReply * result = new CodeReply();
 
     LoginRedis login_redis;
 
@@ -426,7 +426,7 @@ public:
   **/
   CodeReply * handleUserCheckConnect(string token)
   {
-    CodeReply * result;
+    CodeReply * result = new CodeReply();
 
     //解密Token
     string decodeToken = CommonUtils::DecryptToken(token);
@@ -488,7 +488,7 @@ public:
   **/
   CodeReply * handleRefreshToken(string token, string refreshToken)
   {
-    CodeReply * result;
+    CodeReply * result = new CodeReply();
 
     //解密Token
     string decodeToken = CommonUtils::DecryptToken(token);
@@ -693,6 +693,7 @@ class AccountServiceImpl final : public Account::Service
       reply->set_code(result->code());
       reply->set_msg(result->msg());
       reply->set_data(result->data());
+      delete result;
     }
 
     //校验返回数据的合法性
@@ -726,10 +727,10 @@ class AccountServiceImpl final : public Account::Service
     //执行请求
     LoginCore loginCore;
     CodeReply * result = loginCore.handleUserLogout(token);
-
     reply->set_code(result->code());
     reply->set_msg(result->msg());
     reply->set_data(result->data());
+    delete result;
 
     //校验返回数据的合法性
     string msg;
@@ -778,6 +779,7 @@ class AccountServiceImpl final : public Account::Service
       reply->set_code(result->code());
       reply->set_msg(result->msg());
       reply->set_data(result->data());
+      delete result;
     }
 
     //校验返回数据的合法性
@@ -836,6 +838,7 @@ class AccountServiceImpl final : public Account::Service
       reply->set_code(result->code());
       reply->set_msg(result->msg());
       reply->set_data(result->data());
+      delete result;
     }
 
     //校验返回数据的合法性
