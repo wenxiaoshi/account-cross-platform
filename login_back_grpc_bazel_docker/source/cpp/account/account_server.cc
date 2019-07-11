@@ -312,6 +312,7 @@ public:
       result->set_msg(MsgTip::UserSign_AccountHadExist);
       return result;
     }
+    LOGD("[account_server.handleUserSign] useraccount not exist");
 
     //生成密码初始化的随机盐
     string pwdSalt = CommonUtils::GenPwdSalt();
@@ -321,6 +322,7 @@ public:
       result->set_msg(MsgTip::UserSign_CreatePwdSaltFail);
       return result;
     }
+    LOGD("[account_server.handleUserSign] create salt success");
 
     //获得加密后password
     string encrypt_password = CommonUtils::EncryptPwd(account, password, pwdSalt);
@@ -330,6 +332,7 @@ public:
       result->set_msg(MsgTip::UserSign_PasswordInitFail);
       return result;
     }
+    LOGD("[account_server.handleUserSign] get enc password success");
 
     //新增用户，插入账号信息到数据库
     if (!login_db.signAccount(account, encrypt_password, pwdSalt))
@@ -338,6 +341,7 @@ public:
       result->set_msg(MsgTip::UserSign_CreateAccountFail);
       return result;
     }
+    LOGD("[account_server.handleUserSign] insert account into db success");
 
     //获得用户信息
     UserAccount userAccount = login_db.getUserAccount(account);
@@ -347,6 +351,7 @@ public:
       result->set_msg(MsgTip::UserSign_GetAccountInfoFail);
       return result;
     }
+    LOGD("[account_server.handleUserSign] get account info success");
 
     //获得用户UID
     int uid = userAccount.getUid();
@@ -362,6 +367,7 @@ public:
       result->set_msg(MsgTip::UserSign_CreateSeesionFail);
       return result;
     }
+    LOGD("[account_server.handleUserSign] update token into redis success");
 
     //返回Token
     result->set_code(ResultCode::SUCCESS);
@@ -908,9 +914,15 @@ void RunServer(manager::ServerConfig conf)
 
 int main(int argc, char **argv)
 {
+  
   manager::ServerConfig conf;
+  //设置是否打印DEBUG信息
+  LogUtil::setConsoleDebugInfo(conf.isConsoleDebugInfo());
+  //根据配置文件初始化Redis
   Redis::getRedis()->connect(conf);
+  //根据配置文件初始化DB
   Database::getDatabase()->connect(conf);
+  //设置参与Token生成的AES算法的KEY
   CommonUtils::setAesKey(conf.getTokenAesKey());
 
   // debug

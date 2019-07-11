@@ -53,6 +53,16 @@ namespace utils{
         static void LOGI(string msg);
         static void LOGW(string msg);
         static void LOGM(LogMBean bean);
+
+        /*
+        主要功能：
+        设置控制DEBUG信息标志位
+
+        入口参数
+        value：     true表示记录和打印DEBUG信息，false则不打印不记录
+        */
+        static void setConsoleDebugInfo(bool value);
+        
     private:
 
 		/*
@@ -64,6 +74,9 @@ namespace utils{
         msg：     	写日志的信息
         */
         static void SimpleWrite(string type, string msg);
+
+        //是否将DEBUG信息打印到控制台和记录到日志中
+        static bool isConsoleDebugInfo;
     };
 
 }

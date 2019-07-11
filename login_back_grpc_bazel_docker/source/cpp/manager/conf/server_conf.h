@@ -40,6 +40,9 @@ namespace manager{
             //获取Token进行对称加密的AES密钥
             string getTokenAesKey();
 
+            //获取是否打印和记录DEBUG信息
+            bool isConsoleDebugInfo();
+
         private:
 
             string SERVER_IP_POST;
@@ -58,6 +61,8 @@ namespace manager{
             string MYSQL_CHARSET;
 
             string TOKEN_AES_KEY;
+
+            bool IS_CONSOLE_DEBUG_INFO;
 
             void getConf();
     };
