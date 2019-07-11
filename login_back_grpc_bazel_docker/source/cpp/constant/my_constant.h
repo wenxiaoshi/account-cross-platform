@@ -25,6 +25,7 @@ namespace constants{
         const static int UserSign_CreateAccountFail;
         const static int UserSign_GetAccountInfoFail;
         const static int UserSign_CreateSeesionFail;
+        const static int UserSign_CreatePwdSaltFail;
 
         const static int UserLogout_TokenNotValid;
         const static int UserLogout_UpdateSessionFail;
@@ -69,6 +70,7 @@ namespace constants{
         const static string UserSign_CreateAccountFail;             //1002003
         const static string UserSign_GetAccountInfoFail;            //1002004
         const static string UserSign_CreateSeesionFail;             //1002005
+        const static string UserSign_CreatePwdSaltFail;             //1002006
 
         const static string UserLogout_TokenNotValid;               //1003001
         const static string UserLogout_UpdateSessionFail;           //1003002

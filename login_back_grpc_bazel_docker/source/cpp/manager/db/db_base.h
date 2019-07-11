@@ -57,16 +57,18 @@ public:
 
        存储过程说明：
        create procedure queryaccount(
-              in in_account        varchar(50),        #用户账号
+              in in_account        varchar(50),         #用户账号
 
-              out out_id           int,                #用户UID
-              out out_account      varchar(50),        #用户账号
-              out out_password     varchar(50)         #用户密码 
+              out out_id           int,                 #用户UID
+              out out_account      varchar(50),         #用户账号
+              out out_password     varchar(128),        #用户密码
+              out out_pwd_salt     varchar(32)          #参与密码初始化的盐值
        )
        label_a:begin
               declare v_id         int;
               declare v_account    varchar(50);
-              declare v_password   varchar(50);
+              declare v_password   varchar(128);
+              declare v_pwd_salt   varchar(32);
 
               #参数判断
               if (in_account is NULL) then
@@ -74,8 +76,8 @@ public:
                      leave label_a;
               end if;
               
-              SELECT ID,ACCOUNT,PASSWORD into v_id,v_account,v_password from user_account where ACCOUNT = in_account limit 1;
-       
+              SELECT ID,ACCOUNT,PASSWORD,PWD_SALT into v_id,v_account,v_password,v_pwd_salt from user_account where ACCOUNT = in_account limit 1;
+
               if v_account is NULL then
                      set out_id=-1;#don't found
                      leave label_a;
@@ -84,7 +86,8 @@ public:
               set out_id=v_id;
               set out_account=v_account;
               set out_password=v_password;
-       end;   
+              set out_pwd_salt=v_pwd_salt;
+       end;
        */
        Json::Value selectUserAccountByAccount(string account, string &Msg);
 
@@ -103,9 +106,10 @@ public:
 
        存储过程说明：
        create or replace procedure insertaccount(
-              in in_account        varchar(50),        #用户账号
-              in in_password       varchar(50),        #用户账号
-              out out_id           int                 #用户UID
+              in in_account        varchar(50),         #用户账号
+              in in_password       varchar(128),        #用户密码
+              in in_pwd_salt       varchar(32),         #参与密码初始化的随机盐
+              out out_id           int                  #用户UID
        )
        label_a:begin
               declare v_id         int;
@@ -122,7 +126,12 @@ public:
                      leave label_a;
               end if;
               
-              INSERT INTO user_account(ACCOUNT,PASSWORD) VALUES(in_account,in_password);
+              if (in_pwd_salt is NULL) then
+                     set out_id=-3;#pwd_salt error
+                     leave label_a;
+              end if;
+
+              INSERT INTO user_account(ACCOUNT,PASSWORD,PWD_SALT) VALUES(in_account,in_password,in_pwd_salt);
               SELECT ID,ACCOUNT into v_id,v_account from user_account where ACCOUNT = in_account limit 1;
 
               if v_account is NULL then
@@ -131,9 +140,9 @@ public:
               end if;    
               
               set out_id=v_id;
-       end;  
+       end;
        */
-       Json::Value insertUserAccount(string account, string password, string &Msg);
+       Json::Value insertUserAccount(string account, string password, string pwdSalt, string &Msg);
 
        /*
        主要功能：

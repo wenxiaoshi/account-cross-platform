@@ -38,12 +38,14 @@ const int ResultCode::UserSign_PasswordInitFail = 1002002;
 const int ResultCode::UserSign_CreateAccountFail = 1002003;
 const int ResultCode::UserSign_GetAccountInfoFail = 1002004;
 const int ResultCode::UserSign_CreateSeesionFail = 1002005;
+const int ResultCode::UserSign_CreatePwdSaltFail = 1002006;
 
 const string MsgTip::UserSign_AccountHadExist = "账号已经存在";//1002001
 const string MsgTip::UserSign_PasswordInitFail = "密码初始化失败";//1002002
 const string MsgTip::UserSign_CreateAccountFail = "账号创建失败";//1002003
 const string MsgTip::UserSign_GetAccountInfoFail = "账号信息获取失败";//1002004
 const string MsgTip::UserSign_CreateSeesionFail = "账号会话信息创建失败";//1002005
+const string MsgTip::UserSign_CreatePwdSaltFail = "生成密码随机盐失败";//1002006
 
 //1003zzz 用户退出登录接口
 const int ResultCode::UserLogout_TokenNotValid = 1003001;

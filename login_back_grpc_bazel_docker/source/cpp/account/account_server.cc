@@ -80,13 +80,13 @@ public:
   入口参数
   account： 	      用户账号
   encrypt_pwd：     用户密码
-
+  pwdSalt：         参与密码初始化的随机盐
   出口参数：
-  bool ：         true表示注册成功；false表示注册失败
+  bool ：           true表示注册成功；false表示注册失败
   **/
-  bool signAccount(string account, string encrypt_pwd)
+  bool signAccount(string account, string encrypt_pwd, string pwdSalt)
   {
-    return Database::getDatabase()->addUserAccount(account, encrypt_pwd);
+    return Database::getDatabase()->addUserAccount(account, encrypt_pwd, pwdSalt);
   }
 
   /**
@@ -245,7 +245,7 @@ public:
     }
 
     //获得加密后password
-    string encrypt_password = CommonUtils::EncryptPwd(account, password);
+    string encrypt_password = CommonUtils::EncryptPwd(account, password, userAccount.getPwdSalt());
     if (encrypt_password.empty())
     {
       result->set_code(ResultCode::UserLogin_PasswordInitFail);
@@ -313,8 +313,17 @@ public:
       return result;
     }
 
+    //生成密码初始化的随机盐
+    string pwdSalt = CommonUtils::GenPwdSalt();
+    if (pwdSalt.empty())
+    {
+      result->set_code(ResultCode::UserSign_CreatePwdSaltFail);
+      result->set_msg(MsgTip::UserSign_CreatePwdSaltFail);
+      return result;
+    }
+
     //获得加密后password
-    string encrypt_password = CommonUtils::EncryptPwd(account, password);
+    string encrypt_password = CommonUtils::EncryptPwd(account, password, pwdSalt);
     if (encrypt_password.empty())
     {
       result->set_code(ResultCode::UserSign_PasswordInitFail);
@@ -323,7 +332,7 @@ public:
     }
 
     //新增用户，插入账号信息到数据库
-    if (!login_db.signAccount(account, encrypt_password))
+    if (!login_db.signAccount(account, encrypt_password, pwdSalt))
     {
       result->set_code(ResultCode::UserSign_CreateAccountFail);
       result->set_msg(MsgTip::UserSign_CreateAccountFail);
@@ -902,7 +911,7 @@ int main(int argc, char **argv)
   manager::ServerConfig conf;
   Redis::getRedis()->connect(conf);
   Database::getDatabase()->connect(conf);
-  CommonUtils::PASSWORD_SALT = conf.getPasswordSalt();
+  CommonUtils::setAesKey(conf.getTokenAesKey());
 
   // debug
   // Database::getDatabase()->queryUserAccountByAccount("13533332222");

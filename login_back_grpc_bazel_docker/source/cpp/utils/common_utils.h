@@ -73,7 +73,7 @@ namespace utils{
        	出口参数：
        	string： 	    进行数字签名后的用户密码
         */
-        static string EncryptPwd(string account, string password);
+        static string EncryptPwd(string account, string password, string pwdSalt);
 
         /*
         主要功能：
@@ -109,28 +109,41 @@ namespace utils{
         */
         static void replaceAll(std::string& str,const std::string old,const std::string reg);
 
-        //参与密码初始化的盐值
-        static string PASSWORD_SALT;
+        /*
+        主要功能：
+        获取密码随机盐
+
+        出口参数：
+       	string： 	    随机盐字符串
+        */
+        static string GenPwdSalt();
+
+        /*
+        主要功能：
+        设置参与生成Token的AES的密钥
+        */
+        static void setAesKey(string key);
 
     private:
 
         /*
         主要功能：
-        生成随机字符串
+        产生随机字符串
+        包含数字、大小写字母
+
+        入口参数
+        count：         随机字符串的长度
 
         出口参数：
-       	string： 	    随机字符串
+       	string： 	    生成的随机字符串
         */
-        static string GenRandomStr();
+        static string GenRandomStr(uint count);
 
         //Token过期时间
         const static long TOKEN_TIMEOUT;
 
         //RefreshToken过期时间
         const static long REFRESH_TOKEN_TIMEOUT;
-
-        //AES密钥字符串
-        static unsigned char* AES_KEY;
 
         //AES加密工具类
         static AesEncryptor* aesEncryptor;
