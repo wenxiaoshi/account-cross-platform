@@ -109,19 +109,6 @@ namespace utils{
         */
         static void replaceAll(std::string& str,const std::string old,const std::string reg);
 
-        /*
-        主要功能：
-        比较两个字符串是否相等
-
-        入口参数
-        origin：        进行比较的字符串A
-        target：        进行比较的字符串B
-
-        出口参数：
-       	bool： 			true表示相等；false表示不相等
-        */
-        static bool isEqual(string origin,string target);
-
         //参与密码初始化的盐值
         static string PASSWORD_SALT;
 

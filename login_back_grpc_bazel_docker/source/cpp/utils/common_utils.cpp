@@ -153,33 +153,15 @@ string CommonUtils::EncryptPwd(string account, string password){
         snprintf(c_source, length+1, "%s%s%s", c_account, c_salt ,c_password);
 
         //对字符数组进行MD5计算
-        MD5 md5(c_source, length);
-        string result = md5.toString();
-        LOGD("md5 | " + result);
-    	return result;
+        string sha256_enc_password;
+        hash256_hex_string(sha256_enc_password,(string)c_source);
+        LOGD("sha256 | " + sha256_enc_password);
+    	return sha256_enc_password;
     } catch (exception& e) {  
         LOGW("EncryptPwd is fail !");
         return "";
     }
 }
-
- /**
-  * 判断字符串是否相等
-  **/
-  bool CommonUtils::isEqual(string origin,string target) {
-    const char* oChar = origin.data();
-    const char* tChar = target.data();
-    if (origin.size() != target.size()) {
-      return false;
-    }
-    for (unsigned int i = 0; i < origin.size(); i++) {
-      if (oChar[i] != tChar[i]) {
-        return false;
-      }
-    }
-    return true;
-  }
-
 
   /**
   * 将string转换成int
