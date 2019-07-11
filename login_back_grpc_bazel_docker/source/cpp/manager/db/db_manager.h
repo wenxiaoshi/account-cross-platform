@@ -43,11 +43,12 @@ namespace manager{
 		入口参数
        	account： 		用户账号(手机号)
        	password： 		密码(加密后)
- 
+  		pwdSalt：    	参与密码初始化的随机盐
+
        	出口参数：
        	bool： 			true表示成功；false表示失败
 		*/
-		bool addUserAccount(string account, string password);
+		bool addUserAccount(string account, string password, string pwdSalt);
 
 		/*
 		主要功能：

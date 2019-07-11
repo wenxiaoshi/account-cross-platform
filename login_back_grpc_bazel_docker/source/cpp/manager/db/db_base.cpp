@@ -292,14 +292,14 @@ Json::Value DBBase::selectUserAccountByAccount(string account, string &Msg)
        }
 
        //构建存储过程执行语句
-       string query = "call queryaccount ('" + account + "',@out_id,@out_account,@out_password)";
+       string query = "call queryaccount ('" + account + "',@out_id,@out_account,@out_password,@out_pwd_salt)";
 
        //加读锁
        rwlock->readLock();
 
        //执行存储过程执行语句
        int ret = mysql_real_query(&mysql, query.c_str(), (unsigned int)strlen(query.c_str()));
-       mysql_query(&mysql, "SELECT @out_id,@out_account,@out_password ");
+       mysql_query(&mysql, "SELECT @out_id,@out_account,@out_password,@out_pwd_salt");
 
        //判断查询是否成功
        if (ret)
@@ -329,6 +329,7 @@ Json::Value DBBase::selectUserAccountByAccount(string account, string &Msg)
               root["ID"] = m_row[0];
               root["ACCOUNT"] = m_row[1];
               root["PASSWORD"] = m_row[2];
+              root["PWD_SALT"] = m_row[3];
               root["is_empty"] = false;
        }
 
@@ -340,7 +341,7 @@ Json::Value DBBase::selectUserAccountByAccount(string account, string &Msg)
        return root;
 }
 
-Json::Value DBBase::insertUserAccount(string account, string password, string &Msg)
+Json::Value DBBase::insertUserAccount(string account, string password, string pwdSalt, string &Msg)
 {
 
        //返参初始化
@@ -360,7 +361,7 @@ Json::Value DBBase::insertUserAccount(string account, string password, string &M
        }
 
        //构建存储过程执行语句
-       string query = "call insertaccount ('" + account + "','" + password + "',@out_id)";
+       string query = "call insertaccount ('" + account + "','" + password + "','" + pwdSalt + "',@out_id)";
        LOGD("[db_base.insertUserAccount] " + query);
 
        //加写锁

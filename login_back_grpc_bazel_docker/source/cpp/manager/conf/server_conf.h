@@ -37,8 +37,8 @@ namespace manager{
             //获取登入MySQL的字符集
             string getMySqlCharset();
 
-            //获取参与密码初始化的盐值
-            string getPasswordSalt();
+            //获取Token进行对称加密的AES密钥
+            string getTokenAesKey();
 
         private:
 
@@ -57,7 +57,7 @@ namespace manager{
             string MYSQL_DB_NAME; 
             string MYSQL_CHARSET;
 
-            string PASSWORD_SALT;
+            string TOKEN_AES_KEY;
 
             void getConf();
     };

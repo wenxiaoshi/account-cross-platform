@@ -65,7 +65,7 @@ void ServerConfig::getConf()
     ServerConfig::MYSQL_DB_NAME = root["MYSQL_DB_NAME"].asString();
     ServerConfig::MYSQL_CHARSET = root["MYSQL_CHARSET"].asString();
 
-    ServerConfig::PASSWORD_SALT = root["PASSWORD_SALT"].asString();
+    ServerConfig::TOKEN_AES_KEY = root["TOKEN_AES_KEY"].asString();
 
     ifs.close();
 }
@@ -120,9 +120,9 @@ string ServerConfig::getMySqlCharset()
     return ServerConfig::MYSQL_CHARSET;
 }
 
-string ServerConfig::getPasswordSalt()
+string ServerConfig::getTokenAesKey()
 {
-    return ServerConfig::PASSWORD_SALT;
+    return ServerConfig::TOKEN_AES_KEY;
 }
 
 } // namespace manager
