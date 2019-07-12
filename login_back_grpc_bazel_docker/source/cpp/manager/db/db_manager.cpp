@@ -173,6 +173,10 @@ UserAccount Database::queryUserAccountByAccount(string o_account)
     string pwdSalt;
     string msg;
     Json::Value data = db_base->selectUserAccountByAccount(o_account,msg);
+
+    Json::FastWriter fw;
+    LOGD("[db_manager.queryUserAccountByAccount] query account info :" + fw.write(data));
+
     if(data["is_empty"].asBool()){
         LOGE("[db_manager.queryUserAccountByAccount] data is empty");
         return UserAccount(-1, "", "", "");
