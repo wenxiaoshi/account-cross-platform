@@ -3,6 +3,9 @@
 //
 
 #include <string>
+#include <iostream>
+#include <sstream>
+
 #include "../struct/hash_map.h"
 
 #ifndef ANDROID_SHARE_PREFERENCES_H
@@ -48,6 +51,19 @@ namespace storage{
          string：        数据值
          */
         static std::string get(std::string key);
+
+        /*
+         主要功能
+         获取键值对
+
+         入口参数
+         key：           数据键
+
+         出口参数
+         string：        数据值
+         */
+        static int32_t getInt32(std::string key);
+
         static bool execute();
     private:
         const static char* file_path;

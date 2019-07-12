@@ -87,7 +87,7 @@ namespace demo {
         refreshToken： 	    用户refreshToken
         isConnect： 	        用户是否在线
         */
-        void updateUserInfo(string account,string token,string refreshToken,string isConnect);
+        void updateUserInfo(string account,string token,string refreshToken,int32_t tokenExpirationTime, string isConnect);
     };
 
 

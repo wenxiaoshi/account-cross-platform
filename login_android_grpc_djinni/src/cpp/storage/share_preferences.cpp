@@ -82,6 +82,18 @@ string SharePreferences::get(string key) {
 }
 
 /**
+ * 读取键值对
+ */
+int32_t SharePreferences::getInt32(string key) {
+    string value = get(key);
+    stringstream ss;
+    ss << value;
+    int32_t result;
+    ss >> result;
+    return result;
+}
+
+/**
  * 从文件读取键值对信息到内存中
  */
 bool SharePreferences::readFileToSharePref() {
