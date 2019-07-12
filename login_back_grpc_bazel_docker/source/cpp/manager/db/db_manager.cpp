@@ -59,7 +59,7 @@ void Database::connect(ServerConfig _conf)
             _conf.getMySqlCharset(),
             msg) == 0)
     {
-        LOGD("db connect success !");
+        LOGD("[db_manager.connect] db connect success !");
         //打开数据库成功，检查表是否存在
         Database::checkAndCreateTable(Database::TABLE_USER_ACCOUNT);
     }
@@ -173,7 +173,7 @@ UserAccount Database::queryUserAccountByAccount(string o_account)
     string pwdSalt;
     string msg;
     Json::Value data = db_base->selectUserAccountByAccount(o_account,msg);
-    
+
     Json::FastWriter fw;
     LOGD("[db_manager.queryUserAccountByAccount] query account info :" + fw.write(data));
 

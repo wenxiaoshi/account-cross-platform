@@ -194,7 +194,7 @@ string CommonUtils::EncryptPwd(string account, string password, string pwdSalt)
     }
     try
     {
-        LOGD("encryt ac`" + account + " psd`" + password);
+        LOGD("[common_utils.EncryptPwd] encryt ac`" + account + " psd`" + password);
         //用sha256对account进行消息摘要，目的是给password加盐
         string sha256_account;
         hash256_hex_string(account, sha256_account);
@@ -214,12 +214,12 @@ string CommonUtils::EncryptPwd(string account, string password, string pwdSalt)
         //对字符数组进行MD5计算
         string sha256_enc_password;
         hash256_hex_string((string)c_source, sha256_enc_password);
-        LOGD("sha256 | " + sha256_enc_password);
+        LOGD("[common_utils.EncryptPwd] sha256 | " + sha256_enc_password);
         return sha256_enc_password;
     }
     catch (exception &e)
     {
-        LOGW("EncryptPwd is fail !");
+        LOGW("[common_utils.EncryptPwd] EncryptPwd is fail !");
         return "";
     }
 }

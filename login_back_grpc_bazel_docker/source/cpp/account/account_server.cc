@@ -912,7 +912,7 @@ void RunServer(manager::ServerConfig conf)
 
   ServerBuilder builder;
 
-  LOGD("begin load ssl key info");
+  LOGD("[account_server.RunServer] begin load ssl key info");
   std::ifstream skey(conf.getSSLPathKey());
   std::string strServerKey((std::istreambuf_iterator<char>(skey)), std::istreambuf_iterator<char>());
   //std::cout << "key: " <<strServerKey << std::endl;
@@ -926,7 +926,7 @@ void RunServer(manager::ServerConfig conf)
   ssl_opts.pem_root_certs = "";
   ssl_opts.pem_key_cert_pairs.push_back(pkcp);
   std::shared_ptr<grpc::ServerCredentials> creds = grpc::SslServerCredentials(ssl_opts);
-  LOGD("finish load ssl key info");
+  LOGD("[account_server.RunServer] finish load ssl key info");
   // Listen on the given address without any authentication mechanism.
   builder.AddListeningPort(server_address, creds);
   // Register "service" as the instance through which we'll communicate with
@@ -934,7 +934,7 @@ void RunServer(manager::ServerConfig conf)
   builder.RegisterService(&service);
   // Finally assemble the server.
   std::unique_ptr<Server> server(builder.BuildAndStart());
-  LOGD("Server listening on " + server_address);
+  LOGD("[account_server.RunServer] Server listening on " + server_address);
 
   // Wait for the server to shutdown. Note that some other thread must be
   // responsible for shutting down the server for this call to ever return.
