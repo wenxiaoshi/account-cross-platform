@@ -67,7 +67,7 @@
 
 ### 流程图
 
-![](http://melon-personal.oss-cn-shenzhen.aliyuncs.com/wechat/pic_project_flow2.png)
+![](https://melon-personal.oss-cn-shenzhen.aliyuncs.com/wechat/pic_project_flow2.png)
 
 ## 项目实现
 
