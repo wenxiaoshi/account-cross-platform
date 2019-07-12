@@ -97,7 +97,7 @@ requestUserLogin
 | 参数名  | 类型 | 说明 |
 |:------|------|------|
 | token | string | 用户Token |
-| refresh_token | string | 用来刷新TOken |
+| refresh_token | string | 用来刷新Token |
 
 ##### 返回结果
 ```
@@ -128,7 +128,7 @@ requestUserSign
 | 参数名  | 类型 | 说明 |
 |:------|------|------|
 | token | string | 用户Token |
-| refresh_token | string | 用来刷新TOken |
+| refresh_token | string | 用来刷新Token |
 
 ##### 返回结果
 ```
@@ -200,14 +200,14 @@ refreshToken
 | 参数名  | 必选 | 类型 | 说明 |
 |:------|------|------|------|
 | token | true | string | 用户Token |
-| refresh_token | true | string | 用来刷新TOken |
+| refresh_token | true | string | 用来刷新Token |
 
 ##### 返回参数
 
 | 参数名  | 类型 | 说明 |
 |:------|------|------|
 | token | string | 用户Token |
-| refresh_token | string | 用来刷新TOken |
+| refresh_token | string | 用来刷新Token |
 
 ##### 返回结果
 ```
@@ -278,14 +278,14 @@ refreshToken
 
 #### 密码初始化
 
-<img src="http://melon-personal.oss-cn-shenzhen.aliyuncs.com/login_pwd2.png" width = 609 height = 410 />
+<img src="http://melon-personal.oss-cn-shenzhen.aliyuncs.com/login_pwd3.png" width = 609 height = 410 />
 
 ##### 用户注册流程，后台接收到用户的账号和密码
 
-1. 通过SHA256消息摘要算法对账号进行计算，获得摘要信息
-2. 取出从配置文件中获取的盐值
-3. 将1中获得的摘要信息作为盐，与系统盐值、密码拼接，获得加密前信息
-4. 将3中获得的信息，进行MD5消息摘要计算，获得加密后的128位，用16进制表示的密码字符串
+1. 生成16位由数字、大小写字母组成的随机盐
+2. 通过SHA256消息摘要算法对账号进行计算，获得摘要信息
+3. 将2中获得的摘要信息作为盐，与随机盐、密码拼接，获得加密前信息
+4. 将3中获得的信息，进行SHA256消息摘要计算，获得加密后的64位，用16进制表示的密码字符串
 
 ##### 用户登录流程，后台接收到用户的账号和密码
 
