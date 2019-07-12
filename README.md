@@ -278,7 +278,7 @@ refreshToken
 
 #### 密码初始化
 
-<img src="https://melon-personal.oss-cn-shenzhen.aliyuncs.com/wechat/login_pwd3.png" width = 609 height = 410 />
+<img src="http://melon-personal.oss-cn-shenzhen.aliyuncs.com/wechat/login_pwd3.png" width = 609 height = 410 />
 
 ##### 用户注册流程，后台接收到用户的账号和密码
 
@@ -294,7 +294,7 @@ refreshToken
 
 #### Token生成规则
 
-<img src="https://melon-personal.oss-cn-shenzhen.aliyuncs.com/login_token.png" width = 747 height = 205 />
+<img src="http://melon-personal.oss-cn-shenzhen.aliyuncs.com/login_token.png" width = 747 height = 205 />
 
 ##### 用户登录/注册流程，生成用户Token并返回
 
