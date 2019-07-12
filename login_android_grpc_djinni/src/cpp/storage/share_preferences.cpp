@@ -35,20 +35,13 @@ bool SharePreferences::save(string key, string value) {
 
 /**
  * 保存键值对
- * 并执行文件更新
  */
-bool SharePreferences::saveNow(string key, string value) {
-    if (shareMap == NULL){
-        readFileToSharePref();
-        if (shareMap == NULL){
-            shareMap = new HashMap(10);
-        }
-    }
-    bool result = shareMap->insert(key,value);
-    if (!execute()){
-        result = false;
-    }
-    return result;
+bool SharePreferences::saveInt32(string key, int32_t value) {
+    stringstream ss;
+    ss << value;
+    string str;
+    ss >> str;
+    return save(key,str);
 }
 
 /**
@@ -86,6 +79,9 @@ string SharePreferences::get(string key) {
  */
 int32_t SharePreferences::getInt32(string key) {
     string value = get(key);
+    if(value.empty()){
+        return -1;
+    }
     stringstream ss;
     ss << value;
     int32_t result;
