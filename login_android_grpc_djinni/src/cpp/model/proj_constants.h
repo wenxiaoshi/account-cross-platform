@@ -22,6 +22,7 @@ namespace project_constants{
         const static string REFRESH_TOKEN;
         const static string IS_CONNECT;
         const static string USER_ACCOUNT;
+        const static string TOKEN_EXPIRATION_TIME;
     };
 
     /**

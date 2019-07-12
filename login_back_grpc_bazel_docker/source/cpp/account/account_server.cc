@@ -292,7 +292,7 @@ public:
     Json::Value root;
     root["token"] = token;
     root["refresh_token"] = refreshToken;
-    root["token_expiratoin_time"] = tokenEndTime;
+    root["token_expiration_time"] = tokenEndTime;
     Json::FastWriter fw;
     result->set_data(fw.write(root));
     return result;
@@ -390,7 +390,7 @@ public:
     Json::Value root;
     root["token"] = token;
     root["refresh_token"] = refreshToken;
-    root["token_expiratoin_time"] = tokenEndTime;
+    root["token_expiration_time"] = tokenEndTime;
     Json::FastWriter fw;
     result->set_data(fw.write(root));
     return result;
@@ -627,7 +627,7 @@ public:
     Json::Value root;
     root["token"] = new_token;
     root["refresh_token"] = new_refreshToken;
-    root["token_expiratoin_time"] = tokenEndTime;
+    root["token_expiration_time"] = tokenEndTime;
     Json::FastWriter fw;
     result->set_data(fw.write(root));
     return result;

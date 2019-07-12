@@ -1,7 +1,9 @@
 #include <cstdint>
 #include <iostream>
+#include <sstream>
 #include <ctime>
 #include <vector>
+#include <exception>
 
 # define APP_PLATFORM ANDROID
 
@@ -17,10 +19,6 @@
 #include "storage/share_preferences.h"
 #include "json.hpp"
 #include "./utils/log_utils.h"
-
-
-#include <iostream>
-#include <exception>
 
 #define LOGD(msg)  utils::LogUtil::LOGD(msg);
 #define LOGE(msg)  utils::LogUtil::LOGE(msg);
@@ -74,7 +72,8 @@ namespace demo {
             auto j = json::parse(result.getData());
             string token = j[Constants::TOKEN];
             string refresh_token = j[Constants::REFRESH_TOKEN];
-            LoginCoreImpl::updateUserInfo(account,token,refresh_token,"1");
+            int32_t token_expiration_time = j[Constants::TOKEN_EXPIRATION_TIME];
+            LoginCoreImpl::updateUserInfo(account,token,refresh_token,token_expiration_time,"1");
             LOGD("login success");
         }
 
@@ -114,7 +113,8 @@ namespace demo {
             auto j = json::parse(result.getData());
             string token = j[Constants::TOKEN];
             string refresh_token = j[Constants::REFRESH_TOKEN];
-            LoginCoreImpl::updateUserInfo(account,token,refresh_token,"1");
+            int32_t token_expiration_time = j[Constants::TOKEN_EXPIRATION_TIME];
+            LoginCoreImpl::updateUserInfo(account,token,refresh_token,token_expiration_time,"1");
             LOGD("login success");
         }
 
@@ -225,6 +225,8 @@ namespace demo {
         std::string token = storage::SharePreferences::get(Constants::TOKEN);
         const std::string refreshToken = storage::SharePreferences::get(Constants::REFRESH_TOKEN);
         std::string account = storage::SharePreferences::get(Constants::USER_ACCOUNT);
+        int32_t tokenExpirationTime = storage::SharePreferences::getInt32(Constants::TOKEN_EXPIRATION_TIME);
+
 
         //用户未登录，清除登录状态
         if(token == "" || account == ""){
@@ -258,7 +260,7 @@ namespace demo {
             LOGD("user is online");
             //用户在线，更新本地用户状态
             LoginCoreImpl::isLogin = true;
-            LoginCoreImpl::updateUserInfo(account,token,refreshToken,"1");
+            LoginCoreImpl::updateUserInfo(account,token,refreshToken,tokenExpirationTime,"1");
             this->m_listener->on_check_status_finish(ActionResult(ClientCode::SUCCESS,"",account));
         } else {
             LOGD("user is offline");
@@ -275,6 +277,7 @@ namespace demo {
         std::string token = storage::SharePreferences::get(Constants::TOKEN);
         std::string refreshToken = storage::SharePreferences::get(Constants::REFRESH_TOKEN);
         std::string account = storage::SharePreferences::get(Constants::USER_ACCOUNT);
+
         //用户未登录，清除登录状态
         if(token == "" || refreshToken == ""){
             LOGD("token or refresh_token is empty");
@@ -291,7 +294,8 @@ namespace demo {
             auto j = json::parse(result.getData());
             string token = j[Constants::TOKEN];
             string refresh_token = j[Constants::REFRESH_TOKEN];
-            LoginCoreImpl::updateUserInfo(account,token,refresh_token,"1");
+            int32_t token_expiration_time = j[Constants::TOKEN_EXPIRATION_TIME];
+            LoginCoreImpl::updateUserInfo(account,token,refresh_token,token_expiration_time,"1");
         }else{
             LOGD("refresh user token fail");
         }
@@ -305,17 +309,24 @@ namespace demo {
     void LoginCoreImpl::cleanUserInfo(){
         LOGD("clean user info");
         LoginCoreImpl::isLogin = false;
-        LoginCoreImpl::updateUserInfo("","","","0");
+        LoginCoreImpl::updateUserInfo("","","",-1,"0");
     }
 
     /**
      * 更新本地用户信息
      */
-    void LoginCoreImpl::updateUserInfo(std::string account,std::string token,std::string refreshToken,std::string isConnect){
+    void LoginCoreImpl::updateUserInfo(std::string account,std::string token,std::string refreshToken,int32_t tokenExpirationTime, std::string isConnect){
         LOGD("update user info");
+
+        stringstream ss;
+        ss << tokenExpirationTime;
+        string tokenExpirationTimeStr;
+        ss >> tokenExpirationTimeStr;
+
         //重置本地用户状态
         storage::SharePreferences::save(Constants::TOKEN,token);
         storage::SharePreferences::save(Constants::REFRESH_TOKEN,refreshToken);
+        storage::SharePreferences::save(Constants::TOKEN_EXPIRATION_TIME,tokenExpirationTimeStr);
         storage::SharePreferences::save(Constants::USER_ACCOUNT,account);
         storage::SharePreferences::save(Constants::IS_CONNECT,isConnect);
 

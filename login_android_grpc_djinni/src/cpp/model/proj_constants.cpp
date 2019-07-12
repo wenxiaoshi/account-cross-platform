@@ -13,6 +13,7 @@ namespace project_constants{
     const string Constants::TOKEN = "token";
     const string Constants::REFRESH_TOKEN = "refresh_token";
     const string Constants::IS_CONNECT = "is_connect";
+    const string Constants::TOKEN_EXPIRATION_TIME = "token_expiration_time";
 
     //客户端错误码
     const int ClientCode::SUCCESS = 0;
