@@ -60,14 +60,14 @@
         <td><center></center></td>
     </tr>
     <tr>
-        <td><center><img src="https://melon-personal.oss-cn-shenzhen.aliyuncs.com/login-android.png"></center></td>
-        <td><center><img src="https://melon-personal.oss-cn-shenzhen.aliyuncs.com/wechat/login-back6.png"></center></td>
+        <td><center><img src="images/login-android.png"></center></td>
+        <td><center><img src="images/login-back.png"></center></td>
     </tr>
 </table>
 
 ### 流程图
 
-![](https://melon-personal.oss-cn-shenzhen.aliyuncs.com/wechat/pic_project_flow2.png)
+![](images/pic_project_flow2.png)
 
 ## 项目实现
 
@@ -278,7 +278,7 @@ refreshToken
 
 #### 密码初始化
 
-<img src="http://melon-personal.oss-cn-shenzhen.aliyuncs.com/wechat/login_pwd3.png" width = 609 height = 410 />
+<img src="images/login_pwd.png" width = 609 height = 410 />
 
 ##### 用户注册流程，后台接收到用户的账号和密码
 
@@ -294,7 +294,7 @@ refreshToken
 
 #### Token生成规则
 
-<img src="http://melon-personal.oss-cn-shenzhen.aliyuncs.com/login_token.png" width = 747 height = 205 />
+<img src="images/login_token.png" width = 747 height = 205 />
 
 ##### 用户登录/注册流程，生成用户Token并返回
 
@@ -323,7 +323,7 @@ refreshToken
 
 #### 日志样例
 
-![](http://melon-personal.oss-cn-shenzhen.aliyuncs.com/login_log.png)
+![](images/login_log.png)
 
 ### 安全防范
 
