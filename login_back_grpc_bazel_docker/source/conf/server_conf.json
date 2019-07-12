@@ -11,7 +11,7 @@
 	"SSL_PATH_KEY": "source/pem/server.key",
 	"SSL_PATH_CERT": "source/pem/server.crt",
 	"TOKEN_AES_KEY": "$L&^E*Usd9k!Ld4%",
-	"IS_CONSOLE_DEBUG_INFO": false,
+	"IS_CONSOLE_DEBUG_INFO": true,
 	"TOKEN_TIMEOUT_DAY": 15,
 	"REFRESH_TOKEN_TIMEOUT_DAY": 30
 }
