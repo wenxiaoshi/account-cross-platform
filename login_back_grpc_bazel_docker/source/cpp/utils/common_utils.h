@@ -179,10 +179,10 @@ namespace utils{
         static string GenRandomStr(uint count);
 
         //Token过期时间
-        const static long TOKEN_TIMEOUT;
+        static long TOKEN_TIMEOUT;
 
         //RefreshToken过期时间
-        const static long REFRESH_TOKEN_TIMEOUT;
+        static long REFRESH_TOKEN_TIMEOUT;
 
         //AES加密工具类
         static AesEncryptor* aesEncryptor;

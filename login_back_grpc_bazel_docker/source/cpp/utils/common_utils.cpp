@@ -27,11 +27,31 @@ using namespace constants;
 AesEncryptor *CommonUtils::aesEncryptor;
 
 //const long CommonUtils::TOKEN_TIMEOUT = 3600L * 24 * 7; // token 7天有效时间
-const long CommonUtils::TOKEN_TIMEOUT = 30L;                     // token 30秒有效时间
-const long CommonUtils::REFRESH_TOKEN_TIMEOUT = 3600L * 24 * 14; // refresh_token 14天有效时间
+long CommonUtils::TOKEN_TIMEOUT = 30L;                     // token 30秒有效时间
+long CommonUtils::REFRESH_TOKEN_TIMEOUT = 3600L * 24 * 14; // refresh_token 14天有效时间
 
 void CommonUtils::setAesKey(string key){
     aesEncryptor = new AesEncryptor((unsigned char*)key.c_str());
+}
+
+//设置Token的过期时间
+void CommonUtils::setTokenTimeout(long time){
+    TOKEN_TIMEOUT = time;
+}
+
+//设置RefreshToken的过期时间
+void CommonUtils::setRefreshTokenTimeout(long time){
+    REFRESH_TOKEN_TIMEOUT = time;
+}
+
+//获取Token的过期时间
+long CommonUtils::getTokenTimeout(){
+    return TOKEN_TIMEOUT;
+}
+
+//获取RefreshToken的过期时间
+long CommonUtils::getRefreshTokenTimeout(){
+    return REFRESH_TOKEN_TIMEOUT;
 }
 
 /**
