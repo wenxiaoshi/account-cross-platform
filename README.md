@@ -379,6 +379,7 @@ refreshToken
 |  | ID | INTEGER PRIMARY KEY | 用户UID |
 |  | ACCOUNT | CHAR | 用户账号 |
 |  | PASSWORD | CHAR | 用户密码 |
+|  | PWD_SALT | CHAR | 参与密码初始化的随机盐 |
 
 使用存储过程封装常用数据库操作
 
@@ -402,11 +403,10 @@ refreshToken
 	"MYSQL_DB_NAME": "user_center",             //MySQL-登入库名
 	"SSL_PATH_KEY": "source/pem/server.key",    //SSL-KEY
 	"SSL_PATH_CERT": "source/pem/server.crt",   //SSL-密钥
-	"PASSWORD_SALT": "xxxxxxxxxx"               //参与密码初始化的盐值
-	"TOKEN_AES_KEY": "$L&^E*Usd9k!Ld4%",		//参与Token加密AES的密钥
-	"IS_CONSOLE_DEBUG_INFO": true,				//决定是否打印和记录DEBUG信息，生产环境下可关闭
-	"TOKEN_TIMEOUT_DAY": 15,					//Token的有效时间（天）
-	"REFRESH_TOKEN_TIMEOUT_DAY": 30				//RefreshToken的有效时间（天）
+	"TOKEN_AES_KEY": "$L&^E*Usd9k!Ld4%",	    //参与Token加密AES的密钥
+	"IS_CONSOLE_DEBUG_INFO": true,		    //决定是否打印和记录DEBUG信息，生产环境下可关闭
+	"TOKEN_TIMEOUT_DAY": 15,		    //Token的有效时间（天）
+	"REFRESH_TOKEN_TIMEOUT_DAY": 30		    //RefreshToken的有效时间（天）
 }
 
 ```
