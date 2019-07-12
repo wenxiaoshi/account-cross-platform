@@ -64,13 +64,13 @@ namespace network{
                     //todo 网络错误吗转换
                     reply.set_code(-1);
                     reply.set_msg(ToastTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
-                    LOGD(status.error_message());
+                    LOGD("[network.requestUserLogin] " + status.error_message());
                     return reply;
                 }
             }catch(...){
                 reply.set_code(-2);
                 reply.set_msg(ToastTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
-                LOGE("catch requestUserLogin network error");
+                LOGE("[network.requestUserLogin] catch requestUserLogin network error");
                 return reply;
             }
             
@@ -99,13 +99,13 @@ namespace network{
                     //todo 网络错误吗转换
                     reply.set_code(-1);
                     reply.set_msg(ToastTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
-                    LOGD(status.error_message());
+                    LOGD("[network.requestUserSign] " + status.error_message());
                     return reply;
                 }
             }catch(...){
                 reply.set_code(-2);
                 reply.set_msg(ToastTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
-                LOGE("catch requestUserSign network error");
+                LOGE("[network.requestUserSign] catch requestUserSign network error");
                 return reply;
             }
             
@@ -133,13 +133,13 @@ namespace network{
                     //todo 网络错误吗转换
                     reply.set_code(-1);
                     reply.set_msg(ToastTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
-                    LOGD(status.error_message());
+                    LOGD("[network.requestLogout] " + status.error_message());
                     return reply;
                 }
             }catch(...){
                 reply.set_code(-2);
                 reply.set_msg(ToastTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
-                LOGE("catch requestLogout network error");
+                LOGE("[network.requestLogout] catch requestLogout network error");
                 return reply;
             }
             
@@ -167,13 +167,13 @@ namespace network{
                     //todo 网络错误吗转换
                     reply.set_code(-1);
                     reply.set_msg(ToastTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
-                    LOGD(status.error_message());
+                    LOGD("[network.checkConnect] " + status.error_message());
                     return reply;
                 }
             }catch(...){
                 reply.set_code(-2);
                 reply.set_msg(ToastTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
-                LOGE("catch checkConnect network error");
+                LOGE("[network.checkConnect] catch checkConnect network error");
                 return reply;
             }
             
@@ -201,13 +201,13 @@ namespace network{
                     //todo 网络错误吗转换
                     reply.set_code(-1);
                     reply.set_msg(ToastTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
-                    LOGD(status.error_message());
+                    LOGD("[network.refreshToken] " + status.error_message());
                     return reply;
                 }
             }catch(...){
                 reply.set_code(-2);
                 reply.set_msg(ToastTip::TOAST_ERROR_NETWORK_UNVALAIBLE);
-                LOGE("catch refreshToken network error");
+                LOGE("[network.refreshToken] catch refreshToken network error");
                 return reply;
             }
             

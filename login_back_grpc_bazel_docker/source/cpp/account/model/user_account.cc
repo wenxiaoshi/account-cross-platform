@@ -4,7 +4,7 @@
 using namespace my_model;
 using namespace std;
 
-UserAccount::UserAccount(int uid, string account, string password) : uid(uid),account(account),password(password) {
+UserAccount::UserAccount(int uid, string account, string password, string pwdSalt) : uid(uid),account(account),password(password),pwdSalt(pwdSalt) {
 
 }
 
@@ -27,4 +27,11 @@ string UserAccount::getPassword(){
 }
 void UserAccount::setPassword(string password){
 	this->password = password;
+}
+
+string UserAccount::getPwdSalt(){
+	return pwdSalt;
+}
+void UserAccount::setPwdSalt(string pwdSalt){
+	this->pwdSalt = pwdSalt;
 }

@@ -30,20 +30,19 @@ Redis::Redis()
 
 void Redis::connect(ServerConfig _conf)
 {
-    LOGD(_conf.getRedisIP())
     _context = ::redisConnect(_conf.getRedisIP().c_str(), _conf.getRedisPort());
     if(_context && _context->err)
     {
-        LOGE("connect redis error");
+        LOGE("[redis_manager.connect] connect redis error");
         exit(EXIT_FAILURE);    
     }
-    LOGD("redis connect success !");
+    LOGD("[redis_manager.connect] redis connect success !");
 }
 
 void Redis::disConnect()
 {
     ::redisFree(_context);
-    LOGD("redis disConnect success");
+    LOGD("[redis_manager.disConnect] redis disConnect success");
 }
 
 bool Redis::setString(const string & data)
@@ -54,7 +53,7 @@ bool Redis::setString(const string & data)
         _reply = (redisReply*)::redisCommand(_context, data.c_str());
         if (NULL == _reply || !(_reply->type == REDIS_REPLY_STATUS && strcasecmp(_reply->str,"OK") == 0))
         {
-            LOGE("Failed to execute SET(string)");
+            LOGE("[redis_manager.setString] Failed to execute SET(string)");
             isSuccess = false;
         } 
         else
@@ -75,7 +74,6 @@ bool Redis::setString(const string & key, const string & value)
 {
     stringstream ss;
     ss << "SET " << key << " " << value;
-    LOGD("redis " + ss.str());
     return setString(ss.str());
 }
 
@@ -83,7 +81,6 @@ bool Redis::setString(const string & key, const int & value)
 {
     stringstream ss;
     ss << "SET " << key << " " << value;
-    LOGD("redis " + ss.str());
     return setString(ss.str());
 }
 
@@ -91,13 +88,11 @@ bool Redis::setString(const string & key, const float & value)
 {
     stringstream ss;
     ss << "SET " << key << " " << value;
-    LOGD("redis " + ss.str());
     return setString(ss.str());
 }
 
 bool Redis::getString(const string & key)
 {
-    LOGD("redis getString " + key);
     bool isSuccess;
     try
     {

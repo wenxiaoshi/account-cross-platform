@@ -3,6 +3,9 @@
 //
 
 #include <string>
+#include <iostream>
+#include <sstream>
+
 #include "../struct/hash_map.h"
 
 #ifndef ANDROID_SHARE_PREFERENCES_H
@@ -26,17 +29,17 @@ namespace storage{
          value：         数据值
          */
         static bool save(std::string key, std::string value);
-        
+
         /*
          主要功能
-         保存键值对（直接操作写到文件）
-         
+         保存键值对（缓存在内存中）
+
          入口参数
          key：           数据键
          value：         数据值
          */
-        static bool saveNow(std::string key, std::string value);
-        
+        static bool saveInt32(std::string key, std::int32_t value);
+
         /*
          主要功能
          获取键值对
@@ -48,6 +51,19 @@ namespace storage{
          string：        数据值
          */
         static std::string get(std::string key);
+
+        /*
+         主要功能
+         获取键值对
+
+         入口参数
+         key：           数据键
+
+         出口参数
+         string：        数据值
+         */
+        static int32_t getInt32(std::string key);
+
         static bool execute();
     private:
         const static char* file_path;

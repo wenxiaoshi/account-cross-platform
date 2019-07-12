@@ -67,7 +67,7 @@
 
 ### 流程图
 
-![](https://melon-personal.oss-cn-shenzhen.aliyuncs.com/wechat/pic_project_flow.png)
+![](https://melon-personal.oss-cn-shenzhen.aliyuncs.com/wechat/pic_project_flow2.png)
 
 ## 项目实现
 
@@ -268,6 +268,7 @@ refreshToken
 | 1005003 | RefreshToken不对应 | 根据UID从Redis取出RefreshToken进行比对不相等 |
 | 1005004 | RefreshToken已失效 | 用户RefreshToken失效（过期），需要重新登录 |
 | 1005005 | 账号会话信息创建失败 | 根据账号与UID生成的Token，更新到Redis失败 |
+| 1005006 | Token信息有误 | 接口传来的Token与RefreshToken中的UID不一致 |
 
 ### 加密说明
 

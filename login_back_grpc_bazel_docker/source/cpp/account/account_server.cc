@@ -17,8 +17,6 @@
 #include <hiredis/hiredis.h>
 #include "source/libs/json/json.h"
 
-#include "./model/reply_model.h"
-
 #include "source/cpp/manager/conf/server_conf.h"
 #include "source/cpp/manager/db/db_manager.h"
 #include "source/cpp/manager/redis/redis_manager.h"
@@ -82,13 +80,13 @@ public:
   入口参数
   account： 	      用户账号
   encrypt_pwd：     用户密码
-
+  pwdSalt：         参与密码初始化的随机盐
   出口参数：
-  bool ：         true表示注册成功；false表示注册失败
+  bool ：           true表示注册成功；false表示注册失败
   **/
-  bool signAccount(string account, string encrypt_pwd)
+  bool signAccount(string account, string encrypt_pwd, string pwdSalt)
   {
-    return Database::getDatabase()->addUserAccount(account, encrypt_pwd);
+    return Database::getDatabase()->addUserAccount(account, encrypt_pwd, pwdSalt);
   }
 
   /**
@@ -151,7 +149,7 @@ public:
     ssToken << uid << "_token";
     string redisToken;
     redis.getString(ssToken.str(), redisToken);
-    return CommonUtils::isEqual(redisToken, token);
+    return redisToken == token;
   }
 
   /**
@@ -229,9 +227,11 @@ public:
   token：           用户Token（用来接口请求）
   refresh_token：   用户Token（用来刷新Token）
   **/
-  ReplyModel handleUserLogin(string account, string password)
+  CodeReply * handleUserLogin(string account, string password)
   {
-    ReplyModel result;
+    CodeReply * result = new CodeReply();
+
+    LOGD("[account_server.handleUserLogin] user login in:" + account);
 
     LoginDatabase login_db;
     LoginRedis login_redis;
@@ -241,51 +241,60 @@ public:
     //查询账号是否存在
     if (userAccount.getUid() <= 0)
     {
-      result.setCode(ResultCode::UserLogin_AccountNotExist);
-      result.setMsg(MsgTip::UserLogin_AccountNotExist);
+      result->set_code(ResultCode::UserLogin_AccountNotExist);
+      result->set_msg(MsgTip::UserLogin_AccountNotExist);
       return result;
     }
+    LOGD("[account_server.handleUserLogin] user account is exist");
 
     //获得加密后password
-    string encrypt_password = CommonUtils::EncryptPwd(account, password);
+    string encrypt_password = CommonUtils::EncryptPwd(account, password, userAccount.getPwdSalt());
     if (encrypt_password.empty())
     {
-      result.setCode(ResultCode::UserLogin_PasswordInitFail);
-      result.setMsg(MsgTip::UserLogin_PasswordInitFail);
+      result->set_code(ResultCode::UserLogin_PasswordInitFail);
+      result->set_msg(MsgTip::UserLogin_PasswordInitFail);
       return result;
     }
+    LOGD("[account_server.handleUserLogin] get user encrypt password success");
 
     //查询密码是否正确
     string db_password = userAccount.getPassword();
-    if (!CommonUtils::isEqual(db_password, encrypt_password))
+    if (db_password != encrypt_password)
     {
-      result.setCode(ResultCode::UserLogin_PasswordError);
-      result.setMsg(MsgTip::UserLogin_PasswordError);
+      result->set_code(ResultCode::UserLogin_PasswordError);
+      result->set_msg(MsgTip::UserLogin_PasswordError);
       return result;
     }
+    LOGD("[account_server.handleUserLogin] user input password is right");
 
     //获取用户UID
     int uid = userAccount.getUid();
 
-    //生成Token、refreshToken
-    string token = CommonUtils::GenToken(uid, account);
-    string refreshToken = CommonUtils::GenRefreshToken(uid, account);
+    //生成Token、refreshToken、Token过期时间
+    string token;
+    int32_t tokenEndTime;
+    CommonUtils::GenToken(uid, account, token, tokenEndTime);
+    string refreshToken;
+    CommonUtils::GenRefreshToken(uid, account, refreshToken);
+    LOGD("[account_server.handleUserLogin] create user's new token success");
 
     //更新Token到redis
     if (!login_redis.updateToken(uid, token, refreshToken))
     {
-      result.setCode(ResultCode::UserLogin_UpdateTokenFail);
-      result.setMsg(MsgTip::UserLogin_UpdateTokenFail);
+      result->set_code(ResultCode::UserLogin_UpdateTokenFail);
+      result->set_msg(MsgTip::UserLogin_UpdateTokenFail);
       return result;
     }
+    LOGD("[account_server.handleUserLogin] update user's token to redis success");
 
     //返回Token
-    result.setCode(ResultCode::SUCCESS);
+    result->set_code(ResultCode::SUCCESS);
     Json::Value root;
     root["token"] = token;
     root["refresh_token"] = refreshToken;
+    root["token_expiration_time"] = tokenEndTime;
     Json::FastWriter fw;
-    result.setData(fw.write(root));
+    result->set_data(fw.write(root));
     return result;
   };
 
@@ -300,69 +309,90 @@ public:
   token：           用户Token（用来接口请求）
   refresh_token：   用户Token（用来刷新Token）
   **/
-  ReplyModel handleUserSign(string account, string password)
+  CodeReply * handleUserSign(string account, string password)
   {
-    ReplyModel result;
+    CodeReply * result = new CodeReply();
 
+    LOGD("[account_server.handleUserSign] user sign in:" + account);
     LoginDatabase login_db;
     LoginRedis login_redis;
 
     //查询账号是否存在
     if (login_db.isHadSign(account))
     {
-      result.setCode(ResultCode::UserSign_AccountHadExist);
-      result.setMsg(MsgTip::UserSign_AccountHadExist);
+      result->set_code(ResultCode::UserSign_AccountHadExist);
+      result->set_msg(MsgTip::UserSign_AccountHadExist);
       return result;
     }
+    LOGD("[account_server.handleUserSign] useraccount not exist");
+
+    //生成密码初始化的随机盐
+    string pwdSalt = CommonUtils::GenPwdSalt();
+    if (pwdSalt.empty())
+    {
+      result->set_code(ResultCode::UserSign_CreatePwdSaltFail);
+      result->set_msg(MsgTip::UserSign_CreatePwdSaltFail);
+      return result;
+    }
+    LOGD("[account_server.handleUserSign] create salt success:" + pwdSalt);
 
     //获得加密后password
-    string encrypt_password = CommonUtils::EncryptPwd(account, password);
+    string encrypt_password = CommonUtils::EncryptPwd(account, password, pwdSalt);
     if (encrypt_password.empty())
     {
-      result.setCode(ResultCode::UserSign_PasswordInitFail);
-      result.setMsg(MsgTip::UserSign_PasswordInitFail);
+      result->set_code(ResultCode::UserSign_PasswordInitFail);
+      result->set_msg(MsgTip::UserSign_PasswordInitFail);
       return result;
     }
+    LOGD("[account_server.handleUserSign] get enc password success");
 
     //新增用户，插入账号信息到数据库
-    if (!login_db.signAccount(account, encrypt_password))
+    if (!login_db.signAccount(account, encrypt_password, pwdSalt))
     {
-      result.setCode(ResultCode::UserSign_CreateAccountFail);
-      result.setMsg(MsgTip::UserSign_CreateAccountFail);
+      result->set_code(ResultCode::UserSign_CreateAccountFail);
+      result->set_msg(MsgTip::UserSign_CreateAccountFail);
       return result;
     }
+    LOGD("[account_server.handleUserSign] insert account into db success");
 
     //获得用户信息
     UserAccount userAccount = login_db.getUserAccount(account);
     if (userAccount.getUid() <= 0)
     {
-      result.setCode(ResultCode::UserSign_GetAccountInfoFail);
-      result.setMsg(MsgTip::UserSign_GetAccountInfoFail);
+      result->set_code(ResultCode::UserSign_GetAccountInfoFail);
+      result->set_msg(MsgTip::UserSign_GetAccountInfoFail);
       return result;
     }
+    LOGD("[account_server.handleUserSign] get account info success");
 
     //获得用户UID
     int uid = userAccount.getUid();
 
-    //生成Token、refreshToken
-    string token = CommonUtils::GenToken(uid, account);
-    string refreshToken = CommonUtils::GenRefreshToken(uid, account);
+    //生成Token、refreshToken、Token过期时间
+    string token;
+    int32_t tokenEndTime;
+    CommonUtils::GenToken(uid, account, token, tokenEndTime);
+    string refreshToken;
+    CommonUtils::GenRefreshToken(uid, account, refreshToken);
+    LOGD("[account_server.handleUserLogin] create user's new token success");
 
     //更新Token到redis
     if (!login_redis.updateToken(uid, token, refreshToken))
     {
-      result.setCode(ResultCode::UserSign_CreateSeesionFail);
-      result.setMsg(MsgTip::UserSign_CreateSeesionFail);
+      result->set_code(ResultCode::UserSign_CreateSeesionFail);
+      result->set_msg(MsgTip::UserSign_CreateSeesionFail);
       return result;
     }
+    LOGD("[account_server.handleUserSign] update token into redis success");
 
     //返回Token
-    result.setCode(ResultCode::SUCCESS);
+    result->set_code(ResultCode::SUCCESS);
     Json::Value root;
     root["token"] = token;
     root["refresh_token"] = refreshToken;
+    root["token_expiration_time"] = tokenEndTime;
     Json::FastWriter fw;
-    result.setData(fw.write(root));
+    result->set_data(fw.write(root));
     return result;
   };
 
@@ -372,9 +402,11 @@ public:
   入口参数
   token： 	        用户Token
   **/
-  ReplyModel handleUserLogout(string token)
+  CodeReply * handleUserLogout(string token)
   {
-    ReplyModel result;
+    CodeReply * result = new CodeReply();
+
+    LOGD("[account_server.handleUserLogout] user logout in:" + token);
 
     LoginRedis login_redis;
 
@@ -382,20 +414,22 @@ public:
     string decodeToken = CommonUtils::DecryptToken(token);
     if (decodeToken.empty())
     {
-      result.setCode(ResultCode::UserLogout_TokenNotValid);
-      result.setMsg(MsgTip::UserLogout_TokenNotValid);
+      result->set_code(ResultCode::UserLogout_TokenNotValid);
+      result->set_msg(MsgTip::UserLogout_TokenNotValid);
       return result;
     }
+    LOGD("[account_server.handleUserLogout] user token decrypt success");
 
     //解析Token，获取用户信息
     vector<string> vToken;
     CommonUtils::SplitString(decodeToken, vToken, ":");
     if (vToken.size() != 5)
     {
-      result.setCode(ResultCode::UserLogout_TokenNotValid);
-      result.setMsg(MsgTip::UserLogout_TokenNotValid);
+      result->set_code(ResultCode::UserLogout_TokenNotValid);
+      result->set_msg(MsgTip::UserLogout_TokenNotValid);
       return result;
     }
+    LOGD("[account_server.handleUserLogout] get token info success");
 
     //获得账号UID
     int uid = CommonUtils::getIntByString(vToken[0]);
@@ -403,20 +437,22 @@ public:
     //token是否正确
     if (!login_redis.isTokenRight(uid, token))
     {
-      result.setCode(ResultCode::UserLogout_TokenNotExist);
-      result.setMsg(MsgTip::UserLogout_TokenNotExist);
+      result->set_code(ResultCode::UserLogout_TokenNotExist);
+      result->set_msg(MsgTip::UserLogout_TokenNotExist);
       return result;
     }
+    LOGD("[account_server.handleUserLogout] user token is right");
 
     //清除token
     if (!login_redis.cleanToken(uid))
     {
-      result.setCode(ResultCode::UserLogout_UpdateSessionFail);
-      result.setMsg(MsgTip::UserLogout_UpdateSessionFail);
+      result->set_code(ResultCode::UserLogout_UpdateSessionFail);
+      result->set_msg(MsgTip::UserLogout_UpdateSessionFail);
       return result;
     }
+    LOGD("[account_server.handleUserLogout] clean user token in redis success");
 
-    result.setCode(ResultCode::SUCCESS);
+    result->set_code(ResultCode::SUCCESS);
     return result;
   };
 
@@ -426,27 +462,31 @@ public:
   入口参数
   token： 	        用户Token
   **/
-  ReplyModel handleUserCheckConnect(string token)
+  CodeReply * handleUserCheckConnect(string token)
   {
-    ReplyModel result;
+    CodeReply * result = new CodeReply();
+
+    LOGD("[account_server.handleUserCheckConnect] check connect in:" + token);
 
     //解密Token
     string decodeToken = CommonUtils::DecryptToken(token);
     if (decodeToken.empty())
     {
-      result.setCode(ResultCode::CheckConnect_TokenNotValid);
-      result.setMsg(MsgTip::CheckConnect_TokenNotValid);
+      result->set_code(ResultCode::CheckConnect_TokenNotValid);
+      result->set_msg(MsgTip::CheckConnect_TokenNotValid);
       return result;
     }
+    LOGD("[account_server.handleUserCheckConnect] user token decrypt success");
 
     std::vector<string> vToken;
     CommonUtils::SplitString(decodeToken, vToken, ":");
     if (vToken.size() != 5)
     {
-      result.setCode(ResultCode::CheckConnect_TokenNotValid);
-      result.setMsg(MsgTip::CheckConnect_TokenNotValid);
+      result->set_code(ResultCode::CheckConnect_TokenNotValid);
+      result->set_msg(MsgTip::CheckConnect_TokenNotValid);
       return result;
     }
+    LOGD("[account_server.handleUserCheckConnect] get token info success");
 
     //获取Token过期时间
     string token_end_time = vToken[4];
@@ -458,22 +498,24 @@ public:
 
     //获取redis中用户Token
     LoginRedis login_redis;
-    if (!CommonUtils::isEqual(token, login_redis.getUserToken(uid)))
+    if (token != login_redis.getUserToken(uid))
     {
-      result.setCode(ResultCode::CheckConnect_AccountTokenNotEqual);
-      result.setMsg(MsgTip::CheckConnect_AccountTokenNotEqual);
+      result->set_code(ResultCode::CheckConnect_AccountTokenNotEqual);
+      result->set_msg(MsgTip::CheckConnect_AccountTokenNotEqual);
       return result;
     }
+    LOGD("[account_server.handleUserCheckConnect] user token in redis is match");
 
     //判断Token是否过期
     if (isTimeExpired(end_time))
     {
-      result.setCode(ResultCode::CheckConnect_TokenHadExpire);
-      result.setMsg(MsgTip::CheckConnect_TokenHadExpire);
+      result->set_code(ResultCode::CheckConnect_TokenHadExpire);
+      result->set_msg(MsgTip::CheckConnect_TokenHadExpire);
       return result;
     }
+    LOGD("[account_server.handleUserCheckConnect] user token is in time limit");
 
-    result.setCode(ResultCode::SUCCESS);
+    result->set_code(ResultCode::SUCCESS);
     return result;
   };
 
@@ -488,16 +530,18 @@ public:
   token：           用户Token（新）
   refresh_token：   用户Token（新）
   **/
-  ReplyModel handleRefreshToken(string token, string refreshToken)
+  CodeReply * handleRefreshToken(string token, string refreshToken)
   {
-    ReplyModel result;
+    CodeReply * result = new CodeReply();
+
+    LOGD("[account_server.handleRefreshToken] refresh token in:" + token);
 
     //解密Token
     string decodeToken = CommonUtils::DecryptToken(token);
     if (decodeToken.empty())
     {
-      result.setCode(ResultCode::RefreshToken_TokenNotValid);
-      result.setMsg(MsgTip::RefreshToken_TokenNotValid);
+      result->set_code(ResultCode::RefreshToken_TokenNotValid);
+      result->set_msg(MsgTip::RefreshToken_TokenNotValid);
       return result;
     }
 
@@ -505,17 +549,18 @@ public:
     CommonUtils::SplitString(decodeToken, vToken, ":");
     if (vToken.size() != 5)
     {
-      result.setCode(ResultCode::RefreshToken_TokenNotValid);
-      result.setMsg(MsgTip::RefreshToken_TokenNotValid);
+      result->set_code(ResultCode::RefreshToken_TokenNotValid);
+      result->set_msg(MsgTip::RefreshToken_TokenNotValid);
       return result;
     }
+    LOGD("[account_server.handleRefreshToken] user token is right");
 
     //解密refreshToken
     string decodeRefreshToken = CommonUtils::DecryptToken(refreshToken);
     if (decodeRefreshToken.empty())
     {
-      result.setCode(ResultCode::RefreshToken_RefreshTokenNotValid);
-      result.setMsg(MsgTip::RefreshToken_RefreshTokenNotValid);
+      result->set_code(ResultCode::RefreshToken_RefreshTokenNotValid);
+      result->set_msg(MsgTip::RefreshToken_RefreshTokenNotValid);
       return result;
     }
 
@@ -523,51 +568,68 @@ public:
     CommonUtils::SplitString(decodeRefreshToken, vRefreshToken, ":");
     if (vRefreshToken.size() != 5)
     {
-      result.setCode(ResultCode::RefreshToken_RefreshTokenNotValid);
-      result.setMsg(MsgTip::RefreshToken_RefreshTokenNotValid);
+      result->set_code(ResultCode::RefreshToken_RefreshTokenNotValid);
+      result->set_msg(MsgTip::RefreshToken_RefreshTokenNotValid);
       return result;
     }
+    LOGD("[account_server.handleRefreshToken] user refresh token is right");
+
+    //对比token与refreshToken中的UID是否一致
+    if(vToken[0] != vRefreshToken[0]){
+      result->set_code(ResultCode::RefreshToken_TUidARTUidNotEqual);
+      result->set_msg(MsgTip::RefreshToken_TUidARTUidNotEqual);
+      return result;
+    }
+    LOGD("[account_server.handleRefreshToken] user token's uid and refresh token's uid is match");
 
     //对比refreshToken是否与redis中的一致
     int uid = CommonUtils::getIntByString(vRefreshToken[0]);
     LoginRedis login_redis;
     string redis_refresh_token = login_redis.getUserRefreshToken(uid);
-    if(!CommonUtils::isEqual(refreshToken, redis_refresh_token)){
-      result.setCode(ResultCode::RefreshToken_RefreshATokenNotEqual);
-      result.setMsg(MsgTip::RefreshToken_RefreshATokenNotEqual);
+    if(refreshToken != redis_refresh_token){
+      result->set_code(ResultCode::RefreshToken_RefreshTokenCacheNotEqual);
+      result->set_msg(MsgTip::RefreshToken_RefreshTokenCacheNotEqual);
       return result;
     }
+    LOGD("[account_server.handleRefreshToken] user refresh token in redis is match");
 
     //判断refreshToken是否过期
     string token_end_time = vRefreshToken[4];
     int end_time = CommonUtils::getIntByString(token_end_time);
     if (isTimeExpired(end_time))
     {
-      result.setCode(ResultCode::RefreshToken_RefreshTokenHadExpire);
-      result.setMsg(MsgTip::RefreshToken_RefreshTokenHadExpire);
+      result->set_code(ResultCode::RefreshToken_RefreshTokenHadExpire);
+      result->set_msg(MsgTip::RefreshToken_RefreshTokenHadExpire);
       return result;
     }
+    LOGD("[account_server.handleRefreshToken] user refresh token in time limit");
 
-    //生成token、refreshToken
+    //生成Token、refreshToken、Token过期时间
     string account = vToken[1];
-    string new_token = CommonUtils::GenToken(uid, account);
-    string new_refreshToken = CommonUtils::GenRefreshToken(uid, account);
+    string new_token;
+    int32_t tokenEndTime;
+    CommonUtils::GenToken(uid, account, new_token, tokenEndTime);
+    string new_refreshToken;
+    CommonUtils::GenRefreshToken(uid, account, new_refreshToken);
+    LOGD("[account_server.handleRefreshToken] create user new token success");
 
     //更新token、refreshToken到redis
     if (!login_redis.updateToken(uid, new_token, new_refreshToken))
     {
-      result.setCode(ResultCode::RefreshToken_CreateSeesionFail);
-      result.setMsg(MsgTip::RefreshToken_CreateSeesionFail);
+      result->set_code(ResultCode::RefreshToken_CreateSeesionFail);
+      result->set_msg(MsgTip::RefreshToken_CreateSeesionFail);
       return result;
     }
+    LOGD("[account_server.handleRefreshToken] update user token redis success");
 
     //返回token、refreshToken
-    result.setCode(ResultCode::SUCCESS);
+    result->set_code(ResultCode::SUCCESS);
     Json::Value root;
     root["token"] = new_token;
     root["refresh_token"] = new_refreshToken;
+    root["token_expiration_time"] = tokenEndTime;
     Json::FastWriter fw;
-    result.setData(fw.write(root));
+    result->set_data(fw.write(root));
     return result;
 
   }
@@ -624,10 +686,11 @@ class AccountServiceImpl final : public Account::Service
     if (isParamValid)
     {
       LoginCore loginCore;
-      ReplyModel result = loginCore.handleUserLogin(account, password);
-      reply->set_code(result.getCode());
-      reply->set_msg(result.getMsg());
-      reply->set_data(result.getData());
+      CodeReply * result = loginCore.handleUserLogin(account, password);
+      reply->set_code(result->code());
+      reply->set_msg(result->msg());
+      reply->set_data(result->data());
+      delete result;
     }
 
     //校验返回数据的合法性
@@ -683,10 +746,11 @@ class AccountServiceImpl final : public Account::Service
     if (isParamValid)
     {
       LoginCore loginCore;
-      ReplyModel result = loginCore.handleUserSign(account, password);
-      reply->set_code(result.getCode());
-      reply->set_msg(result.getMsg());
-      reply->set_data(result.getData());
+      CodeReply * result = loginCore.handleUserSign(account, password);
+      reply->set_code(result->code());
+      reply->set_msg(result->msg());
+      reply->set_data(result->data());
+      delete result;
     }
 
     //校验返回数据的合法性
@@ -719,11 +783,11 @@ class AccountServiceImpl final : public Account::Service
 
     //执行请求
     LoginCore loginCore;
-    ReplyModel result = loginCore.handleUserLogout(token);
-
-    reply->set_code(result.getCode());
-    reply->set_msg(result.getMsg());
-    reply->set_data(result.getData());
+    CodeReply * result = loginCore.handleUserLogout(token);
+    reply->set_code(result->code());
+    reply->set_msg(result->msg());
+    reply->set_data(result->data());
+    delete result;
 
     //校验返回数据的合法性
     string msg;
@@ -768,10 +832,11 @@ class AccountServiceImpl final : public Account::Service
     if (isParamValid)
     {
       LoginCore loginCore;
-      ReplyModel result = loginCore.handleUserCheckConnect(token);
-      reply->set_code(result.getCode());
-      reply->set_msg(result.getMsg());
-      reply->set_data(result.getData());
+      CodeReply * result = loginCore.handleUserCheckConnect(token);
+      reply->set_code(result->code());
+      reply->set_msg(result->msg());
+      reply->set_data(result->data());
+      delete result;
     }
 
     //校验返回数据的合法性
@@ -826,10 +891,11 @@ class AccountServiceImpl final : public Account::Service
     if (isParamValid)
     {
       LoginCore loginCore;
-      ReplyModel result = loginCore.handleRefreshToken(token,refreshToken);
-      reply->set_code(result.getCode());
-      reply->set_msg(result.getMsg());
-      reply->set_data(result.getData());
+      CodeReply * result = loginCore.handleRefreshToken(token,refreshToken);
+      reply->set_code(result->code());
+      reply->set_msg(result->msg());
+      reply->set_data(result->data());
+      delete result;
     }
 
     //校验返回数据的合法性
@@ -859,7 +925,7 @@ void RunServer(manager::ServerConfig conf)
 
   ServerBuilder builder;
 
-  LOGD("begin load ssl key info");
+  LOGD("[account_server.RunServer] begin load ssl key info");
   std::ifstream skey(conf.getSSLPathKey());
   std::string strServerKey((std::istreambuf_iterator<char>(skey)), std::istreambuf_iterator<char>());
   //std::cout << "key: " <<strServerKey << std::endl;
@@ -873,7 +939,7 @@ void RunServer(manager::ServerConfig conf)
   ssl_opts.pem_root_certs = "";
   ssl_opts.pem_key_cert_pairs.push_back(pkcp);
   std::shared_ptr<grpc::ServerCredentials> creds = grpc::SslServerCredentials(ssl_opts);
-  LOGD("finish load ssl key info");
+  LOGD("[account_server.RunServer] finish load ssl key info");
   // Listen on the given address without any authentication mechanism.
   builder.AddListeningPort(server_address, creds);
   // Register "service" as the instance through which we'll communicate with
@@ -881,7 +947,7 @@ void RunServer(manager::ServerConfig conf)
   builder.RegisterService(&service);
   // Finally assemble the server.
   std::unique_ptr<Server> server(builder.BuildAndStart());
-  LOGD("Server listening on " + server_address);
+  LOGD("[account_server.RunServer] Server listening on " + server_address);
 
   // Wait for the server to shutdown. Note that some other thread must be
   // responsible for shutting down the server for this call to ever return.
@@ -890,12 +956,22 @@ void RunServer(manager::ServerConfig conf)
 
 int main(int argc, char **argv)
 {
+  
   manager::ServerConfig conf;
+  //设置是否打印DEBUG信息
+  LogUtil::setConsoleDebugInfo(conf.isConsoleDebugInfo());
+  //根据配置文件初始化Redis
   Redis::getRedis()->connect(conf);
+  //根据配置文件初始化DB
   Database::getDatabase()->connect(conf);
-  CommonUtils::PASSWORD_SALT = conf.getPasswordSalt();
+  //设置参与Token生成的AES算法的KEY
+  CommonUtils::setAesKey(conf.getTokenAesKey());
+  //设置Token过期时间
+  // CommonUtils::setTokenTimeout(conf.getTokenTimeout());
+  //设置RefreshToken过期时间
+  CommonUtils::setRefreshTokenTimeout(conf.getRefreshTokenTimeout());
 
-  //debug
+  // debug
   // Database::getDatabase()->queryUserAccountByAccount("13533332222");
   // Database::getDatabase()->addUserAccount("13533332221test","123123");
 

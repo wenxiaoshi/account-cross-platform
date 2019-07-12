@@ -56,7 +56,6 @@ int AesEncryptor::Char2Int(char c) {
 }
 
 string AesEncryptor::EncryptString(string strInfor) {
-    LOGD(strInfor);
     double diff_seconds = (double)(clock());
 
     int nLength = strInfor.length();
@@ -64,16 +63,17 @@ string AesEncryptor::EncryptString(string strInfor) {
     unsigned char* pBuffer = new unsigned char[nLength + spaceLength];
     memset(pBuffer, '\0', nLength + spaceLength);
     memcpy(pBuffer, strInfor.c_str(), nLength);
+
     m_pEncryptor->Cipher(pBuffer, nLength + spaceLength);
+
+	stringstream ss;
+	ss << ((double)(clock() - diff_seconds) / CLOCKS_PER_SEC  * 1000);
+    LOGD("[aes_encryptor.EncryptString] Encrypt Time : " + ss.str() + "ms");
 
     // 这里需要把得到的字符数组转换成十六进制字符串
     char* pOut = new char[2 * (nLength + spaceLength)];
     memset(pOut, '\0', 2 * (nLength + spaceLength));
     Byte2Hex(pBuffer, nLength + spaceLength, pOut);
-
-	stringstream ss;
-	ss << ((double)(clock() - diff_seconds) / CLOCKS_PER_SEC  * 1000);
-    LOGD("Encrypt Time : " + ss.str() + "ms");
 
     string retValue(pOut);
     delete[] pBuffer;
@@ -82,18 +82,20 @@ string AesEncryptor::EncryptString(string strInfor) {
 }
 
 string AesEncryptor::DecryptString(string strMessage) {
-    double diff_seconds = (double)(clock());
+    
 
     int nLength = strMessage.length() / 2;
     unsigned char* pBuffer = new unsigned char[nLength];
     memset(pBuffer, '\0', nLength);
     Hex2Byte(strMessage.c_str(), strMessage.length(), pBuffer);
 
+    double diff_seconds = (double)(clock());
+
     m_pEncryptor->InvCipher(pBuffer, nLength);
 
     stringstream ss;
 	ss << ((double)(clock() - diff_seconds) / CLOCKS_PER_SEC  * 1000);
-    LOGD("Decrypt Time : " + ss.str() + "ms");
+    LOGD("[aes_encryptor.DecryptString] Decrypt Time : " + ss.str() + "ms");
 
     string retValue((char*)pBuffer);
     delete[] pBuffer;

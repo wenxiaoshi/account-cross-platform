@@ -2,13 +2,8 @@
 #include <string>
 
 #include "../conf/server_conf.h"
-
 #include "source/cpp/manager/db/db_base.h"
-
-// #include "source/libs/sqlite3/sqlite3.h"
 #include "source/cpp/account/model/user_account.h"
-#include "source/cpp/account/model/user_session.h"
-
 #include "source/libs/json/json.h"
 
 using namespace std;
@@ -48,11 +43,12 @@ namespace manager{
 		入口参数
        	account： 		用户账号(手机号)
        	password： 		密码(加密后)
- 
+  		pwdSalt：    	参与密码初始化的随机盐
+
        	出口参数：
        	bool： 			true表示成功；false表示失败
 		*/
-		bool addUserAccount(string account, string password);
+		bool addUserAccount(string account, string password, string pwdSalt);
 
 		/*
 		主要功能：

@@ -33,8 +33,8 @@ cc_binary(
 
 cc_library(
     name = "my_model",
-    srcs = ["cpp/account/model/user_account.cc","cpp/account/model/user_session.cc","cpp/account/model/reply_model.cc"],
-    hdrs = ["cpp/account/model/user_account.h","cpp/account/model/user_session.h","cpp/account/model/reply_model.h"],
+    srcs = ["cpp/account/model/user_account.cc"],
+    hdrs = ["cpp/account/model/user_account.h"],
 )
 
 cc_library(
@@ -140,3 +140,8 @@ cc_import(
     static_library = "//source/libs/redis:libhiredis.a"
 )
 
+# cc_import(
+#     name = "openssl",
+#     hdrs = ["//source/libs/openssl:aes.h","//source/libs/openssl:opensslconf.h"],
+#     static_library = "//source/libs/openssl:libcrypto.a"
+# )

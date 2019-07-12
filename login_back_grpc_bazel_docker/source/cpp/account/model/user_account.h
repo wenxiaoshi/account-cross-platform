@@ -10,7 +10,7 @@ namespace my_model{
      **/
 	class UserAccount{
 	public:
-		UserAccount(int uid, string account, string password);
+		UserAccount(int uid, string account, string password, string pwdSalt);
 
 		int getUid();
 		void setUid(int uid);
@@ -21,10 +21,14 @@ namespace my_model{
 		string getPassword();
 		void setPassword(string password);
 
+		string getPwdSalt();
+		void setPwdSalt(string pwdSalt);
+
 	private:
 		int uid;
 		string account;
 		string password;
+		string pwdSalt;
 	};
 
 }

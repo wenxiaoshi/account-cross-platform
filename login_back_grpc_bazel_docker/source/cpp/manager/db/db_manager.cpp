@@ -59,7 +59,7 @@ void Database::connect(ServerConfig _conf)
             _conf.getMySqlCharset(),
             msg) == 0)
     {
-        LOGD("db connect success !");
+        LOGD("[db_manager.connect] db connect success !");
         //打开数据库成功，检查表是否存在
         Database::checkAndCreateTable(Database::TABLE_USER_ACCOUNT);
     }
@@ -85,7 +85,8 @@ void Database::checkAndCreateTable(string tableName)
         string str_sql = "CREATE TABLE " + tableName + "(           \
             ID          INT PRIMARY KEY AUTO_INCREMENT      NOT NULL,   \
             ACCOUNT     CHAR(50)                            NOT NULL,   \
-            PASSWORD    CHAR(50)                            NOT NULL    \
+            PASSWORD    CHAR(128)                           NOT NULL,   \
+            PWD_SALT    CHAR(32)                            NOT NULL    \
             );";
         
         if(db_base->createdbTable(str_sql)){
@@ -101,10 +102,10 @@ void Database::checkAndCreateTable(string tableName)
 /**
  * 添加用户数据到数据库
  **/ 
-bool Database::addUserAccount(string account, string password)
+bool Database::addUserAccount(string account, string password, string pwdSalt)
 {
     //参数判空
-    if (account.empty() || password.empty())
+    if (account.empty() || password.empty() || pwdSalt.empty())
     {
         LOGW("[db_manager.addUserAccount] param is empty");
         return false;
@@ -121,7 +122,7 @@ bool Database::addUserAccount(string account, string password)
 
     //执行插入数据操作
     string msg;
-    Json::Value data = db_base->insertUserAccount(account,password,msg);
+    Json::Value data = db_base->insertUserAccount(account,password,pwdSalt,msg);
     if(data["is_empty"].asBool() || CommonUtils::getIntByString(data["ID"].asString()) <= 0)
     {
         LOGE("[db_manager.addUserAccount] " + msg);
@@ -159,7 +160,7 @@ UserAccount Database::queryUserAccountByAccount(string o_account)
     if (o_account.empty())
     {
         LOGW("[db_manager.queryUserAccountByAccount] param is empty");
-        return UserAccount(-1, "", "");
+        return UserAccount(-1, "", "", "");
     }
 
     //参数非法字符过滤
@@ -169,22 +170,28 @@ UserAccount Database::queryUserAccountByAccount(string o_account)
     int uid = -1;
     string account;
     string password;
+    string pwdSalt;
     string msg;
     Json::Value data = db_base->selectUserAccountByAccount(o_account,msg);
+
+    Json::FastWriter fw;
+    LOGD("[db_manager.queryUserAccountByAccount] query account info :" + fw.write(data));
+
     if(data["is_empty"].asBool()){
         LOGE("[db_manager.queryUserAccountByAccount] data is empty");
-        return UserAccount(-1, "", "");
+        return UserAccount(-1, "", "", "");
     }else{
         uid = CommonUtils::getIntByString(data["ID"].asString());
         account = data["ACCOUNT"].asString();
         password = data["PASSWORD"].asString();
+        pwdSalt = data["PWD_SALT"].asString();
         if(uid < 0){
             LOGE("[db_manager.queryUserAccountByAccount] can not find user = " + o_account);
-            return UserAccount(-1, "", "");
+            return UserAccount(-1, "", "", "");
         }
     }
 
-    return UserAccount(uid, account, password);
+    return UserAccount(uid, account, password, pwdSalt);
 }
 
 /**

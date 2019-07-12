@@ -10,6 +10,9 @@
 	"SERVER_IP_PORT": "0.0.0.0:50051",
 	"SSL_PATH_KEY": "source/pem/server.key",
 	"SSL_PATH_CERT": "source/pem/server.crt",
-	"PASSWORD_SALT": "cwfgx6wczS11"
+	"TOKEN_AES_KEY": "$L&^E*Usd9k!Ld4%",
+	"IS_CONSOLE_DEBUG_INFO": true,
+	"TOKEN_TIMEOUT_DAY": 15,
+	"REFRESH_TOKEN_TIMEOUT_DAY": 30
 }
 
