@@ -302,6 +302,7 @@ public:
   {
     CodeReply * result = new CodeReply();
 
+    LOGD("[account_server.handleUserSign] user sign in:" + account);
     LoginDatabase login_db;
     LoginRedis login_redis;
 
@@ -322,7 +323,7 @@ public:
       result->set_msg(MsgTip::UserSign_CreatePwdSaltFail);
       return result;
     }
-    LOGD("[account_server.handleUserSign] create salt success");
+    LOGD("[account_server.handleUserSign] create salt success:" + pwdSalt);
 
     //获得加密后password
     string encrypt_password = CommonUtils::EncryptPwd(account, password, pwdSalt);

@@ -85,7 +85,7 @@ void Database::checkAndCreateTable(string tableName)
         string str_sql = "CREATE TABLE " + tableName + "(           \
             ID          INT PRIMARY KEY AUTO_INCREMENT      NOT NULL,   \
             ACCOUNT     CHAR(50)                            NOT NULL,   \
-            PASSWORD    CHAR(128)                           NOT NULL    \
+            PASSWORD    CHAR(128)                           NOT NULL,   \
             PWD_SALT    CHAR(32)                            NOT NULL    \
             );";
         
@@ -173,7 +173,7 @@ UserAccount Database::queryUserAccountByAccount(string o_account)
     string pwdSalt;
     string msg;
     Json::Value data = db_base->selectUserAccountByAccount(o_account,msg);
-
+    
     Json::FastWriter fw;
     LOGD("[db_manager.queryUserAccountByAccount] query account info :" + fw.write(data));
 

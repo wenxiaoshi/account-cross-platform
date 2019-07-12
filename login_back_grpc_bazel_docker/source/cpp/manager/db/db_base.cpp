@@ -329,7 +329,15 @@ Json::Value DBBase::selectUserAccountByAccount(string account, string &Msg)
        //这里只会返回一条数据
        while (m_row = mysql_fetch_row(m_res))
        {
-              root["ID"] = m_row[0];
+	       //小于0则表示查询无结果或失败
+	    stringstream ss;
+   	 	ss << m_row[0];
+    		int i_id;
+    		ss >> i_id;
+	     if(i_id <= 0){
+	    	break;
+	    }
+	       root["ID"] = m_row[0];
               root["ACCOUNT"] = m_row[1];
               root["PASSWORD"] = m_row[2];
               root["PWD_SALT"] = m_row[3];

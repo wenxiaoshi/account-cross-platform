@@ -98,7 +98,8 @@ string CommonUtils::GenRandomStr(uint count)
 {
     srand(time(0)); //产生随机化种子
 
-    char randomChars[count];
+    char randomChars[count + 1];
+    randomChars[count] = '\0';
     for (uint i = 0; i < count; i++)
     {
         uint type = rand() % 3;
