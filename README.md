@@ -278,7 +278,7 @@ refreshToken
 
 #### 密码初始化
 
-<img src="https://melon-personal.oss-cn-shenzhen.aliyuncs.com/wechat/login_pwd3.png" width = 609 height = 410 />
+<img src="http://melon-personal.oss-cn-shenzhen.aliyuncs.com/wechat/login_pwd3.png" width = 609 height = 410 />
 
 ##### 用户注册流程，后台接收到用户的账号和密码
 
