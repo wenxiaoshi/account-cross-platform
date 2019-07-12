@@ -57,11 +57,11 @@ long CommonUtils::getRefreshTokenTimeout(){
 /**
  * 生成Token
  */
-string CommonUtils::GenToken(const unsigned long uid, const string account)
+void CommonUtils::GenToken(const unsigned long uid, const string account, string & token, int32_t & endTime)
 {
     //获取时间变量
     time_t startTime = time(NULL);
-    time_t endTime = startTime + TOKEN_TIMEOUT;
+    endTime = startTime + TOKEN_TIMEOUT;
 
     //获取随机数
     string randomNumStr = GenRandomStr(6);
@@ -72,14 +72,14 @@ string CommonUtils::GenToken(const unsigned long uid, const string account)
     snprintf(tokenChar, bufSize, "%lu:%s:%s:%lu:%lu", uid, account.c_str(), randomNumStr.c_str(), startTime, endTime);
 
     //进行对称加密
-    string tokenAes = aesEncryptor->EncryptString(tokenChar);
-    return tokenAes;
+    token = aesEncryptor->EncryptString(tokenChar);
+
 }
 
 /**
  * 生成RefreshToken
  */
-string CommonUtils::GenRefreshToken(const unsigned long uid, const string account)
+void CommonUtils::GenRefreshToken(const unsigned long uid, const string account, string & refreshToken)
 {
     //获取时间变量
     time_t startTime = time(NULL);
@@ -94,8 +94,8 @@ string CommonUtils::GenRefreshToken(const unsigned long uid, const string accoun
     snprintf(tokenChar, bufSize, "%lu:%s:%s:%lu:%lu", uid, account.c_str(), randomNumStr.c_str(), startTime, endTime);
 
     //进行对称加密
-    string tokenAes = aesEncryptor->EncryptString(tokenChar);
-    return tokenAes;
+    refreshToken = aesEncryptor->EncryptString(tokenChar);
+
 }
 
 string CommonUtils::DecryptToken(string token)

@@ -270,9 +270,12 @@ public:
     //获取用户UID
     int uid = userAccount.getUid();
 
-    //生成Token、refreshToken
-    string token = CommonUtils::GenToken(uid, account);
-    string refreshToken = CommonUtils::GenRefreshToken(uid, account);
+    //生成Token、refreshToken、Token过期时间
+    string token;
+    int32_t tokenEndTime;
+    CommonUtils::GenToken(uid, account, token, tokenEndTime);
+    string refreshToken;
+    CommonUtils::GenRefreshToken(uid, account, refreshToken);
     LOGD("[account_server.handleUserLogin] create user's new token success");
 
     //更新Token到redis
@@ -289,6 +292,7 @@ public:
     Json::Value root;
     root["token"] = token;
     root["refresh_token"] = refreshToken;
+    root["token_expiratoin_time"] = tokenEndTime;
     Json::FastWriter fw;
     result->set_data(fw.write(root));
     return result;
@@ -364,9 +368,13 @@ public:
     //获得用户UID
     int uid = userAccount.getUid();
 
-    //生成Token、refreshToken
-    string token = CommonUtils::GenToken(uid, account);
-    string refreshToken = CommonUtils::GenRefreshToken(uid, account);
+    //生成Token、refreshToken、Token过期时间
+    string token;
+    int32_t tokenEndTime;
+    CommonUtils::GenToken(uid, account, token, tokenEndTime);
+    string refreshToken;
+    CommonUtils::GenRefreshToken(uid, account, refreshToken);
+    LOGD("[account_server.handleUserLogin] create user's new token success");
 
     //更新Token到redis
     if (!login_redis.updateToken(uid, token, refreshToken))
@@ -382,6 +390,7 @@ public:
     Json::Value root;
     root["token"] = token;
     root["refresh_token"] = refreshToken;
+    root["token_expiratoin_time"] = tokenEndTime;
     Json::FastWriter fw;
     result->set_data(fw.write(root));
     return result;
@@ -595,10 +604,13 @@ public:
     }
     LOGD("[account_server.handleRefreshToken] user refresh token in time limit");
 
-    //生成token、refreshToken
+    //生成Token、refreshToken、Token过期时间
     string account = vToken[1];
-    string new_token = CommonUtils::GenToken(uid, account);
-    string new_refreshToken = CommonUtils::GenRefreshToken(uid, account);
+    string new_token;
+    int32_t tokenEndTime;
+    CommonUtils::GenToken(uid, account, new_token, tokenEndTime);
+    string new_refreshToken;
+    CommonUtils::GenRefreshToken(uid, account, new_refreshToken);
     LOGD("[account_server.handleRefreshToken] create user new token success");
 
     //更新token、refreshToken到redis
@@ -615,6 +627,7 @@ public:
     Json::Value root;
     root["token"] = new_token;
     root["refresh_token"] = new_refreshToken;
+    root["token_expiratoin_time"] = tokenEndTime;
     Json::FastWriter fw;
     result->set_data(fw.write(root));
     return result;

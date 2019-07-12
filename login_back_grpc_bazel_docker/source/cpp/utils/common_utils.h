@@ -31,11 +31,11 @@ namespace utils{
         入口参数
         uid：           用户的UID
         account：       用户的账号
-
-       	出口参数：
-       	string： 	    用户的Token
+        
+        token &： 	    用户的Token
+        endTime &：     Token的过期时间
         */
-        static string GenToken(const unsigned long uid, const string account);
+        static void GenToken(const unsigned long uid, const string account, string & token, int32_t & endTime);
 
         /*
         主要功能：
@@ -44,11 +44,10 @@ namespace utils{
         入口参数
         uid：           用户的UID
         account：       用户的账号
-
-       	出口参数：
-       	string： 	    用户的RefreshToken
+        
+        refreshToken &： 	    用户的RefreshToken
         */
-        static string GenRefreshToken(const unsigned long uid, const string account);
+        static void GenRefreshToken(const unsigned long uid, const string account, string & refreshToken);
 
         /*
         主要功能：
