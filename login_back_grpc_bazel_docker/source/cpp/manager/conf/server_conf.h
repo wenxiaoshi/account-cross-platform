@@ -39,6 +39,10 @@ namespace manager{
 
             //获取Token进行对称加密的AES密钥
             string getTokenAesKey();
+            //获取Token过期时间
+            long getTokenTimeout();
+            //获取RefreshToken过期时间
+            long getRefreshTokenTimeout();
 
             //获取是否打印和记录DEBUG信息
             bool isConsoleDebugInfo();
@@ -61,6 +65,8 @@ namespace manager{
             string MYSQL_CHARSET;
 
             string TOKEN_AES_KEY;
+            long TOKEN_TIMEOUT;
+            long REFRESH_TOKEN_TIMEOUT;
 
             bool IS_CONSOLE_DEBUG_INFO;
 

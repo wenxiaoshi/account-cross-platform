@@ -953,6 +953,10 @@ int main(int argc, char **argv)
   Database::getDatabase()->connect(conf);
   //设置参与Token生成的AES算法的KEY
   CommonUtils::setAesKey(conf.getTokenAesKey());
+  //设置Token过期时间
+  // CommonUtils::setTokenTimeout(conf.getTokenTimeout());
+  //设置RefreshToken过期时间
+  CommonUtils::setRefreshTokenTimeout(conf.getRefreshTokenTimeout());
 
   // debug
   // Database::getDatabase()->queryUserAccountByAccount("13533332222");

@@ -121,8 +121,47 @@ namespace utils{
         /*
         主要功能：
         设置参与生成Token的AES的密钥
+
+        入口参数
+        key：           加密密钥
         */
         static void setAesKey(string key);
+
+        /*
+        主要功能：
+        设置Token的过期时间
+
+        入口参数
+        time：          过期时间
+        */
+        static void setTokenTimeout(long time);
+
+        /*
+        主要功能：
+        设置RefreshToken的过期时间
+
+        入口参数
+        time：          过期时间
+        */
+        static void setRefreshTokenTimeout(long time);
+
+        /*
+        主要功能：
+        获取Token的过期时间
+
+        出口参数
+        long：          过期时间
+        */
+        static long getTokenTimeout();
+
+        /*
+        主要功能：
+        获取RefreshToken的过期时间
+
+        出口参数
+        long：          过期时间
+        */
+        static long getRefreshTokenTimeout();
 
     private:
 

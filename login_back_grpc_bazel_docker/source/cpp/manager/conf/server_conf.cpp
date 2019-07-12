@@ -66,6 +66,8 @@ void ServerConfig::getConf()
     ServerConfig::MYSQL_CHARSET = root["MYSQL_CHARSET"].asString();
 
     ServerConfig::TOKEN_AES_KEY = root["TOKEN_AES_KEY"].asString();
+    ServerConfig::TOKEN_TIMEOUT = root["TOKEN_TIMEOUT_DAY"].asInt() * 3600 * 24;
+    ServerConfig::REFRESH_TOKEN_TIMEOUT = root["REFRESH_TOKEN_TIMEOUT_DAY"].asInt() * 3600 * 24;
 
     ServerConfig::IS_CONSOLE_DEBUG_INFO = root["IS_CONSOLE_DEBUG_INFO"].asBool();
 
@@ -125,6 +127,14 @@ string ServerConfig::getMySqlCharset()
 string ServerConfig::getTokenAesKey()
 {
     return ServerConfig::TOKEN_AES_KEY;
+}
+
+long ServerConfig::getTokenTimeout(){
+    return ServerConfig::TOKEN_TIMEOUT;
+}
+
+long ServerConfig::getRefreshTokenTimeout(){
+    return ServerConfig::REFRESH_TOKEN_TIMEOUT;
 }
 
 bool ServerConfig::isConsoleDebugInfo()
