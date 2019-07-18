@@ -60,14 +60,14 @@
         <td><center></center></td>
     </tr>
     <tr>
-        <td><center><img src="https://melon-personal.oss-cn-shenzhen.aliyuncs.com/login-android.png"></center></td>
-        <td><center><img src="https://melon-personal.oss-cn-shenzhen.aliyuncs.com/wechat/login-back6.png"></center></td>
+        <td><center><img src="images/login-android.png"></center></td>
+        <td><center><img src="images/login-back.png"></center></td>
     </tr>
 </table>
 
 ### 流程图
 
-![](https://melon-personal.oss-cn-shenzhen.aliyuncs.com/wechat/pic_project_flow2.png)
+![](images/pic_project_flow2.png)
 
 ## 项目实现
 
@@ -97,7 +97,7 @@ requestUserLogin
 | 参数名  | 类型 | 说明 |
 |:------|------|------|
 | token | string | 用户Token |
-| refresh_token | string | 用来刷新TOken |
+| refresh_token | string | 用来刷新Token |
 
 ##### 返回结果
 ```
@@ -128,7 +128,7 @@ requestUserSign
 | 参数名  | 类型 | 说明 |
 |:------|------|------|
 | token | string | 用户Token |
-| refresh_token | string | 用来刷新TOken |
+| refresh_token | string | 用来刷新Token |
 
 ##### 返回结果
 ```
@@ -200,14 +200,14 @@ refreshToken
 | 参数名  | 必选 | 类型 | 说明 |
 |:------|------|------|------|
 | token | true | string | 用户Token |
-| refresh_token | true | string | 用来刷新TOken |
+| refresh_token | true | string | 用来刷新Token |
 
 ##### 返回参数
 
 | 参数名  | 类型 | 说明 |
 |:------|------|------|
 | token | string | 用户Token |
-| refresh_token | string | 用来刷新TOken |
+| refresh_token | string | 用来刷新Token |
 
 ##### 返回结果
 ```
@@ -278,14 +278,14 @@ refreshToken
 
 #### 密码初始化
 
-<img src="http://melon-personal.oss-cn-shenzhen.aliyuncs.com/login_pwd2.png" width = 609 height = 410 />
+<img src="images/login_pwd.png" width = 609 height = 410 />
 
 ##### 用户注册流程，后台接收到用户的账号和密码
 
-1. 通过SHA256消息摘要算法对账号进行计算，获得摘要信息
-2. 取出从配置文件中获取的盐值
-3. 将1中获得的摘要信息作为盐，与系统盐值、密码拼接，获得加密前信息
-4. 将3中获得的信息，进行MD5消息摘要计算，获得加密后的128位，用16进制表示的密码字符串
+1. 生成16位由数字、大小写字母组成的随机盐
+2. 通过SHA256消息摘要算法对账号进行计算，获得摘要信息
+3. 将2中获得的摘要信息作为盐，与随机盐、密码拼接，获得加密前信息
+4. 将3中获得的信息，进行SHA256消息摘要计算，获得加密后的64位，用16进制表示的密码字符串
 
 ##### 用户登录流程，后台接收到用户的账号和密码
 
@@ -294,7 +294,7 @@ refreshToken
 
 #### Token生成规则
 
-<img src="http://melon-personal.oss-cn-shenzhen.aliyuncs.com/login_token.png" width = 747 height = 205 />
+<img src="images/login_token.png" width = 747 height = 205 />
 
 ##### 用户登录/注册流程，生成用户Token并返回
 
@@ -323,7 +323,7 @@ refreshToken
 
 #### 日志样例
 
-![](http://melon-personal.oss-cn-shenzhen.aliyuncs.com/login_log.png)
+![](images/login_log.png)
 
 ### 安全防范
 
@@ -379,6 +379,7 @@ refreshToken
 |  | ID | INTEGER PRIMARY KEY | 用户UID |
 |  | ACCOUNT | CHAR | 用户账号 |
 |  | PASSWORD | CHAR | 用户密码 |
+|  | PWD_SALT | CHAR | 参与密码初始化的随机盐 |
 
 使用存储过程封装常用数据库操作
 
@@ -402,7 +403,10 @@ refreshToken
 	"MYSQL_DB_NAME": "user_center",             //MySQL-登入库名
 	"SSL_PATH_KEY": "source/pem/server.key",    //SSL-KEY
 	"SSL_PATH_CERT": "source/pem/server.crt",   //SSL-密钥
-	"PASSWORD_SALT": "xxxxxxxxxx"               //参与密码初始化的盐值
+	"TOKEN_AES_KEY": "$L&^E*Usd9k!Ld4%",	    //参与Token加密AES的密钥
+	"IS_CONSOLE_DEBUG_INFO": true,		    //决定是否打印和记录DEBUG信息，生产环境下可关闭
+	"TOKEN_TIMEOUT_DAY": 15,		    //Token的有效时间（天）
+	"REFRESH_TOKEN_TIMEOUT_DAY": 30		    //RefreshToken的有效时间（天）
 }
 
 ```

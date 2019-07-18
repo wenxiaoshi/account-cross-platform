@@ -56,7 +56,6 @@ int AesEncryptor::Char2Int(char c) {
 }
 
 string AesEncryptor::EncryptString(string strInfor) {
-
     double diff_seconds = (double)(clock());
 
     int nLength = strInfor.length();
