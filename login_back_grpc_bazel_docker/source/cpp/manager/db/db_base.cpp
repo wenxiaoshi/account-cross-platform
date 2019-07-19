@@ -337,6 +337,7 @@ Json::Value DBBase::selectUserAccountByAccount(string account, string &Msg)
     		int i_id;
     		ss >> i_id;
 	     if(i_id <= 0){
+                LOGD("[db_base.selectUserAccountByAccount] handle account db mysql_query empty , id = " + (string)m_row[0]);
 	    	break;
 	    }
 	       root["ID"] = m_row[0];
