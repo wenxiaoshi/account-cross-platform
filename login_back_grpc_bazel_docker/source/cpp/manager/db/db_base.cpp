@@ -295,6 +295,8 @@ Json::Value DBBase::selectUserAccountByAccount(string account, string &Msg)
        //构建存储过程执行语句
        string query = "call queryaccount ('" + account + "',@out_id,@out_account,@out_password,@out_pwd_salt)";
 
+       LOGD("[db_base.selectUserAccountByAccount] db mysql_query : " + query);
+
        //加读锁
        rwlock->readLock();
 
@@ -335,6 +337,7 @@ Json::Value DBBase::selectUserAccountByAccount(string account, string &Msg)
     		int i_id;
     		ss >> i_id;
 	     if(i_id <= 0){
+                LOGD("[db_base.selectUserAccountByAccount] handle account db mysql_query empty , id = " + (string)m_row[0]);
 	    	break;
 	    }
 	       root["ID"] = m_row[0];
@@ -373,6 +376,7 @@ Json::Value DBBase::insertUserAccount(string account, string password, string pw
 
        //构建存储过程执行语句
        string query = "call insertaccount ('" + account + "','" + password + "','" + pwdSalt + "',@out_id)";
+       
        LOGD("[db_base.insertUserAccount] " + query);
 
        //加写锁

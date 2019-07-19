@@ -1,4 +1,5 @@
 version: '2'
+
 services:
   grpcserver:
     image: grpcserver:1.0
@@ -10,22 +11,24 @@ services:
       - redis
       - mysql
     command: ["./account_server"]
+
   redis:
     image: redis
     ports:
       - "6379:6379"
     volumes:
-      - "$PWD/conf/redis:/etc/redis/redis.conf"
-      - "$PWD/data/redis:/data/redis"
+      - "./conf/redis:/etc/redis/redis.conf"
+      - "./data/redis:/data/redis"
     command: ["redis-server","/etc/redis/redis.conf","--appendonly","yes"]
+
   mysql:
     image: mysql
     environment:
       - "MYSQL_ROOT_PASSWORD=123456"
       - "MYSQL_DATABASE=test"
     volumes:
-      - $PWD/conf/mysql:/etc/mysql/conf.d
-      - $PWD/logs/mysql:/logs
-      - $PWD/data/mysql:/var/lib/mysql
+      - "./conf/mysql:/etc/mysql/conf.d"
+      - "./logs/mysql:/logs"
+      - "./data/mysql:/var/lib/mysql"
     ports:
       - "3306:3306"
